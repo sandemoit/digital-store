@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 const HeroSection = () => {
 
   return (
-    <section className="py-43 relative overflow-hidden container mx-auto lg:max-w-6xl">
+    <section className="py-43 relative overflow-hidden container mx-auto lg:max-w-[1200px]">
       {/* Background Elements */}
       <div className="absolute left-0 bottom-0 -mb-10 text-orange-500 opacity-10">
         <svg
@@ -45,7 +45,7 @@ const HeroSection = () => {
               </span>
             </h1>
 
-            <p className="text-black-600 text-lg mb-10">
+            <p className="text-black text-lg mb-10">
               Temukan koleksi produk digital premium terbaik untuk meningkatkan
               bisnis dan kreativitas Anda.
             </p>

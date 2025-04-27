@@ -4,6 +4,7 @@ import { ChevronDown, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import LatestProducts from './landing/LatestProducts';
 import HeroSection from './landing/Hero';
+import FooterFront from '@/layouts/footer-depan-layout';
 
 export default function Welcome() {
     const [scrolled, setScrolled] = useState(false);
@@ -39,7 +40,7 @@ export default function Welcome() {
                 <header
                     className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-white shadow-sm py-3" : "bg-white py-4"
                         }`}>
-                    <div className="container mx-auto px-4 lg:max-w-6xl">
+                    <div className="container mx-auto px-4 lg:max-w-[1200px]">
                         <div className="flex items-center justify-between">
                             {/* Logo */}
                             <div className="flex items-center">
@@ -284,11 +285,14 @@ export default function Welcome() {
                 </div>
 
                 {/* Product Section */}
-                <div className="w-full bg-white">
+                <div className="w-full bg-gray-50">
                     <LatestProducts />
                 </div>
 
-                <div className="hidden h-14.5 lg:block"></div>
+                {/* Footer */}
+                <div className="w-full bg-gray-900">
+                    <FooterFront />
+                </div>
             </div >
         </>
     );

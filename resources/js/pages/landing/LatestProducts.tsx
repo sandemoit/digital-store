@@ -81,7 +81,7 @@ const LatestProducts = () => {
     : latestProducts.filter(product => product.category === activeFilter);
 
   return (
-    <section className="py-16 container mx-auto lg:max-w-6xl">
+    <section className="py-16 container mx-auto lg:max-w-[1200px]">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
         {/* Section Header */}
         <div className="mb-12 text-center">
