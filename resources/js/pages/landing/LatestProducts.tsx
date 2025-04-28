@@ -149,7 +149,7 @@ const LatestProducts = () => {
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
-                  <a href={`/product/${product.id}`}>{product.title}</a>
+                  <Link href={route('produk.show', product.id)}>{product.title}</Link>
                 </h3>
                 <div className="flex items-center mb-4">
                   <div className="flex items-center text-yellow-400 mr-2">

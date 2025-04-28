@@ -20,6 +20,13 @@ class ProductController extends Controller
         ]);
     }
 
+    public function show($id)
+    {
+        return inertia('landing/Produk/Show', [
+            'id' => $id
+        ]);
+    }
+
     public function data(Request $request)
     {
         $query = Product::query();

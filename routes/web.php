@@ -15,7 +15,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('/produk/data', [ProductController::class, 'data']);
-    Route::resource('/produk', ProductController::class);
+    Route::resource('produk', ProductController::class);
+
     Route::resource('/kategori', KategoriController::class);
 });
 

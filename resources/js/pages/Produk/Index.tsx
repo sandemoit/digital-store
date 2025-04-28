@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Plus, Search } from 'lucide-react';
-import ProdukForm from '@/components/produk/ProdukForm';
+import ProdukForm from '@/components/produkAdmin/ProdukForm';
 import { DataTable } from '@/components/DataTable'; // Kita buat komponen Table Reusable
 import axios from 'axios';
 import { BreadcrumbItem } from '@/types';
