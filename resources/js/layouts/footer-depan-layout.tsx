@@ -85,7 +85,7 @@ const FooterFront = () => {
                 {/* Footer Bottom */}
                 <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
                     <div className="mb-4 md:mb-0">
-                        <p className="text-gray-400">Copyright © 2022 All Rights Reserved. Design by <a href="#" className="text-white hover:text-gray-300">Theme Pure</a></p>
+                        <p className="text-gray-400">Copyright © 2025 All Rights Reserved. Design by <a href="#" className="text-white hover:text-gray-300">Sandi Maulidika</a></p>
                     </div>
                     <div className="flex space-x-4">
                         <a href="#" className="text-gray-400 hover:text-white">Licence</a>

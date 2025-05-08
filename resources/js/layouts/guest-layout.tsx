@@ -5,6 +5,7 @@ import { ChevronDown, ShoppingCart } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FooterFront from '@/layouts/footer-depan-layout';
 import React from 'react';
+import { getLocalCartCount } from '@/utils/cartLocal';
 
 interface GuestLayoutProps {
   title?: string;
@@ -13,9 +14,17 @@ interface GuestLayoutProps {
 
 export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLayoutProps) {
   const [scrolled, setScrolled] = useState(false);
-  const [cartCount, setCartCount] = useState(2);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = () => setCartCount(getLocalCartCount());
+    updateCount();
+
+    window.addEventListener("cartUpdated", updateCount);
+    return () => window.removeEventListener("cartUpdated", updateCount);
+  }, []);
 
   // Effect untuk mendeteksi scroll
   useEffect(() => {

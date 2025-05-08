@@ -1,7 +1,7 @@
 // components/Produk/Rating.tsx
 import React from 'react';
 
-export default function Rating({ value = 4 }) {
+export default function Rating({ value = 0 }) {
   return (
     <div className="flex">
       {[...Array(5)].map((_, i) => (

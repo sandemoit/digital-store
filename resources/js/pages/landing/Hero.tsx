@@ -71,7 +71,7 @@ const HeroSection = () => {
           <div className="w-full md:w-1/2 relative">
             <div className="relative z-10 flex justify-center">
               {/* Main Featured Image */}
-              <div className="w-3/4 rounded-lg shadow-xl overflow-hidden transform translate-y-8">
+              <div className="w-3/4 rounded-md shadow-xl overflow-hidden transform translate-y-8">
                 <img
                   src="https://picsum.photos/300/200?random=1"
                   alt="Featured Digital Product"
@@ -80,7 +80,7 @@ const HeroSection = () => {
               </div>
 
               {/* Smaller Image 1 */}
-              <div className="absolute top-0 -left-4 w-1/3 rounded-lg shadow-lg overflow-hidden">
+              <div className="absolute top-0 -left-4 w-1/3 rounded-md shadow-lg overflow-hidden">
                 <img
                   src="https://picsum.photos/300/200?random=2"
                   alt="Digital Product"
@@ -89,7 +89,7 @@ const HeroSection = () => {
               </div>
 
               {/* Smaller Image 2 */}
-              <div className="absolute bottom-0 -right-4 w-1/3 rounded-lg shadow-lg overflow-hidden">
+              <div className="absolute bottom-0 -right-4 w-1/3 rounded-md shadow-lg overflow-hidden">
                 <img
                   src="https://picsum.photos/300/200?random=3"
                   alt="Digital Product"

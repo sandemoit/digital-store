@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,13 +18,6 @@ class ProductController extends Controller
         $title = 'Produk List';
         return Inertia::render('Produk/Index', [
             'title' => $title,
-        ]);
-    }
-
-    public function show($id)
-    {
-        return inertia('landing/Produk/Show', [
-            'id' => $id
         ]);
     }
 

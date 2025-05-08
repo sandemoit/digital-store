@@ -31,4 +31,9 @@ class Product extends Model
         'is_active' => 'boolean',
         'gambar' => 'array',
     ];
+
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
 }

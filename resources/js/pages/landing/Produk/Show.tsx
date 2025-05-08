@@ -7,30 +7,33 @@ import ProductSidebar from '@/components/Produk/ProductSidebar';
 import ProductDetailSkeleton from '@/components/Produk/ProductDetailSkeleton';
 import AppLayout from '@/layouts/app-layout';
 import GuestLayout from '@/layouts/guest-layout';
+import ProdukTerkait from '@/components/Produk/ProdukTerkait';
 
 interface ProductDetailProps {
-  id: any;
+  slug: string;
 }
 
-export default function Show({ id }: ProductDetailProps) {
+export default function Show({ slug }: ProductDetailProps) {
   // In a real implementation, you would fetch the product data using the ID
   // For now, we're using dummy data as requested
   const produk = {
-    id: id,
+    slug: slug,
     name: 'Web Lambeturah SMM Panel Multi Provider (Global API)',
     kategori: { name: 'Web Panel' },
-    harga: 599,
+    harga: 592000,
     stok: 112,
     logo: 'https://picsum.photos/520/520', // Add a logo path if you have one
     gambar: [
-      'https://picsum.photos/900/600?random=1',
-      'https://picsum.photos/900/600?random=2',
-      'https://picsum.photos/900/600?random=3',
-      'https://picsum.photos/900/600?random=4',
-      'https://picsum.photos/900/600?random=5',
-      'https://picsum.photos/900/600?random=6',
-      'https://picsum.photos/900/600?random=7',
-      'https://picsum.photos/900/600?random=8',
+      'https://picsum.photos/1920/1080?random=1',
+      'https://picsum.photos/1920/1080?random=2',
+      'https://picsum.photos/1920/1080?random=3',
+      'https://picsum.photos/1920/1080?random=4',
+      'https://picsum.photos/1920/1080?random=5',
+      'https://picsum.photos/1920/1080?random=6',
+      'https://picsum.photos/1920/1080?random=7',
+      'https://picsum.photos/1920/1080?random=8',
+      'https://picsum.photos/1920/1080?random=9',
+      'https://picsum.photos/1920/1080?random=10',
     ],
     framework: 'Laravel',
     php_version: '8.1',
@@ -41,8 +44,9 @@ export default function Show({ id }: ProductDetailProps) {
     ulasan: 'Belum ada ulasan ✨',
     deskripsi: `Lambeturah SMM adalah alat pemasaran media sosial. Web ini mencakup hampir semua yang Anda butuhkan untuk memudahkan pemasaran digital sosial. Website ini memiliki layanan yang terbaik untuk setiap platform media sosial dan karenanya merupakan platform yang sangat terpercaya. Baik itu like, pengikut, view, atau bahkan ketertarikan umum dari lalu lintas situs web. Lambeturah dapat menghasilkan semuanya, dan dengan harga yang tidak menguras kantong Anda.`,
     faq: `Q: Apakah support update? \nA: Iya, akan ada pembaruan minor.`,
-    rilis: '29 Jun 2020',
-    updated_at: '25 Jul 2024',
+    rilis: '29 Juni 2020',
+    updated_at: '25 Juli 2024',
+    linkDemo: 'https://lambeturah.com',
   };
 
   if (!produk) {
@@ -70,6 +74,9 @@ export default function Show({ id }: ProductDetailProps) {
               <div className="lg:col-span-1 space-y-6">
                 <ProductDetailCard produk={produk} />
                 <ProductSidebar produk={produk} />
+              </div>
+              <div className="lg:col-span-2 space-y-6">
+                <ProdukTerkait />
               </div>
             </div>
           </div>

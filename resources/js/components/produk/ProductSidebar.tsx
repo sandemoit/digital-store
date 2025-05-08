@@ -4,7 +4,7 @@ interface ProductSidebarProps {
 
 export default function ProductSidebar({ produk }: ProductSidebarProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-md shadow-md p-6">
       <h2 className="text-xl font-bold mb-4">Detail Produk</h2>
       <div className="space-y-4">
         <div className="border-b pb-2">

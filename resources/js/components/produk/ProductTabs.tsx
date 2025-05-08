@@ -13,12 +13,14 @@ export default function ProductTabs({ deskripsi, faq, komentar, ulasan }: Produc
   const [activeTab, setActiveTab] = useState<'deskripsi' | 'faq' | 'komentar' | 'ulasan'>('deskripsi');
 
   return (
-    <div className="bg-white shadow rounded-lg p-6">
-      <div className="flex space-x-4 border-b mb-6">
+    <div className="bg-white shadow rounded-md p-6">
+      <div className="flex flex-wrap border-b mb-6">
         {['deskripsi', 'faq', 'komentar', 'ulasan'].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-2 font-semibold capitalize ${activeTab === tab ? 'border-b-2 border-orange-500 text-orange-500' : 'text-gray-500'
+            className={`px-3 py-2 mr-2 mb-2 font-semibold capitalize ${activeTab === tab
+              ? 'border-b-2 border-orange-500 text-orange-500'
+              : 'text-gray-500'
               }`}
             onClick={() => setActiveTab(tab as any)}
           >
