@@ -87,7 +87,7 @@ export default function Cart() {
               </div>
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="bg-white shadow-md rounded-md p-8 text-center">
+            <div className="bg-white shadow rounded-md p-8 text-center">
               <div className="flex justify-center mb-4">
                 <ShoppingCart size={64} className="text-gray-300" />
               </div>
@@ -101,7 +101,7 @@ export default function Cart() {
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Cart Items */}
               <div className="lg:w-2/3">
-                <div className="bg-white shadow-md rounded-md overflow-hidden">
+                <div className="bg-white shadow rounded-md overflow-hidden">
                   <div className="hidden md:grid grid-cols-12 bg-white p-4 text-sm font-medium text-gray-600">
                     <div className="col-span-8">Produk</div>
                     <div className="col-span-2 text-center">Jumlah</div>
@@ -198,7 +198,7 @@ export default function Cart() {
 
               {/* Order Summary */}
               <div className="lg:w-1/3">
-                <div className="bg-white shadow-md rounded-md p-6 sticky top-4">
+                <div className="bg-white shadow rounded-md p-6 sticky top-4">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h2>
 
                   <div className="space-y-3 text-sm">
