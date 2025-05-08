@@ -103,29 +103,55 @@ export default function Cart() {
               <div className="lg:w-2/3">
                 <div className="bg-white shadow-md rounded-md overflow-hidden">
                   <div className="hidden md:grid grid-cols-12 bg-white p-4 text-sm font-medium text-gray-600">
-                    <div className="col-span-6">Produk</div>
-                    <div className="col-span-2 text-center">Harga</div>
+                    <div className="col-span-8">Produk</div>
                     <div className="col-span-2 text-center">Jumlah</div>
-                    <div className="col-span-2 text-right">Subtotal</div>
+                    <div className="col-span-2 text-right">Harga</div>
                   </div>
                   <div className="hidden md:block h-px bg-gray-200"></div>
 
+                  {/* Mobile-optimized list view */}
                   <ul className="divide-y divide-gray-200">
                     {cartItems.map((item) => (
-                      <li key={item.id} className="p-4 md:py-6 md:px-4">
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-                          {/* Product */}
-                          <div className="md:col-span-6 flex items-center space-x-4">
+                      <li key={item.id} className="p-4">
+                        {/* Mobile view - Display as simple list */}
+                        <div className="md:hidden">
+                          <div className="flex space-x-3">
                             <img
                               src={item.gambar}
                               alt={item.name}
-                              className="w-20 h-20 rounded-md object-cover border border-gray-200"
+                              className="w-16 h-16 rounded-md object-cover border border-gray-200"
+                            />
+                            <div className="flex-1">
+                              <div className="flex justify-between">
+                                <h3 className="font-medium text-gray-900">{item.name}</h3>
+                                <button
+                                  onClick={() => removeItem(item.id)}
+                                  className="text-red-500 hover:text-red-700"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                              <div className="mt-2 flex justify-between text-sm">
+                                <span className="text-gray-600">Qty: {item.quantity}</span>
+                              </div>
+                              <div className="mt-2 text-right font-medium text-gray-900">
+                                {calculateItemSubtotal(item).toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Desktop view - Grid layout */}
+                        <div className="hidden md:grid md:grid-cols-12 md:gap-4 md:items-center">
+                          {/* Product */}
+                          <div className="md:col-span-8 flex items-center space-x-4">
+                            <img
+                              src={item.gambar}
+                              alt={item.name}
+                              className="w-50 h-20 rounded-md object-cover border border-gray-200"
                             />
                             <div>
                               <h3 className="font-medium text-gray-900">{item.name}</h3>
-                              <p className="text-sm text-gray-500 md:hidden mt-1">
-                                IDR {item.harga.toLocaleString()}
-                              </p>
                               <button
                                 onClick={() => removeItem(item.id)}
                                 className="flex items-center text-red-500 hover:text-red-700 text-sm mt-2"
@@ -136,11 +162,6 @@ export default function Cart() {
                             </div>
                           </div>
 
-                          {/* Price */}
-                          <div className="hidden md:block md:col-span-2 text-center text-gray-700">
-                            IDR {item.harga.toLocaleString()}
-                          </div>
-
                           {/* Quantity */}
                           <div className="md:col-span-2 flex items-center justify-center">
                             {item.quantity}
@@ -148,21 +169,22 @@ export default function Cart() {
 
                           {/* Subtotal */}
                           <div className="md:col-span-2 text-right font-medium text-gray-900">
-                            IDR {calculateItemSubtotal(item).toLocaleString()}
+                            {calculateItemSubtotal(item).toLocaleString()}
                           </div>
                         </div>
                       </li>
                     ))}
                   </ul>
 
-                  <div className="hidden md:block h-px bg-gray-200"></div>
-                  <div className="bg-white px-6 py-4 flex justify-between">
+                  <div className="h-px bg-gray-200"></div>
+                  <div className="bg-white px-4 md:px-6 py-4 flex justify-between">
                     <button
                       onClick={clearCart}
                       className="text-red-500 hover:text-red-700 flex items-center text-sm font-medium"
                     >
                       <Trash2 size={16} className="mr-1" />
-                      Hapus Semua
+                      <span className="hidden md:inline">Hapus Semua</span>
+                      <span className="md:hidden">Hapus</span>
                     </button>
                     <a
                       href="/products"
@@ -182,11 +204,11 @@ export default function Cart() {
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Subtotal ({cartItems.length} produk)</span>
-                      <span className="font-medium">IDR {cartSubtotal.toLocaleString()}</span>
+                      <span className="font-medium">{cartSubtotal.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-gray-600">Pajak (10%)</span>
-                      <span className="font-medium">IDR {taxAmount.toLocaleString()}</span>
+                      <span className="font-medium">{taxAmount.toLocaleString()}</span>
                     </div>
                     <div className="border-t border-gray-200 my-3 pt-3 flex justify-between">
                       <span className="font-medium text-gray-900">Total</span>
@@ -200,9 +222,9 @@ export default function Cart() {
                     Lanjut ke Pembayaran
                   </button>
 
-                  <div className="mt-4 text-xs text-gray-500 flex text-center justify-center gap-1">
-                    <CheckCircle size={22} className='text-green-500' />
-                    Dengan melanjutkan, Anda menyetujui syarat dan ketentuan yang berlaku.
+                  <div className="mt-4 text-xs text-gray-500 flex items-center justify-center">
+                    <CheckCircle size={16} className="text-green-500 mr-1" />
+                    <span>Dengan melanjutkan, Anda menyetujui syarat dan ketentuan yang berlaku.</span>
                   </div>
                 </div>
               </div>

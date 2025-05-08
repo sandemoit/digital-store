@@ -18,7 +18,7 @@ export default function Show({ slug }: ProductDetailProps) {
   // For now, we're using dummy data as requested
   const produk = {
     slug: slug,
-    name: 'Web Lambeturah SMM Panel Multi Provider (Global API)',
+    name: 'Web Kelulusan Sekolah Framework Codeigniter 3',
     kategori: { name: 'Web Panel' },
     harga: 592000,
     stok: 112,
