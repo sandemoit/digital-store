@@ -1,9 +1,30 @@
 'use client';
 
+import { addToCart } from '@/utils/cartLocal';
 import { Eye, Heart, ShoppingCart, Star, Tag, Filter } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
-export default function ProdukTerkait() {
+interface ProductTerkaitCardProps {
+  produk: any;
+}
+
+export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
+
+  const handleAddToCartOnly = async () => {
+    addToCart({
+      id: produk.id,
+      quantity: 1, // default beli 1
+      name: produk.name,
+      harga: produk.harga,
+      gambar: produk.gambar?.[0]?.path
+    });
+
+    toast.success('Berhasil', {
+      description: 'Silahkan lanjutkan belanja atau lihat keranjang',
+    });
+  };
+
   const latestProducts = [
     {
       id: 1,
@@ -120,7 +141,7 @@ export default function ProdukTerkait() {
   const displayProducts = getSortedAndFilteredProducts();
 
   return (
-    <div className="bg-white shadow rounded-md p-6">
+    <div className="bg-white shadow rounded-md p-6 mb-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">Produk Terkait</h2>
 
@@ -223,7 +244,7 @@ export default function ProdukTerkait() {
                       <Eye size={18} />
                     </a>
                   )}
-                  <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                  <button onClick={handleAddToCartOnly} className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
                     <ShoppingCart size={18} />
                   </button>
                 </div>

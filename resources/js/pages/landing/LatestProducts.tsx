@@ -3,95 +3,28 @@ import { Star, ShoppingCart, Heart, Eye, Tag } from "lucide-react";
 import { Link } from "@inertiajs/react";
 import { addToCart } from "@/utils/cartLocal";
 
-const LatestProducts = () => {
-  // Contoh data produk terbaru
-  const latestProducts = [
-    {
-      id: 1,
-      title: "Web Pengumuman Kelulusan Sekolah",
-      category: "Aplikasi Website",
-      price: 0, rating: 4.8,
-      reviews: 124,
-      image: "https://picsum.photos/400/300?random=1",
-      featured: true,
-      linkDemo: "https://demo.kodinger.com/announcement",
-      slug: "web-pengumuman-kelulusan-sekolah",
-    },
-    {
-      id: 2,
-      title: "E-Commerce Landing Page",
-      category: "Template Website",
-      price: 0, rating: 4.7,
-      reviews: 98,
-      image: "https://picsum.photos/400/300?random=2",
-      linkDemo: "https://demo.kodinger.com/ecommerce",
-      slug: "e-commerce-landing-page",
-    },
-    {
-      id: 3,
-      title: "Business Card Templates",
-      category: "Graphic Design",
-      price: 192000,
-      rating: 4.5,
-      reviews: 75,
-      image: "https://picsum.photos/400/300?random=3",
-      linkDemo: "",
-      slug: "business-card-templates",
-    },
-    {
-      id: 4,
-      title: "Social Media Kit",
-      category: "Marketing",
-      price: 290000,
-      rating: 4.6,
-      reviews: 87,
-      image: "https://picsum.photos/400/300?random=4",
-      linkDemo: "",
-      slug: "social-media-kit",
-    },
-    {
-      id: 5,
-      title: "Portfolio WordPress Theme",
-      category: "WordPress",
-      price: 590000,
-      rating: 4.9,
-      reviews: 156,
-      image: "https://picsum.photos/400/300?random=5",
-      featured: true,
-      linkDemo: "https://demo.kodinger.com/portfolio",
-      slug: "portfolio-wordpress-theme",
-    },
-    {
-      id: 6,
-      title: "Mobile App UI Kit",
-      category: "UI/UX",
-      price: 69000,
-      rating: 4.8,
-      reviews: 143,
-      image: "https://picsum.photos/400/300?random=6",
-      linkDemo: "",
-      slug: "mobile-app-ui-kit",
-    },
-  ];
+interface LatestProdukProps {
+  produk?: any[];
+}
 
-  // State untuk filter kategori
+const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
   const [activeFilter, setActiveFilter] = useState("all");
 
-  // Daftar filter kategori unik
-  const categories = ["all", ...new Set(latestProducts.map(item => item.category))];
+  // Ambil kategori unik dari produk
+  const categories = ["all", ...new Set(produk.map(item => item.kategori?.nama))];
 
-  // Produk yang sudah difilter
+  // Filter produk sesuai kategori aktif
   const filteredProducts = activeFilter === "all"
-    ? latestProducts
-    : latestProducts.filter(product => product.category === activeFilter);
+    ? produk
+    : produk.filter(product => product.kategori?.nama === activeFilter);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = (product: any) => {
     addToCart({
-      id: latestProducts[0].id,
-      quantity: 1, // default beli 1
-      name: latestProducts[0].title,
-      harga: latestProducts[0].price,
-      gambar: latestProducts[0].image,
+      id: product.id,
+      quantity: 1,
+      name: product.name,
+      harga: product.harga,
+      gambar: product.gambar?.[0]?.path,
     });
   };
 
@@ -130,7 +63,6 @@ const LatestProducts = () => {
               key={product.id}
               className="group bg-white rounded-md overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
             >
-              {/* Product Image */}
               <div className="relative overflow-hidden">
                 {product.featured && (
                   <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-md z-10">
@@ -138,51 +70,57 @@ const LatestProducts = () => {
                   </span>
                 )}
                 <img
-                  src={product.image}
-                  alt={product.title}
+                  src={`/storage/${product.gambar?.[0]?.path}`}
+                  alt={product.name}
                   className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
-                {/* Hover Actions */}
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center gap-3">
                   <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
                     <Heart size={18} />
                   </button>
-                  <Link href={product.linkDemo} className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
-                    <Eye size={18} />
-                  </Link>
-                  <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                  {product.link_demo && (
+                    <a href={product.link_demo} target="_blank" className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                      <Eye size={18} />
+                    </a>
+                  )}
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors"
+                  >
                     <ShoppingCart size={18} />
                   </button>
                 </div>
               </div>
 
-              {/* Product Info */}
               <div className="p-5">
                 <div className="mb-3">
                   <span className="inline-flex items-center gap-1 text-sm text-orange-600 font-medium">
                     <Tag size={14} />
-                    {product.category}
+                    {product.kategori?.nama}
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors line-clamp-2 h-14">
-                  <a href={`/product/${product.slug}`}>{product.title}</a>
+                  <a href={`/product/${product.id}`}>{product.name}</a>
                 </h3>
                 <div className="flex items-center mb-4">
                   <div className="flex items-center text-yellow-400 mr-2">
                     <Star size={16} fill="currentColor" />
                     <span className="text-sm font-medium text-gray-700 ml-1">
-                      {product.rating}
+                      {product.rating || 4.5}
                     </span>
                   </div>
                   <span className="text-xs text-gray-500">
-                    ({product.reviews} ulasan)
+                    ({product.reviews || 0} ulasan)
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold text-gray-900">
-                    {product.price === 0 ? 'Gratis' : `IDR ${product.price.toLocaleString()}`}
+                    {product.harga === 0 ? "Gratis" : `IDR ${product.harga.toLocaleString()}`}
                   </span>
-                  <button onClick={handleAddToCart} className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-md p-2 transition-colors duration-300 shadow-sm">
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-md p-2 transition-colors duration-300 shadow-sm"
+                  >
                     <ShoppingCart size={18} />
                   </button>
                 </div>

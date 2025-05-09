@@ -3,13 +3,13 @@
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\AplikasiController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KategoriController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/list/produk/home', [HomeController::class, 'produk'])->name('list.produk.home');
 
 Route::resource('product', AplikasiController::class);
 Route::resource('cart', CartController::class);

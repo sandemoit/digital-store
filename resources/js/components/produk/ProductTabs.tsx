@@ -13,7 +13,7 @@ export default function ProductTabs({ deskripsi, faq, komentar, ulasan }: Produc
   const [activeTab, setActiveTab] = useState<'deskripsi' | 'faq' | 'komentar' | 'ulasan'>('deskripsi');
 
   return (
-    <div className="bg-white shadow rounded-md p-6">
+    <div className="bg-white shadow rounded-md p-6 pb-[5.5rem]">
       <div className="flex flex-wrap border-b mb-6">
         {['deskripsi', 'faq', 'komentar', 'ulasan'].map((tab) => (
           <button
@@ -31,10 +31,10 @@ export default function ProductTabs({ deskripsi, faq, komentar, ulasan }: Produc
 
       <div>
         {activeTab === 'deskripsi' && (
-          <div className="text-gray-700 whitespace-pre-line">{deskripsi}</div>
+          <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: deskripsi }}></div>
         )}
         {activeTab === 'faq' && (
-          <div className="text-gray-700 whitespace-pre-line">{faq}</div>
+          <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: faq }}></div>
         )}
         {activeTab === 'komentar' && (
           <div className="text-gray-700">{komentar}</div>

@@ -14,18 +14,18 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('deskripsi')->nullable();
-            $table->decimal('harga', 10, 2);
+            $table->longText('deskripsi')->nullable();
+            $table->integer('harga')->default(0);
             $table->integer('stok')->default(0);
             $table->json('gambar')->nullable();
-            $table->integer('id_kategori');
-            $table->string('framework');
-            $table->string('php_version');
-            $table->string('database');
-            $table->string('author');
-            $table->string('versi');
-            $table->string('link_demo');
-            $table->string('faq');
+            $table->integer('id_kategori')->nullable();
+            $table->string('framework')->nullable();
+            $table->string('php_version')->nullable();
+            $table->string('database')->nullable();
+            $table->string('author')->nullable();
+            $table->string('versi')->nullable();
+            $table->string('link_demo')->nullable();
+            $table->longText('faq')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

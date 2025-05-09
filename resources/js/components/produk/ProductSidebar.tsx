@@ -10,7 +10,7 @@ export default function ProductSidebar({ produk }: ProductSidebarProps) {
         <div className="border-b pb-2">
           <div className="flex justify-between">
             <span className="font-medium text-gray-600">Kategori</span>
-            <span>{produk.kategori.name}</span>
+            <span>{produk.kategori.nama}</span>
           </div>
         </div>
         <div className="border-b pb-2">
@@ -40,25 +40,19 @@ export default function ProductSidebar({ produk }: ProductSidebarProps) {
         <div className="border-b pb-2">
           <div className="flex justify-between">
             <span className="font-medium text-gray-600">Rilis</span>
-            <span>29 Jun 2020</span>
+            <span>{new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(produk.created_at))}</span>
           </div>
         </div>
         <div className="border-b pb-2">
           <div className="flex justify-between">
             <span className="font-medium text-gray-600">Diupdate</span>
-            <span>{produk.updated_at}</span>
+            <span>{new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(produk.updated_at))}</span>
           </div>
         </div>
         <div className="border-b pb-2">
           <div className="flex justify-between">
             <span className="font-medium text-gray-600">Versi</span>
             <span>{produk.versi}</span>
-          </div>
-        </div>
-        <div className="border-b pb-2">
-          <div className="flex justify-between">
-            <span className="font-medium text-gray-600">Pengujian</span>
-            <span>112 Item</span>
           </div>
         </div>
         <div className="border-b pb-2">

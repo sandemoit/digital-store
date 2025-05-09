@@ -1,5 +1,3 @@
-// resources/js/Pages/Produk/Index.tsx
-
 import { useEffect, useState } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import { PageProps } from '@/types/produk';
@@ -23,9 +21,10 @@ interface Produk {
 
 interface ProdukPageProps extends PageProps {
     title: string;
+    kategori: any[];
 }
 
-export default function ProdukIndex({ title, auth }: ProdukPageProps) {
+export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
     const [open, setOpen] = useState(false);
     const [produkEdit, setProdukEdit] = useState<Produk | null>(null);
     const [search, setSearch] = useState('');
@@ -45,11 +44,15 @@ export default function ProdukIndex({ title, auth }: ProdukPageProps) {
         {
             header: "Harga",
             accessorKey: "harga",
-            cell: ({ row }: any) => `Rp${row.original.harga.toLocaleString()}`,
+            cell: ({ row }: any) => `Rp ${row.original.harga.toLocaleString('id-ID')}`,
         },
         {
             header: "Stok",
             accessorKey: "stok",
+        },
+        {
+            header: "Kategori",
+            accessorKey: "kategori.nama",
         },
         {
             header: "Aksi",
@@ -81,13 +84,20 @@ export default function ProdukIndex({ title, auth }: ProdukPageProps) {
     };
 
     const handleEdit = (produk: Produk) => {
-        setProdukEdit(produk);
-        setOpen(true);
+        router.get(`/produk/${produk.id}/edit`);
     };
 
     const handleCreate = () => {
-        setProdukEdit(null);
-        setOpen(true);
+        router.get('/produk/create');
+    };
+
+    const handleSearch = async () => {
+        const res = await axios.get('/produk/data', {
+            params: {
+                search: search,
+            },
+        });
+        setData(res.data.data);
     };
 
     return (
@@ -99,13 +109,16 @@ export default function ProdukIndex({ title, auth }: ProdukPageProps) {
                     <Button onClick={handleCreate}><Plus className="mr-2 h-4 w-4" /> Tambah Produk</Button>
                 </div>
 
-                <div className="flex justify-end">
+                <div className="flex items-center gap-2">
                     <Input
-                        className="max-w-sm"
+                        type="text"
                         placeholder="Cari produk..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
+                    <Button onClick={handleSearch}>
+                        <Search className="w-4 h-4 mr-2" /> Cari
+                    </Button>
                 </div>
 
                 <Card>

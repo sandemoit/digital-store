@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class AplikasiController extends Controller
@@ -33,10 +34,13 @@ class AplikasiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show(string $id)
     {
+        $produk = Product::with('kategori')->findOrFail($id); // Lebih aman pakai findOrFail biar 404
+
         return inertia('landing/Produk/Show', [
-            'slug' => $slug
+            'title' => 'Detail Produk',
+            'produk' => $produk,
         ]);
     }
 

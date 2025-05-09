@@ -11,7 +11,11 @@ type CartItem = {
   quantity: number;
 };
 
-export default function Cart() {
+interface Props {
+  title?: string;
+}
+
+export default function Cart({ title }: Props) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -61,7 +65,7 @@ export default function Cart() {
   };
 
   return (
-    <GuestLayout title="Keranjang Belanja">
+    <GuestLayout title={title ?? 'Keranjang Belanja'}>
       <div className="bg-gray-50 min-h-screen py-6">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
@@ -146,9 +150,9 @@ export default function Cart() {
                           {/* Product */}
                           <div className="md:col-span-8 flex items-center space-x-4">
                             <img
-                              src={item.gambar}
+                              src={`/storage/${item.gambar}`}
                               alt={item.name}
-                              className="w-50 h-20 rounded-md object-cover border border-gray-200"
+                              className="w-20 h-20 rounded-md object-cover border border-gray-200"
                             />
                             <div>
                               <h3 className="font-medium text-gray-900">{item.name}</h3>

@@ -36,4 +36,9 @@ class Product extends Model
     {
         return $this->hasMany(Cart::class);
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'id_kategori');
+    }
 }

@@ -3,6 +3,8 @@ import React from 'react';
 import Rating from './Rating';
 import { router } from '@inertiajs/react';
 import { addToCart } from '@/utils/cartLocal';
+import { Globe, ShoppingCart } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ProductDetailCardProps {
   produk: any;
@@ -11,7 +13,7 @@ interface ProductDetailCardProps {
 
 export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
   const demo = () => {
-    window.open(produk.linkDemo, '_blank');
+    window.open(produk.link_demo, '_blank');
   }
 
   const handleAddToCart = async () => {
@@ -20,10 +22,24 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
       quantity: 1, // default beli 1
       name: produk.name,
       harga: produk.harga,
-      gambar: produk.gambar[0],
+      gambar: produk.gambar?.[0]?.path,
     });
 
     router.visit(route('cart.index'));
+  };
+
+  const handleAddToCartOnly = async () => {
+    addToCart({
+      id: produk.id,
+      quantity: 1, // default beli 1
+      name: produk.name,
+      harga: produk.harga,
+      gambar: produk.gambar?.[0]?.path,
+    });
+
+    toast.success('Berhasil', {
+      description: 'Silahkan lanjutkan belanja atau lihat keranjang',
+    });
   };
 
   return (
@@ -52,15 +68,20 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
             <Rating value={3} />
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2 w-full">
-            <button onClick={handleAddToCart}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
-              Beli Sekarang
+            <button onClick={handleAddToCartOnly} className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
+              <ShoppingCart />
+              Keranjang
             </button>
             <button onClick={demo}
-              className="hover:bg-orange-600 hover:text-white text-black border-2 border-orange-600 px-4 py-2 rounded-md w-full flex items-center justify-center gap-1">
+              className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-md w-full flex items-center justify-center gap-1">
+              <Globe className='text-black' />
               Demo
             </button>
           </div>
+          <button onClick={handleAddToCart}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
+            Beli Sekarang
+          </button>
         </div>
       </div>
     </div>

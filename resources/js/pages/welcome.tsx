@@ -1,17 +1,17 @@
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ChevronDown, ShoppingCart } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import LatestProducts from './landing/LatestProducts';
 import HeroSection from './landing/Hero';
-import FooterFront from '@/layouts/footer-depan-layout';
 import GuestLayout from '@/layouts/guest-layout';
 
-export default function Welcome() {
+interface Props {
+    title?: string;
+    produk?: any;
+}
+
+export default function Welcome({ title, produk }: Props) {
     const [scrolled, setScrolled] = useState(false);
-    const [cartCount, setCartCount] = useState(2);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
 
     // Effect untuk mendeteksi scroll
     useEffect(() => {
@@ -32,7 +32,7 @@ export default function Welcome() {
 
     return (
         <>
-            <GuestLayout title='Global'>
+            <GuestLayout title={title ?? 'Welcome'}>
                 {/* Hero */}
                 <div className="w-full bg-gray-100">
                     <HeroSection />
@@ -40,7 +40,7 @@ export default function Welcome() {
 
                 {/* Product Section */}
                 <div className="w-full bg-gray-50">
-                    <LatestProducts />
+                    <LatestProducts produk={produk} />
                 </div>
             </GuestLayout>
         </>

@@ -14,6 +14,7 @@ class CartController extends Controller
         $cart = Cart::with('product')->where('user_id', Auth::id())->get();
 
         return Inertia::render('landing/Cart/index', [
+            'title' => 'Keranjang Belanja',
             'cart' => $cart
         ]);
     }
