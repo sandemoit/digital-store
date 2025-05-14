@@ -1,11 +1,11 @@
-// resources/js/Layouts/GuestLayout.tsx
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ChevronDown, ShoppingCart } from 'lucide-react';
+import { ChevronDown, ShoppingCart, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import FooterFront from '@/layouts/footer-depan-layout';
 import React from 'react';
 import { getLocalCartCount } from '@/utils/cartLocal';
+import { toast } from 'sonner';
 
 interface GuestLayoutProps {
   title?: string;
@@ -53,7 +53,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
         <header
           className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-white shadow-sm py-3" : "bg-white py-4"
             }`}>
-          <div className="container mx-auto px-4 lg:max-w-[1200px]">
+          <div className="max-w-7xl mx-auto px-4">
             <div className="flex items-center justify-between">
               {/* Logo */}
               <div className="flex items-center">
@@ -103,8 +103,86 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
 
               {/* User Actions */}
               <div className="hidden md:flex items-center space-x-6">
+                <a href="/cart" className="relative">
+                  <ShoppingCart size={22} className="text-gray-700" />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-4 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </a>
                 {auth.user ? (
-                  <Link href={route('dashboard')} className='text-gray-700 hover:text-orange-600 font-medium flex items-center'>Dashboard</Link>
+                  <div className="relative group">
+                    <a
+                      href="#"
+                      className="text-gray-600 hover:text-orange-600 font-medium flex items-center"
+                    >
+                      <User size={20} className="mr-1" />
+                      <ChevronDown size={16} className="ml-1" />
+                    </a>
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg rounded-md overflow-hidden z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-linear">
+                      {/* User profile header */}
+                      <div className="bg-orange-100 p-4 border-b border-gray-200">
+                        <div className="flex items-center">
+                          <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-3">
+                            <User size={28} className="text-gray-600" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-medium text-gray-800">{auth.user.name}</div>
+                            <div className="text-sm text-gray-600">{auth.user.email}</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Menu items */}
+                      <div className="py-1">
+                        {auth.user.role === 'admin' ? (
+                          <Link
+                            href={route('admin.dashboard')}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Dashboard
+                          </Link>
+                        ) : (
+                          <Link
+                            href={route('buyer.profile')}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            Akun Saya
+                          </Link>
+                        )}
+
+                        <Link
+                          href='#'
+                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                        >
+                          Produk Saya
+                        </Link>
+
+                        {/* Conditional My Products menu untuk penjual/admin */}
+                        {auth.user.role === 'admin' && (
+                          <Link
+                            href={route('produk.index')}
+                            className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          >
+                            My Products
+                          </Link>
+                        )}
+
+                        <div className="border-t border-gray-200 mt-1 pt-1 px-4 py-2">
+                          <Link
+                            href={route('logout')}
+                            onClick={() => toast.success('Berhasil logout')}
+                            method="post"
+                            as="button"
+                            className="w-full text-left bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+                          >
+                            Logout
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 ) : (
                   <>
                     <Link
@@ -135,15 +213,6 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                     </Link>
                   </>
                 )}
-
-                <a href="/cart" className="relative">
-                  <ShoppingCart size={22} className="text-gray-700" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-4 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {cartCount}
-                    </span>
-                  )}
-                </a>
               </div>
               {/* Mobile Actions */}
               <div className="flex md:hidden items-center space-x-4">
@@ -248,7 +317,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                   </Link>
                   {auth.user ? (
                     <Link
-                      href={route('dashboard')}
+                      href={route('admin.dashboard')}
                       className='text-gray-700 hover:text-orange-600 font-medium py-3 border-b border-gray-100'
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -293,7 +362,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
         </header >
 
         {/* Main Content */}
-        < div className="pt-20" >
+        < div className="pt-16" >
           {children}
         </div >
 

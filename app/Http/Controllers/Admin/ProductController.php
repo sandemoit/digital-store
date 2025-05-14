@@ -91,10 +91,10 @@ class ProductController extends Controller
         $data['gambar'] = $gambarPaths;
 
         // Create the product
-        $product = Product::create($data);
+        Product::create($data);
 
         // Redirect with success message
-        return redirect()->route('produk.index')
+        return redirect()->route('admin.produk.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
@@ -160,7 +160,7 @@ class ProductController extends Controller
         // Update produk
         $produk->update($validated);
 
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function destroy(Product $produk)

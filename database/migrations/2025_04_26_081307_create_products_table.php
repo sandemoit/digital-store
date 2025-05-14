@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('harga')->default(0);
             $table->integer('stok')->default(0);
             $table->json('gambar')->nullable();
-            $table->integer('id_kategori')->nullable();
+            $table->foreignId('id_kategori')->nullable()->constrained('kategoris')->onDelete('set null');
             $table->string('framework')->nullable();
             $table->string('php_version')->nullable();
             $table->string('database')->nullable();

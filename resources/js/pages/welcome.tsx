@@ -1,8 +1,8 @@
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
-import LatestProducts from './landing/LatestProducts';
-import HeroSection from './landing/Hero';
+import LatestProducts from './Landing/Home/LatestProducts';
+import HeroSection from './Landing/Home/Hero';
 import GuestLayout from '@/layouts/guest-layout';
 
 interface Props {
@@ -11,24 +11,6 @@ interface Props {
 }
 
 export default function Welcome({ title, produk }: Props) {
-    const [scrolled, setScrolled] = useState(false);
-
-    // Effect untuk mendeteksi scroll
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 20) {
-                setScrolled(true);
-            } else {
-                setScrolled(false);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-
-    const { auth } = usePage<SharedData>().props;
 
     return (
         <>

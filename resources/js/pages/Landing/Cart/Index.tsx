@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import GuestLayout from "@/layouts/guest-layout";
-import { Trash2, Plus, Minus, ShoppingCart, CheckCircle } from 'lucide-react';
+import { Trash2, ShoppingCart, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 // Type definitions
 type CartItem = {
@@ -57,6 +58,9 @@ export default function Cart({ title }: Props) {
   // Remove item from cart
   const removeItem = (id: number) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
+    toast.success('Berhasil', {
+      description: 'Silahkan lanjutkan belanja',
+    });
   };
 
   // Clear entire cart
@@ -221,7 +225,7 @@ export default function Cart({ title }: Props) {
                   </div>
 
                   <button
-                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-md transition-colors"
+                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-md transition-colors cursor-pointer"
                   >
                     Lanjut ke Pembayaran
                   </button>

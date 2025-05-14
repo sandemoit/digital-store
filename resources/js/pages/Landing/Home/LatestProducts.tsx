@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Star, ShoppingCart, Heart, Eye, Tag } from "lucide-react";
-import { Link } from "@inertiajs/react";
 import { addToCart } from "@/utils/cartLocal";
+import { toast } from "sonner";
 
 interface LatestProdukProps {
   produk?: any[];
@@ -26,11 +26,14 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
       harga: product.harga,
       gambar: product.gambar?.[0]?.path,
     });
+    toast.success('Berhasil', {
+      description: 'Produk berhasil ditambahkan ke keranjang',
+    });
   };
 
   return (
-    <section className="py-16 container mx-auto lg:max-w-[1200px]">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8">
+    <section className="container mx-auto px-4 md:px-6 lg:px-8">
+      <div className="py-16 container mx-auto lg:max-w-[1200px]">
         {/* Section Header */}
         <div className="mb-12 text-center">
           <h6 className="text-orange-600 font-semibold mb-2">KOLEKSI DIGITAL</h6>
@@ -84,7 +87,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                     </a>
                   )}
                   <button
-                    onClick={() => handleAddToCart(product)}
+                    onClick={() => { handleAddToCart(product) }}
                     className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors"
                   >
                     <ShoppingCart size={18} />
@@ -106,11 +109,13 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   <div className="flex items-center text-yellow-400 mr-2">
                     <Star size={16} fill="currentColor" />
                     <span className="text-sm font-medium text-gray-700 ml-1">
-                      {product.rating || 4.5}
+                      {(product.ulasan_avg_rating !== null && product.ulasan_avg_rating !== undefined)
+                        ? parseFloat(product.ulasan_avg_rating).toFixed(1)
+                        : '0.0'}
                     </span>
                   </div>
                   <span className="text-xs text-gray-500">
-                    ({product.reviews || 0} ulasan)
+                    ({product.ulasan_count !== null && product.ulasan_count !== undefined ? product.ulasan_count : 0} ulasan)
                   </span>
                 </div>
                 <div className="flex items-center justify-between">

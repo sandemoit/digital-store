@@ -1,15 +1,13 @@
-// components/Produk/ProductDetailCard.tsx
 import React from 'react';
 import Rating from './Rating';
 import { router } from '@inertiajs/react';
 import { addToCart } from '@/utils/cartLocal';
-import { Globe, ShoppingCart } from 'lucide-react';
+import { Eye, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ProductDetailCardProps {
   produk: any;
 }
-
 
 export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
   const demo = () => {
@@ -49,7 +47,7 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
             <span className="font-medium">Kategori:</span>
-            <span>{produk.kategori.name}</span>
+            <span>{produk.kategori.nama}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Harga:</span>
@@ -57,15 +55,17 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Terjual:</span>
-            <span>{produk.stok} item</span>
+            <span>{produk.transaksi_sukses_count} item</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Update:</span>
-            <span>{produk.updated_at}</span>
+            <span>{new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(produk.updated_at))}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Rating:</span>
-            <Rating value={3} />
+            <Rating value={(produk.ulasan_avg_rating !== null && produk.ulasan_avg_rating !== undefined)
+              ? parseFloat(produk.ulasan_avg_rating)
+              : 0} />
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2 w-full">
             <button onClick={handleAddToCartOnly} className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
@@ -74,7 +74,7 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
             </button>
             <button onClick={demo}
               className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-md w-full flex items-center justify-center gap-1">
-              <Globe className='text-black' />
+              <Eye className='text-black' />
               Demo
             </button>
           </div>

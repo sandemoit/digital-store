@@ -72,27 +72,27 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
     }, []);
 
     const fetchProduk = async () => {
-        const res = await axios.get('/produk/data');
+        const res = await axios.get('/admin/produk/data');
         setData(res.data.data);
     };
 
     const handleDelete = async (id: number) => {
         if (confirm('Yakin mau hapus produk ini?')) {
-            await router.delete(`/produk/${id}`);
+            await router.delete(`/admin/produk/${id}`);
             fetchProduk();
         }
     };
 
     const handleEdit = (produk: Produk) => {
-        router.get(`/produk/${produk.id}/edit`);
+        router.get(`/admin/produk/${produk.id}/edit`);
     };
 
     const handleCreate = () => {
-        router.get('/produk/create');
+        router.get('/admin/produk/create');
     };
 
     const handleSearch = async () => {
-        const res = await axios.get('/produk/data', {
+        const res = await axios.get('/admin/produk/data', {
             params: {
                 search: search,
             },

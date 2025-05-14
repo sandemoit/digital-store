@@ -10,17 +10,17 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/dashboard',
+        href: '/admin/dashboard',
         icon: LayoutGrid,
     },
     {
         title: 'Kategori',
-        href: '/kategori',
+        href: '/admin/kategori',
         icon: Folder,
     },
     {
         title: 'Produk',
-        href: '/produk',
+        href: '/admin/produk',
         icon: Package2,
     },
 ];
