@@ -85,7 +85,10 @@ export default function Show({ produk, title, canComment, isLoggedIn, userId }: 
 
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
 
-  const { data, setData, post, processing, reset, errors } = useForm({
+  const { data, setData, post, processing, reset, errors } = useForm<{
+    isi: string;
+    parent_id: number | null;
+  }>({
     isi: '',
     parent_id: null
   });

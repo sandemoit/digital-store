@@ -2,7 +2,7 @@ import React from 'react';
 import Rating from './Rating';
 import { router } from '@inertiajs/react';
 import { addToCart } from '@/utils/cartLocal';
-import { Eye, ShoppingCart } from 'lucide-react';
+import { Eye, MessageSquareMore, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ProductDetailCardProps {
@@ -26,18 +26,11 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
     router.visit(route('cart.index'));
   };
 
-  const handleAddToCartOnly = async () => {
-    addToCart({
-      id: produk.id,
-      quantity: 1, // default beli 1
-      name: produk.name,
-      harga: produk.harga,
-      gambar: produk.gambar?.[0]?.path,
-    });
-
-    toast.success('Berhasil', {
-      description: 'Silahkan lanjutkan belanja atau lihat keranjang',
-    });
+  const handleChatAdmin = () => {
+    const waNumber = '6287801751656'; // Replace with your WhatsApp number
+    const message = `Halo, saya tertarik dengan produk ${produk.name}`;
+    const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+    window.open(waUrl, '_blank');
   };
 
   return (
@@ -68,9 +61,9 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
               : 0} />
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2 w-full">
-            <button onClick={handleAddToCartOnly} className="bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
-              <ShoppingCart />
-              Keranjang
+            <button onClick={handleChatAdmin} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
+              <MessageSquareMore />
+              Chat Admin
             </button>
             <button onClick={demo}
               className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-md w-full flex items-center justify-center gap-1">

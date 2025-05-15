@@ -255,7 +255,7 @@ export default function ProductTabs({
                 ))}
 
                 {/* Form Komentar Baru */}
-                {isLoggedIn && replyingTo === null && (
+                {isLoggedIn && replyingTo !== null && (
                   <div className="mt-6">
                     <h4 className="text-sm font-medium mb-3">Tinggalkan Komentar</h4>
                     <div className="flex items-start">
@@ -391,9 +391,9 @@ export default function ProductTabs({
                 </div>
               ))
             ) : (
-              <div className="flex flex-col items-center text-center py-8">
+              <div className="flex flex-col items-center py-8">
                 <Star className="h-12 w-12 text-gray-300" />
-                <p className="py-6 text-gray-500">Belum ada ulasan untuk produk ini</p>
+                <p className="mt-2 text-gray-500">Belum ada ulasan untuk produk ini</p>
               </div>
             )}
           </div>
