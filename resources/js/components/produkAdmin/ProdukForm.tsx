@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@inertiajs/react";
 import { useEffect } from "react";
+import FileUploader from "../FileUploader";
 
 interface ProdukFormProps {
     open: boolean;

@@ -25,6 +25,7 @@ class Product extends Model
         'link_demo',
         'faq',
         'is_active',
+        'file_url'
     ];
 
     protected $casts = [

@@ -9,6 +9,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { X, Upload, Image as ImageIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
+import FileUploader from '@/components/FileUploader';
 
 // Types
 interface Kategori {
@@ -144,6 +145,10 @@ export default function Create({ title, kategori }: ProductFormProps) {
     URL.revokeObjectURL(removedPreview.preview);
   };
 
+  const handleFileUploadComplete = (url) => {
+    setData('file_url', url);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData();
@@ -154,7 +159,7 @@ export default function Create({ title, kategori }: ProductFormProps) {
       formData.append(`gambar[${index}]`, file);
     });
 
-    post('/produk', {
+    post('/admin/produk', {
       data: formData,
       forceFormData: true,
       onSuccess: () => toast.success('Sukses', { description: "Produk berhasil ditambahkan" }),
@@ -411,6 +416,9 @@ export default function Create({ title, kategori }: ProductFormProps) {
                     <label htmlFor="status" className="text-sm">Aktif</label>
                   </div>
                 </FormField>
+
+                <FileUploader onUploadComplete={handleFileUploadComplete} />
+
               </FormSection>
 
               <div className="flex justify-end gap-3 pt-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import { MessageCircle, Star, ThumbsUp } from 'lucide-react';
+import { MessageCircle, MessageCircleQuestion, Star, ThumbsUp } from 'lucide-react';
 import { useState } from 'react';
 import Rating from './Rating';
 
@@ -99,7 +99,16 @@ export default function ProductTabs({
         )}
 
         {activeTab === 'faq' && (
-          <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: faq }}></div>
+          <>
+            {faq ? (
+              <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: faq }}></div>
+            ) : (
+              <div className="text-center py-8">
+                <MessageCircleQuestion className="h-12 w-12 mx-auto text-gray-300" />
+                <p className="mt-2 text-gray-500">Belum ada FAQ untuk produk ini</p>
+              </div>
+            )}
+          </>
         )}
 
         {activeTab === 'komentar' && (
@@ -382,7 +391,10 @@ export default function ProductTabs({
                 </div>
               ))
             ) : (
-              <p className="text-center py-6 text-gray-500">Belum ada ulasan untuk produk ini</p>
+              <div className="flex flex-col items-center text-center py-8">
+                <Star className="h-12 w-12 text-gray-300" />
+                <p className="py-6 text-gray-500">Belum ada ulasan untuk produk ini</p>
+              </div>
             )}
           </div>
         )}

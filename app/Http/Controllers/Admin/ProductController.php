@@ -67,6 +67,7 @@ class ProductController extends Controller
             'link_demo' => 'nullable|url|max:255',
             'faq' => 'nullable|string',
             'is_active' => 'boolean',
+            'file_url' => 'nullable|url',
         ]);
 
         // Process uploaded images
@@ -94,7 +95,7 @@ class ProductController extends Controller
         Product::create($data);
 
         // Redirect with success message
-        return redirect()->route('admin.produk.index')
+        return redirect()->route('admin.produk')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
@@ -127,6 +128,7 @@ class ProductController extends Controller
             'link_demo' => 'nullable|url',
             'faq' => 'nullable|string',
             'is_active' => 'nullable|boolean',
+            'file_url' => 'nullable|url',
             'gambar.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -160,7 +162,7 @@ class ProductController extends Controller
         // Update produk
         $produk->update($validated);
 
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('admin.produk')->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function destroy(Product $produk)
