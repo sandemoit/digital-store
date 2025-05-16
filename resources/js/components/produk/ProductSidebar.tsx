@@ -4,7 +4,7 @@ interface ProductSidebarProps {
 
 export default function ProductSidebar({ produk }: ProductSidebarProps) {
   return (
-    <div className="bg-white rounded-md shadow-md p-6">
+    <div className="bg-white rounded-sm shadow-md p-6">
       <h2 className="text-xl font-bold mb-4">Detail Produk</h2>
       <div className="space-y-4">
         <div className="border-b pb-2">
@@ -63,7 +63,7 @@ export default function ProductSidebar({ produk }: ProductSidebarProps) {
         </div>
       </div>
       <div className="mt-6">
-        <button className="w-full bg-orange-600 text-white font-medium py-2 px-4 rounded-md">
+        <button className="w-full bg-orange-600 text-white font-medium py-2 px-4 rounded-sm">
           Bagikan
         </button>
         <div className="flex justify-center mt-4 space-x-2">

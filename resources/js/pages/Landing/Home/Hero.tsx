@@ -58,10 +58,10 @@ const HeroSection = () => {
                 <input
                   type="text"
                   placeholder="Cari produk digital..."
-                  className="pl-12 w-full px-5 py-4 rounded-md bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-orange-500 focus:shadow-lg"
+                  className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-orange-500 focus:shadow-lg"
                 />
               </div>
-              <button className="bg-orange-600 hover:bg-orange-700 text-white font-medium px-6 py-4 rounded-md whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1">
+              <button className="bg-orange-600 hover:bg-orange-700 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1">
                 Search
               </button>
             </div>
@@ -71,7 +71,7 @@ const HeroSection = () => {
           <div className="w-full md:w-1/2 relative">
             <div className="relative z-10 flex justify-center">
               {/* Main Featured Image */}
-              <div className="w-3/4 rounded-md shadow-xl overflow-hidden transform translate-y-8">
+              <div className="w-3/4 rounded-sm shadow-xl overflow-hidden transform translate-y-8">
                 <img
                   src="https://picsum.photos/300/200?random=1"
                   alt="Featured Digital Product"
@@ -80,7 +80,7 @@ const HeroSection = () => {
               </div>
 
               {/* Smaller Image 1 */}
-              <div className="absolute top-0 -left-4 w-1/3 rounded-md shadow-lg overflow-hidden">
+              <div className="absolute top-0 -left-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
                 <img
                   src="https://picsum.photos/300/200?random=2"
                   alt="Digital Product"
@@ -89,7 +89,7 @@ const HeroSection = () => {
               </div>
 
               {/* Smaller Image 2 */}
-              <div className="absolute bottom-0 -right-4 w-1/3 rounded-md shadow-lg overflow-hidden">
+              <div className="absolute bottom-0 -right-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
                 <img
                   src="https://picsum.photos/300/200?random=3"
                   alt="Digital Product"

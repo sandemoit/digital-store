@@ -141,7 +141,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
   const displayProducts = getSortedAndFilteredProducts();
 
   return (
-    <div className="bg-white shadow rounded-md p-6 mb-6">
+    <div className="bg-white shadow rounded-sm p-6 mb-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 md:mb-0">Produk Terkait</h2>
 
@@ -150,7 +150,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="bg-white border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="default">Urutan Default</option>
             <option value="price-low">Harga: Rendah ke Tinggi</option>
@@ -162,14 +162,14 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           {/* Filter Toggle Button */}
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md transition-colors"
+            className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-sm transition-colors"
           >
             <Filter size={16} />
             <span>Filter</span>
           </button>
 
           {/* View Mode Toggle */}
-          <div className="flex bg-gray-100 rounded-md">
+          <div className="flex bg-gray-100 rounded-sm">
             <button
               onClick={() => setViewMode("grid")}
               className={`px-3 py-2 rounded-l-lg ${viewMode === "grid" ? "bg-orange-500 text-white" : "text-gray-700"}`}
@@ -212,12 +212,12 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           {displayProducts.map((product) => (
             <div
               key={product.id}
-              className="group bg-white rounded-md overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
+              className="group bg-white rounded-sm overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
             >
               {/* Product Image */}
               <div className="relative overflow-hidden">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-md z-10">
+                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -276,7 +276,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                   <span className="text-xl font-bold text-gray-900">
                     {product.price === 0 ? 'Gratis' : `Rp${product.price}k`}
                   </span>
-                  <button className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-md p-2 transition-colors duration-300 shadow-sm">
+                  <button className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm">
                     <ShoppingCart size={18} />
                   </button>
                 </div>
@@ -289,12 +289,12 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           {displayProducts.map((product) => (
             <div
               key={product.id}
-              className="group bg-white rounded-md overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row"
+              className="group bg-white rounded-sm overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row"
             >
               {/* Product Image - Smaller in list view */}
               <div className="relative md:w-64 h-48">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-md z-10">
+                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -337,7 +337,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => toggleLike(product.id)}
-                      className={`p-2 rounded-md ${likedProducts[product.id] ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-500 hover:text-white transition-colors`}
+                      className={`p-2 rounded-sm ${likedProducts[product.id] ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-500 hover:text-white transition-colors`}
                     >
                       <Heart size={18} fill={likedProducts[product.id] ? "currentColor" : "none"} />
                     </button>
@@ -347,13 +347,13 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                         href={product.linkDemo}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+                        className="p-2 rounded-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
                       >
                         <Eye size={18} />
                       </a>
                     )}
 
-                    <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md transition-colors">
+                    <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm transition-colors">
                       <ShoppingCart size={18} />
                       <span>Beli Sekarang</span>
                     </button>

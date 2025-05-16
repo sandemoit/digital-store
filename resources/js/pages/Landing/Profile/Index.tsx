@@ -120,7 +120,7 @@ export default function ProfileIndex({ title }: Props) {
                                     <img
                                         src={`https://ui-avatars.com/api/?name=${dummyUserData.name}&size=64&background=0D8ABC&color=fff`}
                                         alt="Your Avatar"
-                                        className="w-full h-full object-cover mb-2 rounded-md"
+                                        className="w-full h-full object-cover mb-2 rounded-sm"
                                     />
                                     <h3 className="text-xl font-medium">{dummyUserData.name}</h3>
                                     <div className="text-sm text-gray-500">{dummyUserData.email}</div>
@@ -158,7 +158,7 @@ export default function ProfileIndex({ title }: Props) {
                             </div>
                         </div>
                         <div className="lg:col-span-6 space-y-6">
-                            <div className="bg-white rounded-md shadow-md p-6">
+                            <div className="bg-white rounded-sm shadow-md p-6">
                                 {renderContent()}
                             </div>
                         </div>
