@@ -20,7 +20,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Produk',
-        href: '/admin/produk',
+        href: '/admin/product',
         icon: Package2,
     },
 ];

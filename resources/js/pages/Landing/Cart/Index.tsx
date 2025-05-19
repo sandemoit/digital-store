@@ -59,18 +59,21 @@ export default function Cart({ title }: Props) {
   const removeItem = (id: number) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
     toast.success('Berhasil', {
-      description: 'Silahkan lanjutkan belanja',
+      description: 'Item dihapus dari keranjang',
     });
   };
 
   // Clear entire cart
   const clearCart = () => {
     setCartItems([]);
+    toast.success('Berhasil', {
+      description: 'Menghapus semua item di keranjang',
+    });
   };
 
   return (
     <GuestLayout title={title ?? 'Keranjang Belanja'}>
-      <div className="bg-gray-50 min-h-screen py-6">
+      <div className="bg-gray-50 min-h-auto py-6">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -95,13 +98,13 @@ export default function Cart({ title }: Props) {
               </div>
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="bg-white shadow rounded-md p-8 text-center">
+            <div className="bg-white shadow rounded-sm p-15 text-center">
               <div className="flex justify-center mb-4">
                 <ShoppingCart size={64} className="text-gray-300" />
               </div>
               <h2 className="text-xl font-semibold text-gray-700 mb-2">Keranjang Belanja Kosong</h2>
               <p className="text-gray-500 mb-6">Belum ada produk di keranjang Anda.</p>
-              <a href="/products" className="inline-block bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-md transition-colors">
+              <a href="/products" className="inline-block bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-sm transition-colors">
                 Mulai Belanja
               </a>
             </div>
@@ -109,7 +112,7 @@ export default function Cart({ title }: Props) {
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Cart Items */}
               <div className="lg:w-2/3">
-                <div className="bg-white shadow rounded-md overflow-hidden">
+                <div className="bg-white shadow rounded-sm overflow-hidden">
                   <div className="hidden md:grid grid-cols-12 bg-white p-4 text-sm font-medium text-gray-600">
                     <div className="col-span-8">Produk</div>
                     <div className="col-span-2 text-center">Jumlah</div>
@@ -127,7 +130,7 @@ export default function Cart({ title }: Props) {
                             <img
                               src={item.gambar}
                               alt={item.name}
-                              className="w-16 h-16 rounded-md object-cover border border-gray-200"
+                              className="w-16 h-16 rounded-sm object-cover border border-gray-200"
                             />
                             <div className="flex-1">
                               <div className="flex justify-between">
@@ -156,7 +159,7 @@ export default function Cart({ title }: Props) {
                             <img
                               src={`/storage/${item.gambar}`}
                               alt={item.name}
-                              className="w-20 h-20 rounded-md object-cover border border-gray-200"
+                              className="w-20 h-20 rounded-sm object-cover border border-gray-200"
                             />
                             <div>
                               <h3 className="font-medium text-gray-900">{item.name}</h3>
@@ -206,7 +209,7 @@ export default function Cart({ title }: Props) {
 
               {/* Order Summary */}
               <div className="lg:w-1/3">
-                <div className="bg-white shadow rounded-md p-6 sticky top-4">
+                <div className="bg-white shadow rounded-sm p-6 sticky top-4">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">Ringkasan Pesanan</h2>
 
                   <div className="space-y-3 text-sm">
@@ -225,7 +228,7 @@ export default function Cart({ title }: Props) {
                   </div>
 
                   <button
-                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-md transition-colors cursor-pointer"
+                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-sm transition-colors cursor-pointer"
                   >
                     Lanjut ke Pembayaran
                   </button>

@@ -95,7 +95,7 @@ class ProductController extends Controller
         Product::create($data);
 
         // Redirect with success message
-        return redirect()->route('admin.produk')
+        return redirect()->route('admin.product.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 

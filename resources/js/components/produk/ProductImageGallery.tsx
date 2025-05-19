@@ -22,12 +22,12 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
   const canMinimize = visibleThumbnails > initialDisplayCount;
 
   return (
-    <div className="md:bg-white md:rounded-md md:shadow md:p-6">
+    <div className="md:bg-white md:rounded-sm md:shadow md:p-6">
       <div className="md:mb-4">
         <img
           src={images[selectedImage]}
           alt="Product preview"
-          className="w-full h-[56.25vw] md:h-94 object-cover md:rounded-md"
+          className="w-full h-[56.25vw] md:h-auto object-cover md:rounded-sm"
         />
       </div>
       <div className="bg-white rounded-b-lg md:bg-transparent md:rounded-none md:p-0">
@@ -35,7 +35,7 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
           {displayedThumbnails.map((image, index) => (
             <div
               key={index}
-              className={`cursor-pointer border-2 md:rounded-md overflow-hidden ${selectedImage === index ? 'border-orange-500' : 'border-gray-200'}`}
+              className={`cursor-pointer border-2 md:rounded-sm overflow-hidden ${selectedImage === index ? 'border-orange-500' : 'border-gray-200'}`}
               onClick={() => setSelectedImage(index)}
             >
               <img src={image} alt={`Thumbnail ${index}`} className="w-full h-16 object-cover" />

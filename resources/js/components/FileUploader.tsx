@@ -90,9 +90,9 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
               type="file"
               onChange={handleFileChange}
               disabled={uploading}
-              className="block w-full text-sm text-gray-500 border border-gray-300 rounded-md
+              className="block w-full text-sm text-gray-500 border border-gray-300 rounded-sm
           file:mr-4 file:py-2 file:px-4
-          file:rounded-md file:border-0
+          file:rounded-sm file:border-0
           file:text-sm file:font-semibold
           file:bg-orange-50 file:text-orange-700
           hover:file:bg-orange-100
@@ -102,7 +102,7 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
           <button
             onClick={handleUpload}
             disabled={!file || uploading}
-            className={`px-4 py-2 rounded-md text-sm font-medium text-white
+            className={`px-4 py-2 rounded-sm text-sm font-medium text-white
           ${!file || uploading
                 ? 'bg-gray-400 cursor-not-allowed border-gray-400'
                 : 'bg-orange-600 hover:bg-orange-700 border-orange-600 hover:border-orange-700'}`}
@@ -129,7 +129,7 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
         )}
 
         {downloadURL && (
-          <div className="mt-6 p-4 bg-green-50 border rounded-md">
+          <div className="mt-6 p-4 bg-green-50 border rounded-sm">
             <p className="text-green-700 font-medium mb-2">File berhasil diupload!</p>
             <div className="break-all">
               <strong className="text-gray-700">URL File:</strong>

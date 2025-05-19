@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('link_demo')->nullable();
             $table->longText('faq')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->string('file_url');
             $table->timestamps();
         });
     }

@@ -113,7 +113,7 @@ export default function Show({ produk, title, canComment, isLoggedIn, userId }: 
 
   const handleLike = (komentarId: number) => {
     if (!isLoggedIn) {
-      alert('Silakan login untuk menyukai komentar');
+      toast.error('Anda harus login terlebih dahulu');
       return;
     }
     post(route('komentar.like', komentarId));
@@ -121,7 +121,7 @@ export default function Show({ produk, title, canComment, isLoggedIn, userId }: 
 
   return (
     <GuestLayout title={title ?? 'Detail Produk'}>
-      <div className="bg-gray-100 min-h-screen py-6">
+      <div className="bg-gray-100 min-h-auto py-6">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">

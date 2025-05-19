@@ -6,9 +6,24 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class AplikasiController extends Controller
 {
+    public function index()
+    {
+        $produk = Product::with(['kategori'])
+            ->withCount('ulasan')
+            ->withAvg('ulasan', 'rating')
+            ->where('is_active', true)
+            ->latest()
+            ->get();
+
+        return Inertia::render('Landing/Produk/Index', [
+            'produk' => $produk,
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */

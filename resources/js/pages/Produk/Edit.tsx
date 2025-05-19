@@ -414,7 +414,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                       {imagePreviews.map((image, index) => (
                         <div
                           key={`image-${index}`}
-                          className="relative group rounded-md border border-gray-200 overflow-hidden"
+                          className="relative group rounded-sm border border-gray-200 overflow-hidden"
                         >
                           <div className="aspect-square w-full">
                             <img
@@ -445,7 +445,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                       {Array.from({ length: Math.min(MAX_IMAGES - imagePreviews.length, 5) }).map((_, index) => (
                         <div
                           key={`empty-${index}`}
-                          className="aspect-square border border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50"
+                          className="aspect-square border border-dashed border-gray-300 rounded-sm flex items-center justify-center bg-gray-50"
                         >
                           <ImageIcon size={24} className="text-gray-400" />
                         </div>

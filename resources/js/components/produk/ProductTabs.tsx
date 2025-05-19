@@ -77,7 +77,7 @@ export default function ProductTabs({
   const [activeTab, setActiveTab] = useState<'deskripsi' | 'faq' | 'komentar' | 'ulasan'>('deskripsi');
 
   return (
-    <div className="bg-white shadow rounded-md p-6">
+    <div className="bg-white shadow rounded-sm p-6">
       <div className="flex flex-wrap border-b mb-6">
         {['deskripsi', 'faq', 'komentar', 'ulasan'].map((tab) => (
           <button
@@ -105,7 +105,7 @@ export default function ProductTabs({
             ) : (
               <div className="text-center py-8">
                 <MessageCircleQuestion className="h-12 w-12 mx-auto text-gray-300" />
-                <p className="mt-2 text-gray-500">Belum ada FAQ untuk produk ini</p>
+                <p className="mt-2 text-gray-500">Tidak ada FAQ untuk produk ini</p>
               </div>
             )}
           </>
@@ -174,7 +174,7 @@ export default function ProductTabs({
                           <div className="flex items-start">
                             <div className="w-8 h-8 mr-2 overflow-hidden rounded-full bg-gray-200">
                               <img
-                                src="https://ui-avatars.com/api/?name=User&size=64&background=0D8ABC&color=fff"
+                                src="https://ui-avatars.com/api/?name=User&size=64&background=f54d21&color=fff"
                                 alt="Your Avatar"
                                 className="w-full h-full object-cover"
                               />
@@ -182,7 +182,7 @@ export default function ProductTabs({
                             <div className="flex-1">
                               <form onSubmit={commentForm.submitKomentar}>
                                 <textarea
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
                                   placeholder="Tulis balasan Anda di sini..."
                                   rows={2}
                                   value={commentForm.data.isi}
@@ -193,14 +193,14 @@ export default function ProductTabs({
                                 <div className="mt-2 flex justify-end space-x-2">
                                   <button
                                     type="button"
-                                    className="px-3 py-1 border border-gray-300 text-gray-600 rounded-md text-xs hover:bg-gray-100 focus:outline-none"
+                                    className="px-3 py-1 border border-gray-300 text-gray-600 rounded-sm text-xs hover:bg-gray-100 focus:outline-none"
                                     onClick={() => onReply(null)}
                                   >
                                     Batal
                                   </button>
                                   <button
                                     type="submit"
-                                    className="px-3 py-1 bg-orange-500 text-white rounded-md text-xs hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                    className="px-3 py-1 bg-orange-500 text-white rounded-sm text-xs hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                                     disabled={commentForm.processing}
                                   >
                                     {commentForm.processing ? 'Mengirim...' : 'Kirim Balasan'}
@@ -226,7 +226,7 @@ export default function ProductTabs({
                                   />
                                 ) : (
                                   <img
-                                    src={`https://ui-avatars.com/api/?name=${reply.user ? encodeURIComponent(reply.user.name) : 'User'}&size=64&background=0D8ABC&color=fff`}
+                                    src={`https://ui-avatars.com/api/?name=${reply.user ? encodeURIComponent(reply.user.name) : 'User'}&size=64&background=f54d21&color=fff`}
                                     alt={reply.user ? reply.user.name : 'User'}
                                     className="w-full h-full object-cover"
                                   />
@@ -269,7 +269,7 @@ export default function ProductTabs({
                       <div className="flex-1">
                         <form onSubmit={commentForm.submitKomentar}>
                           <textarea
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
                             placeholder="Tulis komentar Anda di sini..."
                             rows={3}
                             value={commentForm.data.isi}
@@ -280,7 +280,7 @@ export default function ProductTabs({
                           <div className="mt-2 flex justify-end">
                             <button
                               type="submit"
-                              className="px-4 py-1.5 bg-orange-500 text-white rounded-md text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                              className="px-4 py-1.5 bg-orange-500 text-white rounded-sm text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                               disabled={commentForm.processing}
                             >
                               {commentForm.processing ? 'Mengirim...' : 'Kirim Komentar'}
@@ -314,7 +314,7 @@ export default function ProductTabs({
                         <div className="flex-1">
                           <form onSubmit={commentForm.submitKomentar}>
                             <textarea
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
                               placeholder="Tulis komentar Anda di sini..."
                               rows={3}
                               value={commentForm.data.isi}
@@ -325,7 +325,7 @@ export default function ProductTabs({
                             <div className="mt-2 flex justify-end">
                               <button
                                 type="submit"
-                                className="px-4 py-1.5 bg-orange-500 text-white rounded-md text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                className="px-4 py-1.5 bg-orange-500 text-white rounded-sm text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                                 disabled={commentForm.processing}
                               >
                                 {commentForm.processing ? 'Mengirim...' : 'Kirim Komentar'}

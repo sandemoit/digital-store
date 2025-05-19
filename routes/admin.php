@@ -12,7 +12,7 @@ Route::middleware(['auth', 'verified', CheckRole::class])->prefix('admin')->grou
     })->name('admin.dashboard');
 
     Route::get('/produk/data', [ProductController::class, 'data']);
-    Route::resource('produk', ProductController::class);
+    Route::resource('product', ProductController::class);
 
     Route::resource('/kategori', KategoriController::class);
 });

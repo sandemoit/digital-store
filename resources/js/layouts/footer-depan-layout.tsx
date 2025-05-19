@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { Facebook, Twitter, Instagram, X } from 'lucide-react';
 
 const FooterFront = () => {
     return (
@@ -13,8 +13,8 @@ const FooterFront = () => {
                             <a href="#" className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded">
                                 <Facebook size={20} />
                             </a>
-                            <a href="#" className="bg-sky-500 hover:bg-sky-600 text-white p-2 rounded">
-                                <Twitter size={20} />
+                            <a href="#" className="bg-stone-800 hover:bg-stone-900 text-white p-2 rounded">
+                                <X size={20} />
                             </a>
                             <a href="#" className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded">
                                 <Instagram size={20} />

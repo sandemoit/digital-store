@@ -27,14 +27,14 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
   };
 
   const handleChatAdmin = () => {
-    const waNumber = '6287801751656'; // Replace with your WhatsApp number
+    const waNumber = '6287801751656';
     const message = `Halo, saya tertarik dengan produk ${produk.name}`;
     const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
   };
 
   return (
-    <div className="bg-white rounded-md shadow-md p-6 flex flex-col md:flex-row gap-6">
+    <div className="bg-white rounded-sm shadow-md p-6 flex flex-col md:flex-row gap-6">
       <div className="w-full">
         <h1 className="text-2xl font-bold mb-3">{produk.name}</h1>
         <div className="flex flex-col gap-3">
@@ -61,18 +61,18 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
               : 0} />
           </div>
           <div className="grid grid-cols-2 gap-2 mt-2 w-full">
-            <button onClick={handleChatAdmin} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
+            <button onClick={handleChatAdmin} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-sm flex items-center justify-center gap-1">
               <MessageSquareMore />
               Chat Admin
             </button>
             <button onClick={demo}
-              className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-md w-full flex items-center justify-center gap-1">
+              className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-sm w-full flex items-center justify-center gap-1">
               <Eye className='text-black' />
               Demo
             </button>
           </div>
           <button onClick={handleAddToCart}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-md flex items-center justify-center gap-1">
+            className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm flex items-center justify-center gap-1">
             Beli Sekarang
           </button>
         </div>

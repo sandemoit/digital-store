@@ -159,7 +159,7 @@ export default function Create({ title, kategori }: ProductFormProps) {
       formData.append(`gambar[${index}]`, file);
     });
 
-    post('/admin/produk', {
+    post('/admin/product', {
       data: formData,
       forceFormData: true,
       onSuccess: () => toast.success('Sukses', { description: "Produk berhasil ditambahkan" }),
@@ -292,7 +292,7 @@ export default function Create({ title, kategori }: ProductFormProps) {
                       {imagePreviews.map((image, index) => (
                         <div
                           key={`${image.file.name}-${index}`}
-                          className="relative group rounded-md border border-gray-200 overflow-hidden"
+                          className="relative group rounded-sm border border-gray-200 overflow-hidden"
                         >
                           <div className="aspect-square w-full">
                             <img
@@ -318,7 +318,7 @@ export default function Create({ title, kategori }: ProductFormProps) {
                       {Array.from({ length: Math.min(MAX_IMAGES - imagePreviews.length, 5) }).map((_, index) => (
                         <div
                           key={`empty-${index}`}
-                          className="aspect-square border border-dashed border-gray-300 rounded-md flex items-center justify-center bg-gray-50"
+                          className="aspect-square border border-dashed border-gray-300 rounded-sm flex items-center justify-center bg-gray-50"
                         >
                           <ImageIcon size={24} className="text-gray-400" />
                         </div>

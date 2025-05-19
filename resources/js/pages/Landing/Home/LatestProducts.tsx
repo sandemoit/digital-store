@@ -64,11 +64,11 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
           {filteredProducts.map((product) => (
             <div
               key={product.id}
-              className="group bg-white rounded-md overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
+              className="group bg-white rounded-sm overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
             >
               <div className="relative overflow-hidden">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-md z-10">
+                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -103,7 +103,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors line-clamp-2 h-14">
-                  <a href={`/product/${product.id}`}>{product.name}</a>
+                  <a href={`/produk/${product.id}`}>{product.name}</a>
                 </h3>
                 <div className="flex items-center mb-4">
                   <div className="flex items-center text-yellow-400 mr-2">
@@ -124,7 +124,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   </span>
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-md p-2 transition-colors duration-300 shadow-sm"
+                    className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"
                   >
                     <ShoppingCart size={18} />
                   </button>
@@ -136,9 +136,9 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
 
         {/* Load More Button */}
         <div className="mt-12 text-center">
-          <button className="px-8 py-3 border border-orange-600 text-orange-600 rounded-md transition-colors duration-300 hover:bg-orange-600 hover:text-white font-medium">
+          <a href={route('produk.index')} className="px-8 py-3 border border-orange-600 text-orange-600 rounded-sm transition-colors duration-300 hover:bg-orange-600 hover:text-white font-medium">
             Lihat Lebih Banyak
-          </button>
+          </a>
         </div>
       </div>
     </section>
