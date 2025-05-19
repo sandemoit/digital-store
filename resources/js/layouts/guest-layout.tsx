@@ -72,6 +72,12 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                 <Link href={route('home')} className='text-gray-600 hover:text-orange-600 font-medium'>
                   Beranda
                 </Link>
+                <Link href={route('produk.index')} className='text-gray-600 hover:text-orange-600 font-medium'>
+                  Produk Kami
+                </Link>
+                <Link href={route('kontak')} className='text-gray-600 hover:text-orange-600 font-medium'>
+                  Kontak
+                </Link>
                 <div className="relative group">
                   <a
                     href="#"
@@ -95,16 +101,12 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                     </a>
                   </div>
                 </div>
-
-                <Link href='#' className='text-gray-600 hover:text-orange-600 font-medium'>
-                  Kontak
-                </Link>
               </nav>
 
               {/* User Actions */}
               <div className="hidden md:flex items-center space-x-6">
                 <a href="/cart" className="relative">
-                  <ShoppingCart size={22} className="text-gray-700" />
+                  <ShoppingCart size={22} className="text-gray-700 hover:text-orange-600" />
                   {cartCount > 0 && (
                     <span className="absolute -top-2 -right-4 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {cartCount}
@@ -162,7 +164,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                         {/* Conditional My Products menu untuk penjual/admin */}
                         {auth.user.role === 'admin' && (
                           <Link
-                            href={route('produk.index')}
+                            href={route('product.index')}
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                           >
                             Produk Saya
@@ -249,6 +251,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
               </div>
             </div>
           </div>
+
           {/* Mobile Sidebar Menu */}
           {mobileMenuOpen && (
             <div className="fixed inset-0 z-50 overflow-hidden md:hidden">
@@ -271,6 +274,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                     </svg>
                   </button>
                 </div>
+
                 {/* Mobile Menu Items */}
                 <nav className="flex flex-col p-4">
                   <Link
@@ -317,11 +321,11 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                   </Link>
                   {auth.user ? (
                     <Link
-                      href={route('admin.dashboard')}
+                      href={route(auth.user?.role === 'admin' ? 'admin.dashboard' : 'buyer.profile')}
                       className='text-gray-700 hover:text-orange-600 font-medium py-3 border-b border-gray-100'
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Dashboard
+                      {auth.user?.role === 'admin' ? 'Dashboard' : 'Akun Saya'}
                     </Link>
                   ) : (
                     <>

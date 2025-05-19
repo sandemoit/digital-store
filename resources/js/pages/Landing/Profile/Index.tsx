@@ -1,3 +1,4 @@
+import HeroSection from "@/components/HeroSection";
 import GuestLayout from "@/layouts/guest-layout";
 import { SharedData } from "@/types";
 import { usePage } from "@inertiajs/react";
@@ -65,7 +66,7 @@ const PurchaseHistoryContent = () => (
                                 </span>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <button className="text-blue-600 hover:text-blue-900">Unduh</button>
+                                <button className="text-orange-600 hover:text-orange-900">Unduh</button>
                             </td>
                         </tr>
                     ))}
@@ -104,21 +105,24 @@ export default function ProfileIndex({ title }: Props) {
     // Fungsi untuk menentukan kelas menu yang aktif
     const getMenuClass = (menu: any) => {
         return `flex items-center p-3 rounded-lg ${activeTab === menu
-            ? 'bg-blue-100 text-blue-700 font-medium'
+            ? 'bg-orange-100 text-orange-700 font-medium'
             : 'text-gray-700 hover:bg-gray-100'}`;
     };
 
     return (
         <GuestLayout title={title ?? 'Welcome'}>
+            {/* Hero Section */}
+            <HeroSection title={title} description="Lihat informasi profil dan riwayat transaksi Anda." />
+
             <div className="bg-gray-100 py-6">
                 <div className="max-w-7xl mx-auto px-4">
 
                     <div className="grid grid-cols-1 lg:grid-cols-8 gap-6">
                         <div className="lg:col-span-2 space-y-6">
                             <div className="bg-white shadow rounded-lg p-4 mb-6">
-                                <div className="flex flex-col items-center pb-4 border-b border-gray-200">
+                                <div className="flex flex-col items-center pb-4 border-b border-gray-200 bg-white">
                                     <img
-                                        src={`https://ui-avatars.com/api/?name=${dummyUserData.name}&size=64&background=0D8ABC&color=fff`}
+                                        src={`https://ui-avatars.com/api/?name=${dummyUserData.name}&size=64&background=f54d21&color=fff`}
                                         alt="Your Avatar"
                                         className="w-full h-full object-cover mb-2 rounded-sm"
                                     />

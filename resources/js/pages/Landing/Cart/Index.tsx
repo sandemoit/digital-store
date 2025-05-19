@@ -59,18 +59,21 @@ export default function Cart({ title }: Props) {
   const removeItem = (id: number) => {
     setCartItems(prev => prev.filter(item => item.id !== id));
     toast.success('Berhasil', {
-      description: 'Silahkan lanjutkan belanja',
+      description: 'Item dihapus dari keranjang',
     });
   };
 
   // Clear entire cart
   const clearCart = () => {
     setCartItems([]);
+    toast.success('Berhasil', {
+      description: 'Menghapus semua item di keranjang',
+    });
   };
 
   return (
     <GuestLayout title={title ?? 'Keranjang Belanja'}>
-      <div className="bg-gray-50 min-h-screen py-6">
+      <div className="bg-gray-50 min-h-auto py-6">
         <div className="max-w-6xl mx-auto px-4">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
@@ -95,7 +98,7 @@ export default function Cart({ title }: Props) {
               </div>
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="bg-white shadow rounded-sm p-8 text-center">
+            <div className="bg-white shadow rounded-sm p-15 text-center">
               <div className="flex justify-center mb-4">
                 <ShoppingCart size={64} className="text-gray-300" />
               </div>

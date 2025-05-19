@@ -103,7 +103,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors line-clamp-2 h-14">
-                  <a href={`/product/${product.id}`}>{product.name}</a>
+                  <a href={`/produk/${product.id}`}>{product.name}</a>
                 </h3>
                 <div className="flex items-center mb-4">
                   <div className="flex items-center text-yellow-400 mr-2">
@@ -136,9 +136,9 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
 
         {/* Load More Button */}
         <div className="mt-12 text-center">
-          <button className="px-8 py-3 border border-orange-600 text-orange-600 rounded-sm transition-colors duration-300 hover:bg-orange-600 hover:text-white font-medium">
+          <a href={route('produk.index')} className="px-8 py-3 border border-orange-600 text-orange-600 rounded-sm transition-colors duration-300 hover:bg-orange-600 hover:text-white font-medium">
             Lihat Lebih Banyak
-          </button>
+          </a>
         </div>
       </div>
     </section>

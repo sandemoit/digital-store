@@ -159,7 +159,7 @@ export default function Create({ title, kategori }: ProductFormProps) {
       formData.append(`gambar[${index}]`, file);
     });
 
-    post('/admin/produk', {
+    post('/admin/product', {
       data: formData,
       forceFormData: true,
       onSuccess: () => toast.success('Sukses', { description: "Produk berhasil ditambahkan" }),

@@ -45,7 +45,7 @@ export default function ProdukForm({ open, setOpen, produk, onSuccess }: ProdukF
                 }
             });
         } else {
-            post('/produk', {
+            post('/product', {
                 onSuccess: () => {
                     onSuccess();
                     setOpen(false);

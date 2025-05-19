@@ -105,7 +105,7 @@ export default function ProductTabs({
             ) : (
               <div className="text-center py-8">
                 <MessageCircleQuestion className="h-12 w-12 mx-auto text-gray-300" />
-                <p className="mt-2 text-gray-500">Belum ada FAQ untuk produk ini</p>
+                <p className="mt-2 text-gray-500">Tidak ada FAQ untuk produk ini</p>
               </div>
             )}
           </>
@@ -174,7 +174,7 @@ export default function ProductTabs({
                           <div className="flex items-start">
                             <div className="w-8 h-8 mr-2 overflow-hidden rounded-full bg-gray-200">
                               <img
-                                src="https://ui-avatars.com/api/?name=User&size=64&background=0D8ABC&color=fff"
+                                src="https://ui-avatars.com/api/?name=User&size=64&background=f54d21&color=fff"
                                 alt="Your Avatar"
                                 className="w-full h-full object-cover"
                               />
@@ -226,7 +226,7 @@ export default function ProductTabs({
                                   />
                                 ) : (
                                   <img
-                                    src={`https://ui-avatars.com/api/?name=${reply.user ? encodeURIComponent(reply.user.name) : 'User'}&size=64&background=0D8ABC&color=fff`}
+                                    src={`https://ui-avatars.com/api/?name=${reply.user ? encodeURIComponent(reply.user.name) : 'User'}&size=64&background=f54d21&color=fff`}
                                     alt={reply.user ? reply.user.name : 'User'}
                                     className="w-full h-full object-cover"
                                   />

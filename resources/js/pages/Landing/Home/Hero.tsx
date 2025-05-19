@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 const HeroSection = () => {
 
   return (
-    <section className="py-6 md:py-33 relative overflow-hidden container mx-auto lg:max-w-[1200px]">
+    <section className="py-6 md:py-33 relative overflow-hidden container mx-auto lg:max-w-[1320px]">
       {/* Background Elements */}
       <div className="absolute left-0 bottom-0 -mb-10 text-orange-500 opacity-10">
         <svg
