@@ -4,7 +4,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 const HeroSection = () => {
 
   return (
-    <section className="py-6 md:py-33 relative overflow-hidden container mx-auto lg:max-w-[1320px]">
+    <section className="py-6 pb-12 md:py-33 relative overflow-hidden container mx-auto lg:max-w-[1320px] min-h-screen flex items-center justify-center">
       {/* Background Elements */}
       <div className="absolute left-0 bottom-0 -mb-10 text-orange-500 opacity-10">
         <svg
@@ -73,27 +73,27 @@ const HeroSection = () => {
             <div className="relative z-10 flex justify-center">
               {/* Main Featured Image */}
               <div className="w-3/4 rounded-sm shadow-xl overflow-hidden transform translate-y-8">
-                <LazyLoadImage
-                  alt="Featured Digital Product"
-                  src="https://picsum.photos/800/500?random=1"
+                <img
+                  src="https://picsum.photos/300/200?random=1"
+                  alt="Digital Product"
                   className="w-full h-auto"
                 />
               </div>
 
               {/* Smaller Image 1 */}
               <div className="absolute top-0 -left-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
-                <LazyLoadImage
-                  alt="Featured Digital Product"
-                  src="https://picsum.photos/800/500?random=2"
+                <img
+                  src="https://picsum.photos/300/200?random=3"
+                  alt="Digital Product"
                   className="w-full h-auto"
                 />
               </div>
 
               {/* Smaller Image 2 */}
               <div className="absolute bottom-0 -right-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
-                <LazyLoadImage
-                  alt="Featured Digital Product"
-                  src="https://picsum.photos/800/500?random=3"
+                <img
+                  src="https://picsum.photos/300/200?random=3"
+                  alt="Digital Product"
                   className="w-full h-auto"
                 />
               </div>
