@@ -44,6 +44,7 @@
         "@tinymce/tinymce-react": "^6.1.0",
         "@types/react": "^19.0.3",
         "@types/react-dom": "^19.0.2",
+        "@types/react-lazy-load-image-component": "^1.6.4",
         "@vitejs/plugin-react": "^4.3.4",
         "axios": "^1.9.0",
         "class-variance-authority": "^0.7.1",

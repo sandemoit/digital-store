@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -24,7 +25,7 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
   return (
     <div className="md:bg-white md:rounded-sm md:shadow md:p-6">
       <div className="md:mb-4">
-        <img
+        <LazyLoadImage
           src={images[selectedImage]}
           alt="Product preview"
           className="w-full h-[56.25vw] md:h-auto object-cover md:rounded-sm"
@@ -38,7 +39,11 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
               className={`cursor-pointer border-2 md:rounded-sm overflow-hidden ${selectedImage === index ? 'border-orange-500' : 'border-gray-200'}`}
               onClick={() => setSelectedImage(index)}
             >
-              <img src={image} alt={`Thumbnail ${index}`} className="w-full h-16 object-cover" />
+              <LazyLoadImage
+                src={image}
+                alt={`Thumbnail ${index}`}
+                className="w-full h-16 object-cover"
+              />
             </div>
           ))}
         </div>

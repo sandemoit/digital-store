@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Star, ShoppingCart, Heart, Eye, Tag } from "lucide-react";
 import { addToCart } from "@/utils/cartLocal";
 import { toast } from "sonner";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 interface LatestProdukProps {
   produk?: any[];
@@ -72,9 +73,9 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                     Featured
                   </span>
                 )}
-                <img
-                  src={`/storage/${product.gambar?.[0]?.path}`}
+                <LazyLoadImage
                   alt={product.name}
+                  src={`/storage/${product.gambar?.[0]?.path}`}
                   className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center gap-3">

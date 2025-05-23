@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const HeroSection = () => {
 
@@ -72,27 +73,27 @@ const HeroSection = () => {
             <div className="relative z-10 flex justify-center">
               {/* Main Featured Image */}
               <div className="w-3/4 rounded-sm shadow-xl overflow-hidden transform translate-y-8">
-                <img
-                  src="https://picsum.photos/300/200?random=1"
+                <LazyLoadImage
                   alt="Featured Digital Product"
+                  src="https://picsum.photos/800/500?random=1"
                   className="w-full h-auto"
                 />
               </div>
 
               {/* Smaller Image 1 */}
               <div className="absolute top-0 -left-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
-                <img
-                  src="https://picsum.photos/300/200?random=2"
-                  alt="Digital Product"
+                <LazyLoadImage
+                  alt="Featured Digital Product"
+                  src="https://picsum.photos/800/500?random=2"
                   className="w-full h-auto"
                 />
               </div>
 
               {/* Smaller Image 2 */}
               <div className="absolute bottom-0 -right-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
-                <img
-                  src="https://picsum.photos/300/200?random=3"
-                  alt="Digital Product"
+                <LazyLoadImage
+                  alt="Featured Digital Product"
+                  src="https://picsum.photos/800/500?random=3"
                   className="w-full h-auto"
                 />
               </div>

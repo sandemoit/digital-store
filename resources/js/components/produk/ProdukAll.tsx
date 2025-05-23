@@ -3,6 +3,7 @@
 import { addToCart } from '@/utils/cartLocal';
 import { Eye, Heart, ShoppingCart, Star, Tag, Filter } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { toast } from 'sonner';
 
 interface Product {
@@ -246,7 +247,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                         Featured
                                     </span>
                                 )}
-                                <img
+                                <LazyLoadImage
                                     src={`/storage/${product.gambar?.[0]?.path}`}
                                     alt={product.name}
                                     className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
@@ -322,7 +323,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                         Featured
                                     </span>
                                 )}
-                                <img
+                                <LazyLoadImage
                                     src={`/storage/${product.image || (product.gambar?.[0]?.path || 'placeholder.jpg')}`}
                                     alt={product.title || product.name || ''}
                                     className="w-full h-full object-cover"
