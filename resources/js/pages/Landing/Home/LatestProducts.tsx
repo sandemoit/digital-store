@@ -3,12 +3,17 @@ import { Star, ShoppingCart, Heart, Eye, Tag } from "lucide-react";
 import { addToCart } from "@/utils/cartLocal";
 import { toast } from "sonner";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import RupiahFormatter from "@/components/ui/rupiahFormat";
+import { router, usePage } from "@inertiajs/react";
+import { SharedData } from "@/types";
+import axios from "axios";
 
 interface LatestProdukProps {
   produk?: any[];
 }
 
 const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
+  const { auth } = usePage<SharedData>().props;
   const [activeFilter, setActiveFilter] = useState("all");
 
   // Ambil kategori unik dari produk
@@ -19,17 +24,41 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
     ? produk
     : produk.filter(product => product.kategori?.nama === activeFilter);
 
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      id: product.id,
-      quantity: 1,
-      name: product.name,
-      harga: product.harga,
-      gambar: product.gambar?.[0]?.path,
-    });
-    toast.success('Berhasil', {
-      description: 'Produk berhasil ditambahkan ke keranjang',
-    });
+  const handleAddToCart = async (product: any) => {
+    try {
+      if (auth.user) {
+        // Jika user sudah login, simpan ke database via API
+        const response = await axios.post(route('cart.add', { productId: product.id }));
+
+        if (response.data.success) {
+          toast.success('Berhasil', {
+            description: response.data.message,
+          });
+          router.visit(route('cart.index'));
+        } else {
+          toast.error('Gagal', {
+            description: response.data.message,
+          });
+          throw new Error(response.data.message);
+        }
+      } else {
+        // Jika belum login, simpan ke local storage
+        addToCart({
+          id: product.id,
+          quantity: 1,
+          name: product.name,
+          harga: product.harga,
+          gambar: product.gambar?.[0]?.path,
+        });
+        toast.success('Berhasil', {
+          description: 'Produk berhasil ditambahkan ke keranjang',
+        });
+      }
+    } catch (error) {
+      toast.error('Gagal', {
+        description: 'Gagal menambahkan produk ke keranjang',
+      });
+    }
   };
 
   return (
@@ -120,9 +149,10 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xl font-bold text-gray-900">
-                    {product.harga === 0 ? "Gratis" : `IDR ${product.harga.toLocaleString()}`}
-                  </span>
+                  <RupiahFormatter
+                    className="text-xl font-bold text-gray-900"
+                    value={product.harga}
+                  />
                   <button
                     onClick={() => handleAddToCart(product)}
                     className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"

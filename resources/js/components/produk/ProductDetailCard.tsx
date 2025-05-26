@@ -1,29 +1,58 @@
 import React from 'react';
 import Rating from './Rating';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import { addToCart } from '@/utils/cartLocal';
 import { Eye, MessageSquareMore, ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
+import RupiahFormatter from '../ui/rupiahFormat';
+import axios from 'axios';
+import { SharedData } from '@/types';
 
 interface ProductDetailCardProps {
   produk: any;
 }
 
 export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
+  const { auth } = usePage<SharedData>().props;
+
   const demo = () => {
     window.open(produk.link_demo, '_blank');
   }
 
   const handleAddToCart = async () => {
-    addToCart({
-      id: produk.id,
-      quantity: 1, // default beli 1
-      name: produk.name,
-      harga: produk.harga,
-      gambar: produk.gambar?.[0]?.path,
-    });
+    try {
+      if (auth.user) {
+        // Jika user sudah login, simpan ke database via API
+        const response = await axios.post(route('cart.add', { productId: produk.id }));
 
-    router.visit(route('cart.index'));
+        if (response.data.success) {
+          toast.success('Berhasil', {
+            description: response.data.message,
+          });
+          router.visit(route('cart.index'));
+        } else {
+          toast.error('Gagal', {
+            description: response.data.message,
+          });
+          throw new Error(response.data.message);
+        }
+      } else {
+        // Jika belum login, simpan ke local storage
+        addToCart({
+          id: produk.id,
+          quantity: 1, // default beli 1
+          name: produk.name,
+          harga: produk.harga,
+          gambar: produk.gambar?.[0]?.path,
+        });
+      }
+    } catch (error) {
+      toast.error('Gagal', {
+        description: error instanceof Error ? error.message : 'Gagal menambahkan produk ke keranjang',
+      });
+    }
+
+    // router.visit(route('cart.index'));
   };
 
   const handleChatAdmin = () => {
@@ -44,7 +73,10 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Harga:</span>
-            <span>IDR {produk.harga.toLocaleString()}</span>
+            <RupiahFormatter
+              className='font-bold'
+              value={produk.harga}
+            />
           </div>
           <div className="flex items-center gap-2">
             <span className="font-medium">Terjual:</span>
@@ -68,7 +100,7 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
             <button onClick={demo}
               className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-sm w-full flex items-center justify-center gap-1">
               <Eye className='text-black' />
-              Demo
+              Live Preview
             </button>
           </div>
           <button onClick={handleAddToCart}

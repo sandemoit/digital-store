@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import ProdukAll from "@/components/produk/ProdukAll";
+import ProdukAll from "@/components/Produk/ProdukAll";
 import GuestLayout from "@/layouts/guest-layout";
 import { Filter, Search, X } from "lucide-react";
-import FilterProduk from "@/components/produk/FilterProduk";
+import FilterProduk from "@/components/Produk/FilterProduk";
 import HeroSection from "@/components/HeroSection";
 
 interface ProdukProps {

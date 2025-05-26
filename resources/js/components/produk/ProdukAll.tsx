@@ -5,6 +5,7 @@ import { Eye, Heart, ShoppingCart, Star, Tag, Filter } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { toast } from 'sonner';
+import RupiahFormatter from '../ui/rupiahFormat';
 
 interface Product {
     id: number;
@@ -101,10 +102,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
             });
 
         // Then filter by price range
-        filtered = filtered.filter(product => {
-            const price = product.price || product.harga || 0;
-            return price >= priceRange[0] && price <= priceRange[1];
-        });
+        filtered = filtered.filter(({ price = 0 }) => price >= priceRange[0] && price <= priceRange[1]);
 
         // Then sort
         return filtered.sort((a, b) => {
@@ -295,9 +293,13 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                     </span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-xl font-bold text-gray-900">
+                                    <RupiahFormatter
+                                        className="text-xl font-bold text-gray-900"
+                                        value={product.price || product.harga || 0}
+                                    />
+                                    {/* <span className="text-xl font-bold text-gray-900">
                                         {formatPrice(product.price || product.harga || 0)}
-                                    </span>
+                                    </span> */}
                                     <button
                                         onClick={() => handleAddToCart(product)}
                                         className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"
@@ -359,9 +361,10 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                 </p>
 
                                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
-                                    <span className="text-xl font-bold text-gray-900">
-                                        {formatPrice(product.price || product.harga || 0)}
-                                    </span>
+                                    <RupiahFormatter
+                                        className='text-xl font-bold text-gray-900'
+                                        value={product.price || product.harga || 0}
+                                    />
 
                                     <div className="flex gap-2">
                                         <button

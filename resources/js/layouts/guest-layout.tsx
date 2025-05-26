@@ -6,6 +6,7 @@ import FooterFront from '@/layouts/footer-depan-layout';
 import React from 'react';
 import { getLocalCartCount } from '@/utils/cartLocal';
 import { toast } from 'sonner';
+import useCartCount from '@/hooks/carCount';
 
 interface GuestLayoutProps {
   title?: string;
@@ -16,15 +17,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-
-  useEffect(() => {
-    const updateCount = () => setCartCount(getLocalCartCount());
-    updateCount();
-
-    window.addEventListener("cartUpdated", updateCount);
-    return () => window.removeEventListener("cartUpdated", updateCount);
-  }, []);
+  const { auth } = usePage<SharedData>().props;
 
   // Effect untuk mendeteksi scroll
   useEffect(() => {
@@ -40,7 +33,7 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { auth } = usePage<SharedData>().props;
+  const cartCount = useCartCount();
 
   return (
     <>

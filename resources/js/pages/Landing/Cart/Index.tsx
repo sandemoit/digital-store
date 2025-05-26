@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import GuestLayout from "@/layouts/guest-layout";
 import { Trash2, ShoppingCart, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import RupiahFormatter from '@/components/ui/rupiahFormat';
+import { usePage, router } from '@inertiajs/react';
+import { SharedData } from '@/types';
 
 // Type definitions
 type CartItem = {
@@ -10,13 +13,16 @@ type CartItem = {
   gambar: string;
   harga: number;
   quantity: number;
+  product_id?: number; // Untuk kompatibilitas dengan data dari database
 };
 
 interface Props {
   title?: string;
+  cart?: CartItem[]; // Data cart dari server jika user login
 }
 
-export default function Cart({ title }: Props) {
+export default function Cart({ title, cart: serverCart }: Props) {
+  const { auth } = usePage<SharedData>().props;
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -24,23 +30,85 @@ export default function Cart({ title }: Props) {
   useEffect(() => {
     setIsLoading(true);
     try {
-      const storedCart = localStorage.getItem('cart');
-      if (storedCart) {
-        setCartItems(JSON.parse(storedCart));
+      if (auth.user) {
+        // Jika user login, gunakan data dari server
+        if (serverCart) {
+          // Format data dari database ke format yang diharapkan komponen
+          const formattedCart = serverCart.map(item => ({
+            id: item.product_id || item.id,
+            name: item.name,
+            gambar: item.gambar,
+            harga: item.harga,
+            quantity: item.quantity
+          }));
+          setCartItems(formattedCart);
+        }
+      } else {
+        // Jika guest, ambil dari local storage
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+          setCartItems(JSON.parse(storedCart));
+        }
       }
     } catch (error) {
       console.error("Error loading cart data:", error);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [auth.user, serverCart]);
 
-  // Save cart data to localStorage whenever it changes
+  // Save cart data to localStorage (hanya untuk guest)
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && !auth.user) {
       localStorage.setItem('cart', JSON.stringify(cartItems));
     }
-  }, [cartItems, isLoading]);
+  }, [cartItems, isLoading, auth.user]);
+
+  // Remove item from cart
+  const removeItem = (id: number) => {
+    if (auth.user) {
+      router.delete(route('cart.remove', { productId: id }), {
+        onSuccess: () => {
+          toast.success('Berhasil', {
+            description: 'Item dihapus dari keranjang',
+          });
+        },
+        onError: () => {
+          toast.error('Gagal', {
+            description: 'Gagal menghapus item dari keranjang',
+          });
+        }
+      });
+    } else {
+      setCartItems(prev => prev.filter(item => item.id !== id));
+      toast.success('Berhasil', {
+        description: 'Item dihapus dari keranjang',
+      });
+    }
+  };
+
+  // Clear entire cart
+  const clearCart = () => {
+    if (auth.user) {
+      router.delete(route('cart.clear'), {
+        onSuccess: () => {
+          toast.success('Berhasil', {
+            description: 'Menghapus semua item di keranjang',
+          });
+        },
+        onError: () => {
+          toast.error('Gagal', {
+            description: 'Gagal menghapus semua item dari keranjang',
+          });
+        }
+      });
+    } else {
+      setCartItems([]);
+      toast.success('Berhasil', {
+        description: 'Menghapus semua item di keranjang',
+      });
+    }
+  };
 
   // Calculate subtotal for a single item
   const calculateItemSubtotal = (item: CartItem) => {
@@ -49,27 +117,11 @@ export default function Cart({ title }: Props) {
 
   // Calculate cart totals
   const cartSubtotal = useMemo(() =>
-    cartItems.reduce((total, item) => total + item.harga * item.quantity, 0),
+    cartItems.reduce((total, item) => total + calculateItemSubtotal(item), 0),
     [cartItems]
   );
   const taxAmount = useMemo(() => cartSubtotal * 0.1, [cartSubtotal]);
   const cartTotal = useMemo(() => cartSubtotal + taxAmount, [cartSubtotal, taxAmount]);
-
-  // Remove item from cart
-  const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
-    toast.success('Berhasil', {
-      description: 'Item dihapus dari keranjang',
-    });
-  };
-
-  // Clear entire cart
-  const clearCart = () => {
-    setCartItems([]);
-    toast.success('Berhasil', {
-      description: 'Menghapus semua item di keranjang',
-    });
-  };
 
   return (
     <GuestLayout title={title ?? 'Keranjang Belanja'}>
@@ -128,7 +180,7 @@ export default function Cart({ title }: Props) {
                         <div className="md:hidden">
                           <div className="flex space-x-3">
                             <img
-                              src={item.gambar}
+                              src={`/storage/${item.gambar}`}
                               alt={item.name}
                               className="w-16 h-16 rounded-sm object-cover border border-gray-200"
                             />
@@ -223,7 +275,10 @@ export default function Cart({ title }: Props) {
                     </div>
                     <div className="border-t border-gray-200 my-3 pt-3 flex justify-between">
                       <span className="font-medium text-gray-900">Total</span>
-                      <span className="font-bold text-orange-600 text-lg">IDR {cartTotal.toLocaleString()}</span>
+                      <RupiahFormatter
+                        className='font-bold text-orange-600 text-lg'
+                        value={cartTotal}
+                      />
                     </div>
                   </div>
 

@@ -66,17 +66,3 @@ export const getCartCount = () => {
 export const getLocalCartCount = (): number => {
   return getCartCount();
 };
-
-export const fetchBackendCartCount = async (): Promise<number> => {
-  try {
-    const res = await fetch("/api/cart/count", {
-      credentials: "include",
-    });
-
-    if (!res.ok) throw new Error("Not auth");
-    const data = await res.json();
-    return data.count || 0;
-  } catch {
-    return 0;
-  }
-};

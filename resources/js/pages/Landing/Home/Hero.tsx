@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 const HeroSection = () => {
 
@@ -83,7 +82,7 @@ const HeroSection = () => {
               {/* Smaller Image 1 */}
               <div className="absolute top-0 -left-4 w-1/3 rounded-sm shadow-lg overflow-hidden">
                 <img
-                  src="https://picsum.photos/300/200?random=3"
+                  src="https://picsum.photos/300/200?random=2"
                   alt="Digital Product"
                   className="w-full h-auto"
                 />
