@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\AplikasiController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KomentarController;
 use App\Http\Controllers\KontakController;
@@ -15,6 +16,7 @@ Route::get('/list/produk/home', [HomeController::class, 'produk'])->name('list.p
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 Route::resource('produk', AplikasiController::class);
 Route::resource('cart', CartController::class);
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/product/{productId}/komentar', [KomentarController::class, 'store'])->name('product.komentar.store');

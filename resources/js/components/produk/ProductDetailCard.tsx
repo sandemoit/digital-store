@@ -2,7 +2,7 @@ import React from 'react';
 import Rating from './Rating';
 import { router, usePage } from '@inertiajs/react';
 import { addToCart } from '@/utils/cartLocal';
-import { Eye, MessageSquareMore, ShoppingCart } from 'lucide-react';
+import { Eye, MessageSquareMore } from 'lucide-react';
 import { toast } from 'sonner';
 import RupiahFormatter from '../ui/rupiahFormat';
 import axios from 'axios';
@@ -29,7 +29,6 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
           toast.success('Berhasil', {
             description: response.data.message,
           });
-          router.visit(route('cart.index'));
         } else {
           toast.error('Gagal', {
             description: response.data.message,
@@ -52,7 +51,7 @@ export default function ProductDetailCard({ produk }: ProductDetailCardProps) {
       });
     }
 
-    // router.visit(route('cart.index'));
+    router.visit(route('cart.index'));
   };
 
   const handleChatAdmin = () => {

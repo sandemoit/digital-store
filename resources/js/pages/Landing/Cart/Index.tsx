@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import GuestLayout from "@/layouts/guest-layout";
-import { Trash2, ShoppingCart, CheckCircle } from 'lucide-react';
+import { Trash2, ShoppingCart, CheckCircle, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import RupiahFormatter from '@/components/ui/rupiahFormat';
-import { usePage, router } from '@inertiajs/react';
+import { usePage, router, Link } from '@inertiajs/react';
 import { SharedData } from '@/types';
 
 // Type definitions
@@ -250,7 +250,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                       <span className="md:hidden">Hapus</span>
                     </button>
                     <a
-                      href="/products"
+                      href="/produk"
                       className="text-orange-600 hover:text-orange-800 text-sm font-medium"
                     >
                       Lanjut Belanja
@@ -282,11 +282,15 @@ export default function Cart({ title, cart: serverCart }: Props) {
                     </div>
                   </div>
 
-                  <button
-                    className="mt-6 w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-sm transition-colors cursor-pointer"
-                  >
-                    Lanjut ke Pembayaran
-                  </button>
+                  <div className="flex items-center justify-center mt-4">
+                    <Link
+                      href={auth.user ? route('checkout') : '/login'}
+                      className="flex items-center w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-sm transition-colors"
+                    >
+                      <Lock size={16} className="mr-2" />
+                      Lanjut Proses Pembelian
+                    </Link>
+                  </div>
 
                   <div className="mt-4 text-xs text-gray-500 flex items-center justify-center">
                     <CheckCircle size={16} className="text-green-500 mr-1" />

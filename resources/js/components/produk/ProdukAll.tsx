@@ -6,6 +6,9 @@ import { useState, useEffect } from 'react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { toast } from 'sonner';
 import RupiahFormatter from '../ui/rupiahFormat';
+import { router, usePage } from '@inertiajs/react';
+import { SharedData } from '@/types';
+import axios from 'axios';
 
 interface Product {
     id: number;
@@ -37,19 +40,42 @@ interface ProductTerkaitCardProps {
 }
 
 export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
+    const { auth } = usePage<SharedData>().props;
+
     // Add items to cart
     const handleAddToCart = async (product: Product) => {
-        addToCart({
-            id: product.id,
-            quantity: 1, // default beli 1
-            name: product.title || product.name || '',
-            harga: product.price || product.harga || 0,
-            gambar: product.image || (product.gambar?.[0]?.path || '')
-        });
+        try {
+            if (auth.user) {
+                // Jika user sudah login, simpan ke database via API
+                const response = await axios.post(route('cart.add', { productId: product.id }));
 
-        toast.success('Berhasil', {
-            description: 'Menambahkan item ke keranjang',
-        });
+                if (response.data.success) {
+                    toast.success('Berhasil', {
+                        description: response.data.message,
+                    });
+                } else {
+                    toast.error('Gagal', {
+                        description: response.data.message,
+                    });
+                    throw new Error(response.data.message);
+                }
+            } else {
+                // Jika belum login, simpan ke local storage
+                addToCart({
+                    id: product.id,
+                    quantity: 1, // default beli 1
+                    name: product.title || product.name || '',
+                    harga: product.price || product.harga || 0,
+                    gambar: product.image || (product.gambar?.[0]?.path || '')
+                });
+            }
+        } catch (error) {
+            toast.error('Gagal', {
+                description: error instanceof Error ? error.message : 'Gagal menambahkan produk ke keranjang',
+            });
+        }
+
+        router.visit(route('cart.index'));
     };
 
     // States
