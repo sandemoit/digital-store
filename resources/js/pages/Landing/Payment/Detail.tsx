@@ -1,7 +1,18 @@
 import GuestLayout from "@/layouts/guest-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
 import { Copy, Check, Clock, CreditCard, CheckIcon, CopyIcon, CreditCardIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 interface Transaction {
   id: number;
@@ -104,6 +115,10 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
     };
 
     return instructions[paymentMethod.type as keyof typeof instructions] || ['Ikuti instruksi pembayaran'];
+  };
+
+  const handleCancel = () => {
+    router.post(`/payment/cancel/${transaction.order_number}`);
   };
 
   return (
@@ -315,14 +330,27 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
                     Kembali ke Beranda
                   </Link>
                   {transaction.status === 'pending' && (
-                    <Link
-                      href={`/payment/cancel/${transaction.order_number}`}
-                      method="post"
-                      as="button"
-                      className="block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-lg hover:bg-red-200 transition-colors"
-                    >
-                      Batalkan Pesanan
-                    </Link>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-md hover:bg-red-200 transition-colors">
+                          Batalkan Pesanan
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Yakin ingin membatalkan pesanan?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tindakan ini tidak dapat dibatalkan. Pesanan akan dianggap batal dan tidak bisa diproses ulang.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleCancel}>
+                            Ya, Batalkan
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   )}
                 </div>
               </div>

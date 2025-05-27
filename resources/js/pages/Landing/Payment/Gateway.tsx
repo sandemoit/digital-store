@@ -1,7 +1,19 @@
 import GuestLayout from "@/layouts/guest-layout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
 import { Copy, Check, Clock, CreditCard, CheckIcon, CopyIcon, CreditCardIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+
 
 interface Transaction {
   id: number;
@@ -81,6 +93,10 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
     }
   };
 
+  const handleCancel = () => {
+    router.post(`/payment/cancel/${transaction.order_number}`);
+  };
+
   return (
     <GuestLayout title="Detail Pembayaran">
       <Head title="Detail Pembayaran" />
@@ -88,20 +104,20 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
       <div className="bg-gray-50 min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 md:justify-start justify-center text-center md:text-left">
+            <div className="flex items-center justify-between mb-4 sm:flex-row flex-col">
+              <div className="sm:mb-0 mb-4">
                 <h1 className="text-2xl font-bold text-gray-900">Detail Pembayaran</h1>
                 <p className="text-gray-600">Pesanan #{transaction.order_number}</p>
               </div>
-              <div className="text-right">
+              <div className="sm:text-right sm:mt-0">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.payment_status)}`}>
                   <Clock className="w-4 h-4 mr-1" />
                   {transaction.payment_status === 'pending' ? 'Menunggu Pembayaran' : transaction.payment_status}
                 </span>
               </div>
             </div>
-            <div className="flex items-center text-sm text-gray-500">
+            <div className="flex md:justify-start justify-center items-center text-sm text-gray-500">
               <span>Dibuat pada {formatDateTime(transaction.created_at)}</span>
             </div>
           </div>
@@ -297,14 +313,28 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
                     Kembali ke Beranda
                   </Link>
                   {transaction.status === 'pending' && (
-                    <Link
-                      href={`/payment/cancel/${transaction.order_number}`}
-                      method="post"
-                      as="button"
-                      className="block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-lg hover:bg-red-200 transition-colors"
-                    >
-                      Batalkan Pesanan
-                    </Link>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-md hover:bg-red-200 transition-colors">
+                          Batalkan Pesanan
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Yakin ingin membatalkan pesanan?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tindakan ini tidak dapat dibatalkan. Pesanan akan dianggap batal dan tidak bisa diproses ulang.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Batal</AlertDialogCancel>
+                          <AlertDialogAction className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleCancel}>
+                            Ya, Batalkan
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+
                   )}
                 </div>
               </div>
