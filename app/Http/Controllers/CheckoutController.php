@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PaymentMethod;
 
 class CheckoutController extends Controller
 {
@@ -20,35 +21,19 @@ class CheckoutController extends Controller
         $walletBalance = $user->wallet_balance ?? 0;
         $maxWalletUsage = min($walletBalance, $subtotal * 0.5);
 
+        // Get active payment methods grouped by type
+        $paymentMethods = PaymentMethod::where('is_active', true)
+            ->orderBy('type')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('type');
+
         return Inertia::render('Landing/Checkout/Index', [
             'cartItems' => $cartItems,
             'subtotal' => $subtotal,
             'walletBalance' => $walletBalance,
             'maxWalletUsage' => $maxWalletUsage,
-            'provinces' => [
-                'Jawa Tengah',
-                'Jawa Barat',
-                'Jawa Timur',
-                'DKI Jakarta',
-                // Add more provinces as needed
-            ],
-            'paymentMethods' => [
-                [
-                    'id' => 1,
-                    'name' => 'Pembayaran ORIS',
-                    'description' => 'Sistem pembayaran menggunakan Duitku.'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Pembayaran Dana',
-                    'description' => 'Pembayaran OVO'
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Pembayaran VA BNI',
-                    'description' => 'Pembayaran BRIVA'
-                ],
-            ]
+            'paymentMethods' => $paymentMethods
         ]);
     }
 }

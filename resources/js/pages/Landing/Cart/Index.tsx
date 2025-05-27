@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import GuestLayout from "@/layouts/guest-layout";
-import { Trash2, ShoppingCart, CheckCircle, Lock } from 'lucide-react';
+import { Trash2, ShoppingCart, CheckCircle, Lock, Gift } from 'lucide-react';
 import { toast } from 'sonner';
 import RupiahFormatter from '@/components/ui/rupiahFormat';
 import { usePage, router, Link } from '@inertiajs/react';
@@ -120,8 +120,8 @@ export default function Cart({ title, cart: serverCart }: Props) {
     cartItems.reduce((total, item) => total + calculateItemSubtotal(item), 0),
     [cartItems]
   );
-  const taxAmount = useMemo(() => cartSubtotal * 0.1, [cartSubtotal]);
-  const cartTotal = useMemo(() => cartSubtotal + taxAmount, [cartSubtotal, taxAmount]);
+  // const taxAmount = useMemo(() => cartSubtotal * 0.1, [cartSubtotal]);
+  // const cartTotal = useMemo(() => cartSubtotal + taxAmount, [cartSubtotal, taxAmount]);
 
   return (
     <GuestLayout title={title ?? 'Keranjang Belanja'}>
@@ -257,6 +257,23 @@ export default function Cart({ title, cart: serverCart }: Props) {
                     </a>
                   </div>
                 </div>
+                <div className="bg-white shadow rounded-sm mt-4 p-4">
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Masukan kupon diskon"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="px-4 py-2 bg-gray-100 text-gray-800 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                      Terapkan Kupon
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Order Summary */}
@@ -269,15 +286,15 @@ export default function Cart({ title, cart: serverCart }: Props) {
                       <span className="text-gray-600">Subtotal ({cartItems.length} produk)</span>
                       <span className="font-medium">{cartSubtotal.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span className="text-gray-600">Pajak (10%)</span>
                       <span className="font-medium">{taxAmount.toLocaleString()}</span>
-                    </div>
+                    </div> */}
                     <div className="border-t border-gray-200 my-3 pt-3 flex justify-between">
                       <span className="font-medium text-gray-900">Total</span>
                       <RupiahFormatter
                         className='font-bold text-orange-600 text-lg'
-                        value={cartTotal}
+                        value={cartSubtotal}
                       />
                     </div>
                   </div>
