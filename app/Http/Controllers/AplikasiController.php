@@ -48,8 +48,10 @@ class AplikasiController extends Controller
                     ->orderBy('created_at', 'desc');
             }
         ])
-            ->withCount(['transaksi as transaksi_sukses_count' => function ($query) {
-                $query->where('status_transaksi', 'sukses');
+            ->withCount(['transaksiItem as transaksi_sukses_count' => function ($query) {
+                $query->whereHas('transaksi', function ($query) {
+                    $query->where('status', 'completed');
+                });
             }])
             ->withCount('ulasan')
             ->withAvg('ulasan', 'rating')

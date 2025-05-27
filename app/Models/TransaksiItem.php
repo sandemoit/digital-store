@@ -10,24 +10,27 @@ class TransaksiItem extends Model
     use HasFactory;
 
     protected $table = 'transaksi_item';
+
     protected $fillable = [
         'transaksi_id',
         'product_id',
         'quantity',
-        'price'
+        'price',
+        'total',
     ];
 
     protected $casts = [
-        'price' => 'decimal:2'
+        'quantity' => 'integer',
+        'price' => 'decimal:2',
+        'total' => 'decimal:2',
     ];
 
-    // Relationship with Transaksi
+    // Relationships
     public function transaksi()
     {
         return $this->belongsTo(Transaksi::class);
     }
 
-    // Relationship with Product
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -16,7 +16,6 @@ Route::get('/list/produk/home', [HomeController::class, 'produk'])->name('list.p
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
 Route::resource('produk', AplikasiController::class);
 Route::resource('cart', CartController::class);
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/product/{productId}/komentar', [KomentarController::class, 'store'])->name('product.komentar.store');

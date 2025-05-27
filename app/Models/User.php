@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->hasRole('buyer');
     }
+
+    public function transaksi()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }

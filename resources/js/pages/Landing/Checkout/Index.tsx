@@ -301,7 +301,7 @@ export default function CheckoutIndex({
                   className="w-full bg-orange-600 border border-transparent rounded-md py-3 px-4 text-white font-medium hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
                   disabled={processing || !selectedPayment}
                 >
-                  Buat Pesanan
+                  Proses Pembayaran
                 </button>
               </div>
             </div>

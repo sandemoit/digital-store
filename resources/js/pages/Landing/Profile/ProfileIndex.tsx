@@ -7,12 +7,29 @@ import { ProfileContent } from "./ProfileContent";
 import { PurchaseHistoryContent } from "./PurchaseHistoryContent";
 import { ProfileSidebar } from "./ProfileSidebar";
 
-interface Props {
-  title?: string;
+interface Transaction {
+  id: number;
+  order_number: string;
+  created_at: string;
+  total_amount: number;
+  status: string;
+  items: Array<{
+    product?: {
+      kategori?: {
+        nama: string;
+      };
+    };
+  }>;
 }
 
-export default function ProfileIndex({ title }: Props) {
-  const { auth } = usePage<SharedData>().props;
+interface PageProps extends SharedData {
+  title?: string;
+  transactions?: Transaction[];
+}
+
+export default function ProfileIndex() {
+  // Ambil data dari usePage, bukan dari props
+  const { auth, title, transactions = [] } = usePage<PageProps>().props;
 
   const dummyUserData: User = {
     id: auth.user?.id || 0,
@@ -32,7 +49,7 @@ export default function ProfileIndex({ title }: Props) {
       case 'profile':
         return <ProfileContent user={dummyUserData} />;
       case 'purchases':
-        return <PurchaseHistoryContent />;
+        return <PurchaseHistoryContent transactions={transactions} />;
       default:
         return <ProfileContent user={dummyUserData} />;
     }

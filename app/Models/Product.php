@@ -63,8 +63,16 @@ class Product extends Model
     /**
      * Get the transaksi for the product.
      */
+    public function transaksiItem()
+    {
+        return $this->hasMany(transaksiItem::class);
+    }
+
+    /**
+     * Get the transaksi for the product.
+     */
     public function transaksi()
     {
-        return $this->hasMany(Transaksi::class, 'product_id');
+        return $this->hasMany(Transaksi::class);
     }
 }

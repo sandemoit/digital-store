@@ -13,16 +13,24 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->string('id_order')->unique();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');
-            $table->string('reference')->nullable();
-            $table->decimal('amount', 15, 2);
-            $table->decimal('fee', 10, 2)->default(0);
+            $table->string('order_number')->unique();
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('payment_fee', 10, 2)->default(0);
+            $table->decimal('wallet_amount', 15, 2)->default(0);
             $table->decimal('total_amount', 15, 2);
-            $table->enum('status', ['pending', 'paid', 'failed', 'expired', 'refunded']);
+            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled']);
+            $table->enum('payment_status', ['pending', 'paid', 'failed', 'cancelled']);
             $table->text('payment_proof')->nullable();
-            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('payment_date')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
+            $table->foreignId('confirmed_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamp('cancelled_at')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('midtrans_token')->nullable();
+            $table->string('midtrans_transaction_id')->nullable();
+            $table->json('midtrans_response')->nullable();
             $table->timestamps();
         });
 
@@ -32,6 +40,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('price', 15, 2);
+            $table->decimal('total', 15, 2);
             $table->timestamps();
         });
     }

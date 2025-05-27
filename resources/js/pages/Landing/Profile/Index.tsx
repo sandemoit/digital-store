@@ -1,9 +1,5 @@
 import ProfileIndex from "./ProfileIndex";
 
-function IndexPage() {
-    return (
-        <ProfileIndex title="Profil Saya" />
-    );
-}
-
-export default IndexPage;
+// Tidak perlu wrapper, langsung export ProfileIndex
+// Karena data sudah tersedia melalui usePage() di dalam ProfileIndex
+export default ProfileIndex;

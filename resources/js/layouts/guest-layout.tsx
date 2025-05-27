@@ -1,10 +1,9 @@
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ChevronDown, ShoppingCart, User } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import FooterFront from '@/layouts/footer-depan-layout';
 import React from 'react';
-import { getLocalCartCount } from '@/utils/cartLocal';
 import { toast } from 'sonner';
 import useCartCount from '@/hooks/carCount';
 
@@ -17,9 +16,20 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSubmenuOpen, setMobileSubmenuOpen] = useState(false);
-  const { auth } = usePage<SharedData>().props;
+  const { auth, flash } = usePage<SharedData>().props;
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Effect untuk mendeteksi scroll
+  // Handle flash messages
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success('Berhasil', { description: flash.success });
+    } else if (flash?.error) {
+      toast.error('Gagal', { description: flash.error });
+    }
+  }, [flash]);
+
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 20) {
@@ -29,8 +39,18 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
       }
     };
 
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const cartCount = useCartCount();
@@ -71,24 +91,42 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                 <Link href={route('kontak')} className='text-gray-600 hover:text-orange-600 font-medium'>
                   Kontak
                 </Link>
-                <div className="relative group">
-                  <a
-                    href="#"
-                    className="text-gray-600 hover:text-orange-600 font-medium flex items-center"
+                <div
+                  className="relative"
+                  ref={dropdownRef}
+                  onMouseEnter={() => setIsOpen(true)}
+                  onMouseLeave={() => setIsOpen(false)}
+                >
+                  {/* Trigger Button */}
+                  <button
+                    className="text-gray-600 hover:text-orange-600 font-medium flex items-center py-2 px-3 focus:outline-none"
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
                   >
                     Item
-                    <ChevronDown size={16} className="ml-1" />
-                  </a>
-                  <div className="absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-sm py-2 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-200 ease-linear">
+                    <ChevronDown
+                      size={16}
+                      className={`ml-1 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div
+                    className={`absolute left-0 top-full mt-2 w-48 bg-white shadow-lg rounded-sm py-2 transition-all duration-200 ease-linear z-50 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                      }`}
+                  >
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                      onClick={() => setIsOpen(false)}
                     >
                       Item Utama
                     </a>
                     <a
                       href="#"
                       className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                      onClick={() => setIsOpen(false)}
                     >
                       Landing Page
                     </a>
@@ -281,13 +319,13 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
                   <div className="py-3 border-b border-gray-100">
                     <div
                       onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
-                      className="flex justify-between items-center text-gray-600 font-medium cursor-pointer"
+                      className="flex justify-between items-center text-gray-600 font-medium cursor-pointer px-4"
                     >
                       <span>Item</span>
                       <ChevronDown size={16} className={`transform transition-transform ${mobileSubmenuOpen ? 'rotate-180' : ''}`} />
                     </div>
                     {mobileSubmenuOpen && (
-                      <div className="mt-2">
+                      <div className="mt-2 pl-6">
                         <Link
                           href="#"
                           className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
