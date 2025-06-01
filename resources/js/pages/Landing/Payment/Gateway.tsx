@@ -14,7 +14,6 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
-
 interface Transaction {
   id: number;
   order_number: string;
@@ -48,12 +47,12 @@ interface PaymentMethod {
   account_name?: string;
 }
 
-interface PpaymentGatewayProps {
+interface PaymentDetailProps {
   transaction: Transaction;
   paymentMethod: PaymentMethod;
 }
 
-export default function PpaymentGateway({ transaction, paymentMethod }: PpaymentGatewayProps) {
+export default function PaymentDetail({ transaction, paymentMethod }: PaymentDetailProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const formatCurrency = (amount: number) => {
@@ -93,6 +92,12 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
     }
   };
 
+  const getPaymentInstructions = () => {
+    return paymentMethod.instructions
+      ? paymentMethod.instructions.split('\n')
+      : ['Ikuti instruksi pembayaran'];
+  };
+
   const handleCancel = () => {
     router.post(`/payment/cancel/${transaction.order_number}`);
   };
@@ -104,20 +109,20 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
       <div className="bg-gray-50 min-h-screen py-8">
         <div className="max-w-4xl mx-auto px-4">
           {/* Header */}
-          <div className="bg-white rounded-lg shadow-sm p-6 mb-6 md:justify-start justify-center text-center md:text-left">
-            <div className="flex items-center justify-between mb-4 sm:flex-row flex-col">
-              <div className="sm:mb-0 mb-4">
+          <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div>
                 <h1 className="text-2xl font-bold text-gray-900">Detail Pembayaran</h1>
                 <p className="text-gray-600">Pesanan #{transaction.order_number}</p>
               </div>
-              <div className="sm:text-right sm:mt-0">
+              <div className="text-right">
                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(transaction.payment_status)}`}>
                   <Clock className="w-4 h-4 mr-1" />
                   {transaction.payment_status === 'pending' ? 'Menunggu Pembayaran' : transaction.payment_status}
                 </span>
               </div>
             </div>
-            <div className="flex md:justify-start justify-center items-center text-sm text-gray-500">
+            <div className="flex items-center text-sm text-gray-500">
               <span>Dibuat pada {formatDateTime(transaction.created_at)}</span>
             </div>
           </div>
@@ -216,14 +221,11 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
                 {/* Instructions */}
                 <div className="mt-6">
                   <h4 className="font-medium mb-3">Petunjuk Pembayaran:</h4>
-                  {paymentMethod.instructions ? (
-                    <div
-                      className="text-sm text-gray-700 whitespace-pre-line"
-                      dangerouslySetInnerHTML={{ __html: paymentMethod.instructions }}
-                    />
-                  ) : (
-                    <p className="text-sm text-gray-500">Tidak ada petunjuk pembayaran tersedia.</p>
-                  )}
+                  <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700">
+                    {getPaymentInstructions().map((instruction, index) => (
+                      <li key={index}>{instruction}</li>
+                    ))}
+                  </ol>
                 </div>
               </div>
 
@@ -260,23 +262,19 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
 
             {/* Order Summary */}
             <div className="space-y-6">
-              <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 sticky top-20">
                 <h3 className="text-lg font-semibold mb-4">Ringkasan Pesanan</h3>
 
                 <div className="space-y-3 mb-4 pb-4 border-b">
-                  {transaction.items && transaction.items.length > 0 ? (
-                    transaction.items.map((item) => (
-                      <div key={item.id} className="flex justify-between text-sm">
-                        <div>
-                          <span className="font-medium">{item.product.name}</span>
-                          <span className="text-gray-500"> x {item.quantity}</span>
-                        </div>
-                        <span>Rp{formatCurrency(item.total)}</span>
+                  {transaction.items.map((item) => (
+                    <div key={item.id} className="flex justify-between text-sm">
+                      <div>
+                        <span className="font-medium">{item.product.name}</span>
+                        <span className="text-gray-500"> x {item.quantity}</span>
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-500">No items available.</p>
-                  )}
+                      <span>Rp{formatCurrency(item.total)}</span>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="space-y-2 text-sm">
@@ -334,7 +332,6 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-
                   )}
                 </div>
               </div>
@@ -345,4 +342,3 @@ export default function PpaymentGateway({ transaction, paymentMethod }: Ppayment
     </GuestLayout>
   );
 }
-

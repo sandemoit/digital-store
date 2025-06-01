@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\TransaksiItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -59,9 +60,23 @@ class AplikasiController extends Controller
 
         $produk->ulasan_avg_rating = $produk->ulasan_avg_rating ?? 0;
 
-        // For logged in users, check which comments they've liked
+        $hasPurchased = false;
+        $canDownload = false;
+
+        // Check if user has purchased this product
         if (Auth::check()) {
             $userId = Auth::id();
+
+            // Check if user has any completed transaction containing this product
+            $hasPurchased = TransaksiItem::where('product_id', $id)
+                ->whereHas('transaksi', function ($query) use ($userId) {
+                    $query->where('user_id', $userId)
+                        ->where('status', 'completed')
+                        ->where('payment_status', 'paid');
+                })
+                ->exists();
+
+            $canDownload = $hasPurchased && !empty($produk->file_url);
 
             // Transform komentar data to include isLiked flag
             $produk->komentar->transform(function ($komentar) use ($userId) {
@@ -75,7 +90,9 @@ class AplikasiController extends Controller
             'produk' => $produk,
             'canComment' => Auth::check() && Auth::user()->role === 'admin',
             'isLoggedIn' => Auth::check(),
-            'userId' => Auth::id()
+            'userId' => Auth::id(),
+            'hasPurchased' => $hasPurchased,
+            'canDownload' => $canDownload
         ]);
     }
 }

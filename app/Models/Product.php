@@ -65,7 +65,7 @@ class Product extends Model
      */
     public function transaksiItem()
     {
-        return $this->hasMany(transaksiItem::class);
+        return $this->hasMany(TransaksiItem::class);
     }
 
     /**

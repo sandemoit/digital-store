@@ -1,6 +1,6 @@
 import { User } from "@/types";
 import { Link } from "@inertiajs/react";
-import { LogOut, Settings, ShoppingBag, User as UserIcon } from "lucide-react";
+import { DownloadCloud, LogOut, Settings, ShoppingBag, User as UserIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface ProfileSidebarProps {
@@ -42,11 +42,11 @@ export const ProfileSidebar = ({ user, activeTab, setActiveTab }: ProfileSidebar
         <span>Riwayat Pembelian</span>
       </button>
       <button
-        className={`${getMenuClass(activeTab === 'settings')} w-full`}
-        onClick={() => setActiveTab('settings')}
+        className={`${getMenuClass(activeTab === 'unduh')} w-full`}
+        onClick={() => setActiveTab('unduh')}
       >
-        <Settings className="w-5 h-5 mr-3" />
-        <span>Pengaturan</span>
+        <DownloadCloud className="w-5 h-5 mr-3" />
+        <span>Unduh Produk</span>
       </button>
       <Link
         href={route('logout')}

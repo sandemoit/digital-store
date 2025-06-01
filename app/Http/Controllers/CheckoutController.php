@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UploadPayment;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -11,6 +12,7 @@ use App\Models\PaymentMethod;
 use App\Models\Transaksi;
 use App\Models\TransaksiItem;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CheckoutController extends Controller
 {
@@ -163,13 +165,10 @@ class CheckoutController extends Controller
             DB::commit();
 
             // Route based on payment status
-            if ($transaction->payment_status === 'paid') {
-                return redirect()->route('payment.success', $transaction->order_number)
-                    ->with('success', 'Pembayaran berhasil diproses!');
-            } else {
-                // Automatic payment - redirect to Midtrans or payment gateway
-                return redirect()->route('payment.gateway', $transaction->order_number);
-            }
+            return redirect()->route(
+                $transaction->payment_status === 'paid' ? 'payment.success' : ($paymentMethod->method === 'manual' ? 'payment.detail' : 'payment.gateway'),
+                $transaction->order_number
+            )->with('success', $transaction->payment_status === 'paid' ? 'Pembayaran berhasil diproses!' : null);
         } catch (\Exception $e) {
             DB::rollback();
             return back()->withErrors([
@@ -254,38 +253,155 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function cancel($orderNumber)
+    public function uploadPaymentProof(UploadPayment $request, $orderNumber)
     {
-        $transaction = Transaksi::where('order_number', $orderNumber)
-            ->where('user_id', Auth::user()->id)
-            ->where('status', 'pending')
-            ->firstOrFail();
-
-        DB::beginTransaction();
+        $validated = $request->validated();
 
         try {
-            // Cancel transaction
+            // Cari transaksi berdasarkan order number
+            $transaction = Transaksi::where('order_number', $orderNumber)
+                ->where('status', 'pending')
+                ->where('payment_status', 'pending')
+                ->firstOrFail();
+
+            // Pastikan ini adalah metode pembayaran manual
+            if (!$transaction->isManualPayment()) {
+                return back()->withErrors(['error' => 'Upload bukti pembayaran hanya untuk metode pembayaran manual']);
+            }
+
+            // Hapus file lama jika ada
+            if ($transaction->payment_proof && Storage::disk('public')->exists($transaction->payment_proof)) {
+                Storage::disk('public')->delete($transaction->payment_proof);
+            }
+
+            // Upload file baru
+            $file = $validated->file('payment_proof');
+            $filename = 'payment_proof_' . $orderNumber . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('payment-proofs', $filename, 'public');
+
+            // Update transaksi
+            $transaction->update([
+                'payment_proof' => $path,
+                'payment_status' => 'waiting_confirmation',
+                'payment_date' => now(),
+                'status' => 'processing'
+            ]);
+
+            // Redirect ke halaman sukses
+            return redirect()->route('payment.upload.success', $orderNumber);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return back()->withErrors(['error' => 'Gagal mengupload bukti pembayaran. Silakan coba lagi.']);
+        }
+    }
+
+    /**
+     * Halaman sukses upload bukti pembayaran
+     */
+    public function uploadSuccess($orderNumber)
+    {
+        $transaction = Transaksi::with(['items.product', 'paymentMethod'])
+            ->where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        if (!$transaction->payment_status === 'waiting_confirmation') {
+            return redirect()->back()->with('error', 'Belum ada bukti pembayaran yang diupload');
+        }
+
+        if ($transaction->payment_status === 'paid') {
+            return redirect()->route('payment.status', $orderNumber);
+        }
+
+        return Inertia::render('Landing/Payment/UploadSuccess', [
+            'transaction' => $transaction,
+        ]);
+    }
+
+    public function cancelPayment($orderNumber)
+    {
+        try {
+            $transaction = Transaksi::where('order_number', $orderNumber)
+                ->where('status', 'pending')
+                ->firstOrFail();
+
+            // Pastikan pembayaran belum dikonfirmasi
+            if ($transaction->payment_status === 'paid') {
+                return back()->withErrors(['error' => 'Pembayaran sudah dikonfirmasi, tidak dapat dibatalkan']);
+            }
+
+            // Update status transaksi
             $transaction->update([
                 'status' => 'cancelled',
                 'payment_status' => 'cancelled',
                 'cancelled_at' => now(),
             ]);
 
-            // Refund wallet if used
-            if ($transaction->wallet_amount > 0) {
-                Auth::user()->increment('wallet_balance', $transaction->wallet_amount);
-            }
-
-            DB::commit();
-
-            return redirect()->back()->with('success', 'Pembayaran berhasil dibatalkan.');
+            return redirect()->route('home')->with('success', 'Pesanan berhasil dibatalkan');
         } catch (\Exception $e) {
-            DB::rollback();
-            Log::error('Failed to cancel transaction: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Gagal membatalkan pesanan. Silakan coba lagi.']);
+        }
+    }
 
-            return back()->withErrors([
-                'error' => 'Terjadi kesalahan dalam membatalkan pembayaran.'
+    public function statusPayment(Request $request, $orderNumber)
+    {
+        try {
+            // Ambil transaksi berdasarkan order_number atau ID
+            $transaction = Transaksi::with(['items.product', 'paymentMethod', 'user'])
+                ->where('order_number', $orderNumber)
+                ->firstOrFail();
+
+            // Format data untuk frontend
+            $transactionData = [
+                'id' => $transaction->id,
+                'order_number' => $transaction->order_number,
+                'subtotal' => $transaction->subtotal,
+                'payment_fee' => $transaction->payment_fee,
+                'wallet_amount' => $transaction->wallet_amount,
+                'total_amount' => $transaction->total_amount,
+                'status' => $transaction->status,
+                'payment_status' => $transaction->payment_status,
+                'status_badge' => $transaction->status_badge,
+                'payment_status_badge' => $transaction->payment_status_badge,
+                'created_at' => $transaction->created_at,
+                'confirmed_at' => $transaction->confirmed_at,
+                'payment_date' => $transaction->payment_date,
+                'cancelled_at' => $transaction->cancelled_at,
+                'payment_method' => $transaction->paymentMethod,
+                'can_be_cancelled' => $transaction->canBeCancelled(),
+                'is_manual_payment' => $transaction->isManualPayment(),
+                'has_payment_proof' => $transaction->hasPaymentProof(),
+                'payment_proof_url' => $transaction->payment_proof_url,
+                'items' => $transaction->items->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'total' => $item->total,
+                        'product' => [
+                            'name' => $item->product->name ?? 'Product tidak tersedia',
+                            'type' => $item->product->type ?? 'unknown',
+                        ]
+                    ];
+                })
+            ];
+
+            return Inertia::render('Landing/Payment/StatusPayment', [
+                'transaction' => $transactionData
             ]);
+        } catch (\Exception $e) {
+            return redirect()->route('home')->with('error', 'Transaksi tidak ditemukan');
+        }
+    }
+
+    public function cekStatus($orderNumber)
+    {
+        $transaction = Transaksi::where('order_number', $orderNumber)
+            ->firstOrFail();
+
+        if ($transaction->payment_status === 'waiting_confirmation') {
+            return redirect()->back()->with('info', 'Mohon Maaf, Pembayaran belum dikonfirmasi');
+        } else {
+            return redirect()->route('payment.status', $orderNumber);
         }
     }
 }

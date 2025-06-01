@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ProfileContent } from "./ProfileContent";
 import { PurchaseHistoryContent } from "./PurchaseHistoryContent";
 import { ProfileSidebar } from "./ProfileSidebar";
+import UnduhProduk from "./UnduhProduk";
 
 interface Transaction {
   id: number;
@@ -22,20 +23,30 @@ interface Transaction {
   }>;
 }
 
+interface UnduhProduk {
+  id: number;
+  name: string;
+  gambar?: string;
+  file_url?: string;
+  harga: number;
+  id_kategori: number;
+}
+
 interface PageProps extends SharedData {
   title?: string;
   transactions?: Transaction[];
+  purchasedProducts?: UnduhProduk[];
 }
 
 export default function ProfileIndex() {
   // Ambil data dari usePage, bukan dari props
-  const { auth, title, transactions = [] } = usePage<PageProps>().props;
+  const { auth, title, transactions, purchasedProducts = [] } = usePage<PageProps>().props;
 
-  const dummyUserData: User = {
+  const UserData: User = {
     id: auth.user?.id || 0,
     name: auth.user?.name || "",
     email: auth.user?.email || "",
-    role: "buyer",
+    role: auth.user?.role || "buyer",
     avatar: "/api/placeholder/200/200",
     email_verified_at: null,
     created_at: auth.user?.created_at || "",
@@ -47,11 +58,13 @@ export default function ProfileIndex() {
   const renderContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <ProfileContent user={dummyUserData} />;
+        return <ProfileContent user={UserData} />;
       case 'purchases':
         return <PurchaseHistoryContent transactions={transactions} />;
+      case 'unduh':
+        return <UnduhProduk unduh={purchasedProducts} />;
       default:
-        return <ProfileContent user={dummyUserData} />;
+        return <ProfileContent user={UserData} />;
     }
   };
 
@@ -64,7 +77,7 @@ export default function ProfileIndex() {
           <div className="grid grid-cols-1 lg:grid-cols-8 gap-6">
             <div className="lg:col-span-2 space-y-6">
               <ProfileSidebar
-                user={dummyUserData}
+                user={UserData}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
               />

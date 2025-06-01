@@ -67,9 +67,11 @@ interface ProductDetailProps {
   canComment?: boolean;
   isLoggedIn?: boolean;
   userId?: number;
+  hasPurchased: boolean;
+  canDownload: boolean;
 }
 
-export default function Show({ produk, title, canComment, isLoggedIn, userId }: ProductDetailProps) {
+export default function Show({ produk, title, canComment, isLoggedIn, userId, canDownload, hasPurchased }: ProductDetailProps) {
   if (!produk) {
     return (
       <>
@@ -147,7 +149,7 @@ export default function Show({ produk, title, canComment, isLoggedIn, userId }: 
               />
             </div>
             <div className="lg:col-span-1 space-y-6">
-              <ProductDetailCard produk={produk} />
+              <ProductDetailCard produk={produk} hasPurchased={hasPurchased} canDownload={canDownload} />
               <ProductSidebar produk={produk} />
             </div>
           </div>

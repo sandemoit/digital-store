@@ -1,7 +1,7 @@
 import GuestLayout from "@/layouts/guest-layout";
-import { Head, Link, router } from "@inertiajs/react";
+import { Head, Link, router, useForm } from "@inertiajs/react";
 import { useState } from "react";
-import { Copy, Check, Clock, CreditCard, CheckIcon, CopyIcon, CreditCardIcon } from "lucide-react";
+import { Copy, Check, Clock, CreditCard, CheckIcon, CopyIcon, CreditCardIcon, Upload } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -23,6 +23,7 @@ interface Transaction {
   total_amount: number;
   status: string;
   payment_status: string;
+  payment_proof?: string;
   created_at: string;
   items: Array<{
     id: number;
@@ -54,6 +55,12 @@ interface PaymentDetailProps {
 
 export default function PaymentDetail({ transaction, paymentMethod }: PaymentDetailProps) {
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { data, setData, post, processing, errors, reset } = useForm({
+    payment_proof: null as File | null,
+  });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('id-ID').format(amount);
@@ -93,33 +100,60 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
   };
 
   const getPaymentInstructions = () => {
-    const instructions = {
-      bank_transfer: [
-        'Transfer ke rekening bank yang tertera di bawah',
-        'Gunakan nomor pesanan sebagai berita transfer',
-        'Simpan bukti transfer untuk konfirmasi',
-        'Upload bukti transfer di bagian bawah halaman ini'
-      ],
-      virtual_account: [
-        'Gunakan nomor Virtual Account di bawah untuk pembayaran',
-        'Pembayaran dapat dilakukan melalui ATM, Internet Banking, atau Mobile Banking',
-        'Pembayaran akan otomatis terverifikasi',
-        'Batas waktu pembayaran 24 jam'
-      ],
-      e_wallet: [
-        'Buka aplikasi e-wallet Anda',
-        'Scan QR Code atau gunakan nomor yang tertera',
-        'Lakukan pembayaran sesuai nominal',
-        'Pembayaran akan otomatis terverifikasi'
-      ]
-    };
+    return paymentMethod.instructions
+      ? paymentMethod.instructions.split('\n')
+      : ['Ikuti instruksi pembayaran'];
+  };
 
-    return instructions[paymentMethod.type as keyof typeof instructions] || ['Ikuti instruksi pembayaran'];
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validasi ukuran file (2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file maksimal 2MB');
+        return;
+      }
+
+      // Validasi tipe file
+      if (!file.type.match(/^image\/(jpeg|png|jpg)$/)) {
+        alert('Format file harus JPEG, PNG, atau JPG');
+        return;
+      }
+
+      setSelectedFile(file);
+      setData('payment_proof', file);
+
+      // Buat preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewUrl(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpload = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile) {
+      alert('Pilih file bukti pembayaran terlebih dahulu');
+      return;
+    }
+
+    post(`/payment/upload/${transaction.order_number}`, {
+      forceFormData: true,
+      onSuccess: () => {
+        reset();
+        setSelectedFile(null);
+        setPreviewUrl(null);
+      },
+    });
   };
 
   const handleCancel = () => {
     router.post(`/payment/cancel/${transaction.order_number}`);
   };
+
+  const isPaymentProofUploaded = transaction.payment_status === 'waiting_confirmation' && transaction.payment_proof;
 
   return (
     <GuestLayout title="Detail Pembayaran">
@@ -249,32 +283,62 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
               </div>
 
               {/* Upload Payment Proof */}
-              {paymentMethod.method === 'manual' && (
+              {paymentMethod.method === 'manual' && !isPaymentProofUploaded && (
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-lg font-semibold mb-4">Upload Bukti Pembayaran</h3>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <input
-                      type="file"
-                      id="payment_proof"
-                      accept="image/*"
-                      className="hidden"
-                    />
-                    <label
-                      htmlFor="payment_proof"
-                      className="cursor-pointer flex flex-col items-center"
+
+                  {errors.payment_proof && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <p className="text-red-700 text-sm">{errors.payment_proof}</p>
+                    </div>
+                  )}
+
+                  <form onSubmit={handleUpload}>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
+                      <input
+                        type="file"
+                        id="payment_proof"
+                        accept="image/jpeg,image/png,image/jpg"
+                        className="hidden"
+                        onChange={handleFileChange}
+                        disabled={processing}
+                      />
+                      <label
+                        htmlFor="payment_proof"
+                        className="cursor-pointer flex flex-col items-center"
+                      >
+                        {previewUrl ? (
+                          <div className="mb-4">
+                            <img
+                              src={previewUrl}
+                              alt="Preview"
+                              className="max-w-xs max-h-48 object-contain rounded-lg border"
+                            />
+                            <p className="text-sm text-gray-600 mt-2">{selectedFile?.name}</p>
+                          </div>
+                        ) : (
+                          <>
+                            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
+                              <Upload className="w-6 h-6 text-blue-600" />
+                            </div>
+                            <span className="text-sm font-medium text-gray-900 mb-1">
+                              Klik untuk upload bukti pembayaran
+                            </span>
+                            <span className="text-xs text-gray-500">PNG, JPG hingga 2MB</span>
+                          </>
+                        )}
+                      </label>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleUpload}
+                      disabled={!selectedFile || processing}
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                        <CreditCardIcon className="w-6 h-6 text-blue-600" />
-                      </div>
-                      <span className="text-sm font-medium text-gray-900 mb-1">
-                        Klik untuk upload bukti pembayaran
-                      </span>
-                      <span className="text-xs text-gray-500">PNG, JPG hingga 2MB</span>
-                    </label>
-                  </div>
-                  <button className="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
-                    Upload Bukti Pembayaran
-                  </button>
+                      {processing ? 'Mengupload...' : 'Upload Bukti Pembayaran'}
+                    </button>
+                  </form>
                 </div>
               )}
             </div>
@@ -324,7 +388,7 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
 
                 <div className="mt-6 space-y-3">
                   <Link
-                    href="/"
+                    href={route('buyer.profile')}
                     className="block w-full text-center bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     Kembali ke Beranda

@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Transaksi extends Model
 {
     use HasFactory;
     protected $table = 'transaksi';
-
+    protected $appends = ['payment_proof_url'];
     protected $fillable = [
         'user_id',
         'payment_method_id',
@@ -42,6 +43,11 @@ class Transaksi extends Model
         'midtrans_response' => 'array',
     ];
 
+    public function items()
+    {
+        return $this->hasMany(TransaksiItem::class);
+    }
+
     // Relationships
     public function user()
     {
@@ -51,11 +57,6 @@ class Transaksi extends Model
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class);
-    }
-
-    public function items()
-    {
-        return $this->hasMany(TransaksiItem::class);
     }
 
     // Scopes
@@ -113,5 +114,21 @@ class Transaksi extends Model
     public function isAutomaticPayment()
     {
         return $this->paymentMethod && $this->paymentMethod->method === 'automatic';
+    }
+
+    public function getPaymentProofUrlAttribute()
+    {
+        if ($this->payment_proof) {
+            return Storage::url($this->payment_proof);
+        }
+        return null;
+    }
+
+    /**
+     * Check if payment proof exists
+     */
+    public function hasPaymentProof()
+    {
+        return $this->payment_proof && Storage::disk('public')->exists($this->payment_proof);
     }
 }
