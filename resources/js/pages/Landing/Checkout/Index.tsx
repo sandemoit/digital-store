@@ -280,7 +280,7 @@ export default function CheckoutIndex({
 
                 <p className="text-sm text-gray-600">
                   Data pribadi Anda akan digunakan untuk memproses pesanan Anda dan untuk tujuan lain yang dijelaskan di
-                  <a href="#" className="underline text-blue-500 ml-1">kebijakan privasi</a> kami.
+                  <a href={route('kebijakanprivasi')} className="underline text-blue-500 ml-1">kebijakan privasi</a> kami.
                 </p>
 
                 <div className="flex items-start">
