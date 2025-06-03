@@ -95,7 +95,7 @@ class ProductController extends Controller
         Product::create($data);
 
         // Redirect with success message
-        return redirect()->route('admin.product.index')
+        return redirect()->route('product.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
@@ -162,7 +162,7 @@ class ProductController extends Controller
         // Update produk
         $produk->update($validated);
 
-        return redirect()->route('admin.produk')->with('success', 'Produk berhasil diperbarui.');
+        return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function destroy(Product $produk)
