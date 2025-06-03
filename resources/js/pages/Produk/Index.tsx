@@ -78,13 +78,13 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
 
     const handleDelete = async (id: number) => {
         if (confirm('Yakin mau hapus produk ini?')) {
-            await router.delete(`/admin/produk/${id}`);
+            await router.delete(`/admin/product/${id}`);
             fetchProduk();
         }
     };
 
     const handleEdit = (produk: Produk) => {
-        router.get(`/admin/produk/${produk.id}/edit`);
+        router.get(`/admin/product/${produk.id}/edit`);
     };
 
     const handleCreate = () => {
