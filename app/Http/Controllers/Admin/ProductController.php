@@ -167,7 +167,21 @@ class ProductController extends Controller
 
     public function destroy(Product $produk)
     {
+        // Get the images array from the product
+        $images = is_string($produk->gambar) ? json_decode($produk->gambar, true) : $produk->gambar;
+
+        // Delete each image from storage
+        if (!empty($images)) {
+            foreach ($images as $image) {
+                if (isset($image['path'])) {
+                    Storage::disk('public')->delete($image['path']);
+                }
+            }
+        }
+
+        // Delete the product
         $produk->delete();
+
         return redirect()->back()->with('success', 'Produk berhasil dihapus.');
     }
 }
