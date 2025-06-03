@@ -291,7 +291,7 @@ export default function CheckoutIndex({
                     required
                   />
                   <label htmlFor="terms_conditions" className="ml-2 text-sm text-gray-700">
-                    Saya telah membaca dan menyetujui <span className="underline">syarat dan kondisi</span> situs web ini.
+                    Saya telah membaca dan menyetujui <a href={route('syaratketentuan')} target="_blank" className="underline">syarat dan kondisi</a> situs web ini.
                   </label>
                 </div>
 

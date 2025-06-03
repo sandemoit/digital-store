@@ -31,4 +31,18 @@ class HomeController extends Controller
             'kategori' => Kategori::select('id', 'nama')->get(),
         ]);
     }
+
+    public function syaratketentuan()
+    {
+        return inertia('Landing/Home/SyaratKetentuan', [
+            'title' => 'Syarat Ketentuan',
+        ]);
+    }
+
+    public function kebijakanprivasi()
+    {
+        return inertia('Landing/Home/KebijakanPrivasi', [
+            'title' => 'Kebijakan Privasi',
+        ]);
+    }
 }

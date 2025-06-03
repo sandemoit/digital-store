@@ -14,6 +14,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/list/produk/home', [HomeController::class, 'produk'])->name('list.produk.home');
 
 Route::get('/kontak', [KontakController::class, 'index'])->name('kontak');
+Route::get('/syarat-ketentuan', [HomeController::class, 'syaratketentuan'])->name('syaratketentuan');
+Route::get('/kebijakan-privasi', [HomeController::class, 'kebijakanprivasi'])->name('kebijakanprivasi');
 Route::resource('produk', AplikasiController::class);
 Route::resource('cart', CartController::class);
 

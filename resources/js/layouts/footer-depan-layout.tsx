@@ -21,7 +21,7 @@ const FooterFront = () => {
                             </a>
                         </div>
 
-                        <div className="mt-8">
+                        {/* <div className="mt-8">
                             <div className="flex items-center mb-2">
                                 <span className="font-semibold mr-2">US</span>
                                 <span className="text-gray-400">English</span>
@@ -30,7 +30,7 @@ const FooterFront = () => {
                                 <span className="font-semibold mr-2">ES</span>
                                 <span className="text-gray-400">Spanish</span>
                             </div>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Products Column */}
@@ -45,39 +45,13 @@ const FooterFront = () => {
                         </ul>
                     </div>
 
-                    {/* Resources Column */}
-                    <div className="lg:col-span-1">
-                        <h3 className="text-lg font-semibold mb-6">Resources</h3>
-                        <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Promotion</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Submit Content</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Resources</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Design System</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Expert</a></li>
-                        </ul>
-                    </div>
-
                     {/* Products Column 2 */}
                     <div className="lg:col-span-1">
-                        <h3 className="text-lg font-semibold mb-6">Products</h3>
+                        <h3 className="text-lg font-semibold mb-6">Company</h3>
                         <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-white">About Us</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Support</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Contact</a></li>
-                        </ul>
-                    </div>
-
-                    {/* Community Column */}
-                    <div className="lg:col-span-1">
-                        <h3 className="text-lg font-semibold mb-6">Community</h3>
-                        <ul className="space-y-3">
-                            <li><a href="#" className="text-gray-400 hover:text-white">Forums</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Community</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Meetups</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Jobs</a></li>
-                            <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
+                            <li><a href={route('kontak')} className="text-gray-400 hover:text-white">Kontak Kami</a></li>
+                            <li><a href={route('syaratketentuan')} className="text-gray-400 hover:text-white">Syarat & Ketentuan</a></li>
+                            <li><a href={route('kebijakanprivasi')} className="text-gray-400 hover:text-white">Kebijakan Privasi</a></li>
                         </ul>
                     </div>
                 </div>
