@@ -88,7 +88,7 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
     };
 
     const handleCreate = () => {
-        router.get('/admin/produk/create');
+        router.get('/admin/product/create');
     };
 
     const handleSearch = async () => {
