@@ -84,8 +84,8 @@ export default function KontakIndex() {
                                 </div>
                                 <div>
                                     <h3 className="font-medium text-gray-800">Email</h3>
+                                    <p className="text-gray-600">support@sansstore.id</p>
                                     <p className="text-gray-600 mt-1">infosandemo@gmail.com</p>
-                                    <p className="text-gray-600">support@sandemo.id</p>
                                 </div>
                             </div>
                         </div>
