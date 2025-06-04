@@ -32,7 +32,7 @@ export default function MobileHeader({
                 <Link href="/cart" className="relative">
                     <ShoppingCart size={22} className="text-gray-700" />
                     {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-4 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <span className="absolute -top-2 -right-4 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                             {cartCount}
                         </span>
                     )}
@@ -41,7 +41,7 @@ export default function MobileHeader({
                 {/* Mobile Menu Toggle Button */}
                 <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="text-gray-700 focus:outline-none active:text-orange-600 hover:text-orange-600"
+                    className="text-gray-700 focus:outline-none active:text-amber-500 hover:text-amber-500"
                     aria-label="Toggle menu"
                 >
                     <svg
@@ -101,7 +101,7 @@ export default function MobileHeader({
                         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
                             <Link
                                 href={route('home')}
-                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Beranda
@@ -109,7 +109,7 @@ export default function MobileHeader({
 
                             <Link
                                 href={route('produk.index')}
-                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Produk Kami
@@ -119,7 +119,7 @@ export default function MobileHeader({
                             <div className="py-1">
                                 <button
                                     onClick={() => setMobileSubmenuOpen(!mobileSubmenuOpen)}
-                                    className="w-full flex justify-between items-center py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium text-left"
+                                    className="w-full flex justify-between items-center py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium text-left"
                                 >
                                     <span>Item</span>
                                     <ChevronDown
@@ -131,14 +131,14 @@ export default function MobileHeader({
                                     <div className="ml-4 mt-1 space-y-1">
                                         <Link
                                             href="#"
-                                            className="block py-2 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600"
+                                            className="block py-2 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
                                             Item Utama
                                         </Link>
                                         <Link
                                             href="#"
-                                            className="block py-2 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600"
+                                            className="block py-2 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500"
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
                                             Landing Page
@@ -149,7 +149,7 @@ export default function MobileHeader({
 
                             <Link
                                 href={route('kontak')}
-                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 Kontak
@@ -160,7 +160,7 @@ export default function MobileHeader({
                                 <div className="pt-2 mt-2 border-t border-gray-100 space-y-1">
                                     <Link
                                         href={route(auth.user?.role === 'admin' ? 'admin.dashboard' : 'buyer.profile')}
-                                        className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                        className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         {auth.user?.role === 'admin' ? 'Dashboard' : 'Akun Saya'}
@@ -168,7 +168,7 @@ export default function MobileHeader({
 
                                     <Link
                                         href='#'
-                                        className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                        className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Riwayat Pembelian
@@ -177,7 +177,7 @@ export default function MobileHeader({
                                     {auth.user.role === 'admin' && (
                                         <Link
                                             href={route('product.index')}
-                                            className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium'
+                                            className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                             onClick={() => setMobileMenuOpen(false)}
                                         >
                                             Produk Saya
@@ -198,14 +198,14 @@ export default function MobileHeader({
                                 <div className="pt-2 mt-2 border-t border-gray-100 space-y-1">
                                     <Link
                                         href={route('login')}
-                                        className="block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium"
+                                        className="block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Log in
                                     </Link>
                                     <Link
                                         href={route('register')}
-                                        className="block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-orange-600 font-medium"
+                                        className="block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium"
                                         onClick={() => setMobileMenuOpen(false)}
                                     >
                                         Register

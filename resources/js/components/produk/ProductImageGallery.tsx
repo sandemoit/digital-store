@@ -83,7 +83,7 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
             {displayedThumbnails.map((image, index) => (
               <div
                 key={index}
-                className={`cursor-pointer border-2 md:rounded-sm overflow-hidden ${selectedImage === index ? 'border-orange-500' : 'border-gray-200'} hover:border-orange-300 transition-colors`}
+                className={`cursor-pointer border-2 md:rounded-sm overflow-hidden ${selectedImage === index ? 'border-amber-500' : 'border-gray-200'} hover:border-orange-300 transition-colors`}
                 onClick={() => setSelectedImage(index)}
               >
                 <LazyLoadImage
@@ -98,7 +98,7 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
             {hasMoreThumbnails && (
               <button
                 onClick={showMoreThumbnails}
-                className="text-orange-600 hover:text-orange-800 font-medium"
+                className="text-amber-500 hover:text-amber-800 font-medium"
               >
                 Lihat gambar lainnya ({images.length - visibleThumbnails})
               </button>
@@ -176,7 +176,7 @@ export default function ProductImageGallery({ images }: ProductImageGalleryProps
               {images.map((image, index) => (
                 <div
                   key={index}
-                  className={`cursor-pointer border-2 rounded overflow-hidden flex-shrink-0 ${modalImageIndex === index ? 'border-orange-500' : 'border-gray-400'
+                  className={`cursor-pointer border-2 rounded overflow-hidden flex-shrink-0 ${modalImageIndex === index ? 'border-amber-500' : 'border-gray-400'
                     }`}
                   onClick={(e) => {
                     e.stopPropagation();

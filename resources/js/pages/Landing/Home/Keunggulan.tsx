@@ -45,13 +45,13 @@ export default function Keunggulan() {
         <section className="container mx-auto px-4 md:px-6 lg:px-8">
             <div className="py-16 container mx-auto lg:max-w-[1200px]">
                 <h2 className="text-3xl font-bold text-gray-800 mb-10 text-center">
-                    Keunggulan membeli produk di <span className="text-orange-600">Sans Store</span>?
+                    Keunggulan membeli produk di <span className="text-amber-500">Sans Store</span>?
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto">
                     {features.map((item, i) => (
                         <div
                             key={i}
-                            className="p-6 bg-white rounded-xl shadow-md hover:bg-orange-600 hover:text-white transition-colors duration-150"
+                            className="p-6 bg-white rounded-xl shadow-md hover:bg-amber-500 hover:text-white transition-colors duration-150"
                         >
                             <div className="flex justify-center mb-3">{item.icon}</div>
                             <h3 className="font-semibold text-lg">{item.title}</h3>

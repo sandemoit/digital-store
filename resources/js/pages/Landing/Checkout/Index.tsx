@@ -168,7 +168,7 @@ export default function CheckoutIndex({
                       <input
                         type="checkbox"
                         id="use_wallet"
-                        className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                        className="h-4 w-4 text-amber-500 focus:ring-amber-500 border-gray-300 rounded"
                         checked={useWallet}
                         onChange={(e) => {
                           setUseWallet(e.target.checked);
@@ -191,7 +191,7 @@ export default function CheckoutIndex({
                         <input
                           type="number"
                           id="wallet_amount"
-                          className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                          className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500"
                           min="0"
                           max={maxWalletUsage}
                           step="1"
@@ -244,7 +244,7 @@ export default function CheckoutIndex({
                                   id={`payment_${method.id}`}
                                   name="payment_method_id"
                                   type="radio"
-                                  className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 mt-1"
+                                  className="h-4 w-4 text-amber-500 focus:ring-amber-500 border-gray-300 mt-1"
                                   checked={selectedPayment === method.id}
                                   onChange={() => {
                                     setSelectedPayment(method.id);
@@ -287,7 +287,7 @@ export default function CheckoutIndex({
                   <input
                     type="checkbox"
                     id="terms_conditions"
-                    className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-amber-500 focus:ring-amber-500 border-gray-300 rounded"
                     required
                   />
                   <label htmlFor="terms_conditions" className="ml-2 text-sm text-gray-700">
@@ -298,7 +298,7 @@ export default function CheckoutIndex({
                 {/* Place Order Button */}
                 <button
                   type="submit"
-                  className="w-full bg-orange-600 border border-transparent rounded-md py-3 px-4 text-white font-medium hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+                  className="w-full bg-amber-500 border border-transparent rounded-md py-3 px-4 text-white font-medium hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 disabled:opacity-50"
                   disabled={processing || !selectedPayment}
                 >
                   Proses Pembayaran

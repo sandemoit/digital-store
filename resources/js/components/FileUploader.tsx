@@ -94,8 +94,8 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
           file:mr-4 file:py-2 file:px-4
           file:rounded-sm file:border-0
           file:text-sm file:font-semibold
-          file:bg-orange-50 file:text-orange-700
-          hover:file:bg-orange-100
+          file:bg-amber-50 file:text-amber-700
+          hover:file:bg-amber-100
           disabled:opacity-50"
             />
           </label>
@@ -105,7 +105,7 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
             className={`px-4 py-2 rounded-sm text-sm font-medium text-white
           ${!file || uploading
                 ? 'bg-gray-400 cursor-not-allowed border-gray-400'
-                : 'bg-orange-600 hover:bg-orange-700 border-orange-600 hover:border-orange-700'}`}
+                : 'bg-amber-500 hover:bg-amber-600 border-orange-600 hover:border-orange-700'}`}
           >
             {uploading ? 'Mengupload...' : 'Upload'}
           </button>
@@ -120,7 +120,7 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
         {uploading && (
           <div className="w-full bg-gray-200 rounded-full h-2.5">
             <div
-              className="bg-orange-600 h-2.5 rounded-full transition-all duration-300"
+              className="bg-amber-500 h-2.5 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             >
               <span className="text-sm text-gray-600 mt-2 block">{progress}%</span>
@@ -137,7 +137,7 @@ export default function FileUploader({ onUploadComplete }: { onUploadComplete?: 
                 href={downloadURL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-orange-600 hover:text-orange-800 block mt-1"
+                className="text-amber-500 hover:text-amber-800 block mt-1"
               >
                 {downloadURL}
               </a>

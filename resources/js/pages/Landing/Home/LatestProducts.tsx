@@ -66,7 +66,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
       <div className="py-16 container mx-auto lg:max-w-[1200px]">
         {/* Section Header */}
         <div className="mb-12 text-center">
-          <h6 className="text-orange-600 font-semibold mb-2">KOLEKSI DIGITAL</h6>
+          <h6 className="text-amber-500 font-semibold mb-2">KOLEKSI DIGITAL</h6>
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Produk Terbaru Kami</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Temukan produk digital premium terbaru kami untuk membantu meningkatkan bisnis dan proyek kreatif Anda.
@@ -80,7 +80,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
               key={index}
               onClick={() => setActiveFilter(category)}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${activeFilter === category
-                ? "bg-orange-600 text-white"
+                ? "bg-amber-500 text-white"
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
             >
@@ -98,7 +98,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
             >
               <div className="relative overflow-hidden">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
+                  <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -108,17 +108,17 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center gap-3">
-                  <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                  <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">
                     <Heart size={18} />
                   </button>
                   {product.link_demo && (
-                    <a href={product.link_demo} target="_blank" className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                    <a href={product.link_demo} target="_blank" className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">
                       <Eye size={18} />
                     </a>
                   )}
                   <button
                     onClick={() => { handleAddToCart(product) }}
-                    className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors"
+                    className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
                   >
                     <ShoppingCart size={18} />
                   </button>
@@ -127,12 +127,12 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
 
               <div className="p-5">
                 <div className="mb-3">
-                  <span className="inline-flex items-center gap-1 text-sm text-orange-600 font-medium">
+                  <span className="inline-flex items-center gap-1 text-sm text-amber-500 font-medium">
                     <Tag size={14} />
                     {product.kategori?.nama}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors line-clamp-2 h-14">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors line-clamp-2 h-14">
                   <a href={`/produk/${product.id}`}>{product.name}</a>
                 </h3>
                 <div className="flex items-center mb-4">
@@ -155,7 +155,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                   />
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"
+                    className="flex items-center justify-center bg-amber-50 hover:bg-amber-500 text-amber-500 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"
                   >
                     <ShoppingCart size={18} />
                   </button>
@@ -167,7 +167,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
 
         {/* Load More Button */}
         <div className="mt-12 text-center">
-          <a href={route('produk.index')} className="px-8 py-3 border border-orange-600 text-orange-600 rounded-sm transition-colors duration-300 hover:bg-orange-600 hover:text-white font-medium">
+          <a href={route('produk.index')} className="px-8 py-3 border border-orange-600 text-amber-500 rounded-sm transition-colors duration-300 hover:bg-amber-500 hover:text-white font-medium">
             Lihat Lebih Banyak
           </a>
         </div>

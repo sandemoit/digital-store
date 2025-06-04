@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/x-icon" href="https://sandemo.web.id/assets/frontend/img/favicons/favicon.ico" />
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
     <script>

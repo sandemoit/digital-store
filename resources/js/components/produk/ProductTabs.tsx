@@ -83,7 +83,7 @@ export default function ProductTabs({
           <button
             key={tab}
             className={`px-3 py-2 mr-2 mb-2 font-semibold capitalize ${activeTab === tab
-              ? 'border-b-2 border-orange-500 text-orange-500'
+              ? 'border-b-2 border-amber-500 text-amber-500'
               : 'text-gray-500'
               }`}
             onClick={() => setActiveTab(tab as any)}
@@ -160,10 +160,10 @@ export default function ProductTabs({
                           </button>
                         )}
                         <button
-                          className={`text-xs ${item.is_liked ? 'text-orange-500' : 'text-gray-500 hover:text-gray-700'} flex items-center`}
+                          className={`text-xs ${item.is_liked ? 'text-amber-500' : 'text-gray-500 hover:text-gray-700'} flex items-center`}
                           onClick={() => onLike(item.id)}
                         >
-                          <ThumbsUp className={`w-4 h-4 mr-1 ${item.is_liked ? 'fill-orange-500' : ''}`} />
+                          <ThumbsUp className={`w-4 h-4 mr-1 ${item.is_liked ? 'fill-amber-500' : ''}`} />
                           Suka ({item.likes_count || 0})
                         </button>
                       </div>
@@ -182,7 +182,7 @@ export default function ProductTabs({
                             <div className="flex-1">
                               <form onSubmit={commentForm.submitKomentar}>
                                 <textarea
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
                                   placeholder="Tulis balasan Anda di sini..."
                                   rows={2}
                                   value={commentForm.data.isi}
@@ -200,7 +200,7 @@ export default function ProductTabs({
                                   </button>
                                   <button
                                     type="submit"
-                                    className="px-3 py-1 bg-orange-500 text-white rounded-sm text-xs hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                    className="px-3 py-1 bg-amber-500 text-white rounded-sm text-xs hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
                                     disabled={commentForm.processing}
                                   >
                                     {commentForm.processing ? 'Mengirim...' : 'Kirim Balasan'}
@@ -269,7 +269,7 @@ export default function ProductTabs({
                       <div className="flex-1">
                         <form onSubmit={commentForm.submitKomentar}>
                           <textarea
-                            className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
                             placeholder="Tulis komentar Anda di sini..."
                             rows={3}
                             value={commentForm.data.isi}
@@ -280,7 +280,7 @@ export default function ProductTabs({
                           <div className="mt-2 flex justify-end">
                             <button
                               type="submit"
-                              className="px-4 py-1.5 bg-orange-500 text-white rounded-sm text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                              className="px-4 py-1.5 bg-amber-500 text-white rounded-sm text-sm hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
                               disabled={commentForm.processing}
                             >
                               {commentForm.processing ? 'Mengirim...' : 'Kirim Komentar'}
@@ -314,7 +314,7 @@ export default function ProductTabs({
                         <div className="flex-1">
                           <form onSubmit={commentForm.submitKomentar}>
                             <textarea
-                              className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-sm"
+                              className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
                               placeholder="Tulis komentar Anda di sini..."
                               rows={3}
                               value={commentForm.data.isi}
@@ -325,7 +325,7 @@ export default function ProductTabs({
                             <div className="mt-2 flex justify-end">
                               <button
                                 type="submit"
-                                className="px-4 py-1.5 bg-orange-500 text-white rounded-sm text-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+                                className="px-4 py-1.5 bg-amber-500 text-white rounded-sm text-sm hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
                                 disabled={commentForm.processing}
                               >
                                 {commentForm.processing ? 'Mengirim...' : 'Kirim Komentar'}
@@ -381,7 +381,7 @@ export default function ProductTabs({
                           })}
                         </span>
                         <button className="flex items-center text-sm">
-                          <ThumbsUp className='w-5 h-5 text-orange-500 hover:text-orange-600' />
+                          <ThumbsUp className='w-5 h-5 text-amber-500 hover:text-amber-500' />
                           <span className="ml-1 text-xs">{item.disukai || 0}</span>
                         </button>
                       </div>

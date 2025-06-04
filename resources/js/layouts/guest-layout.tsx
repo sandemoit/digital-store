@@ -5,6 +5,7 @@ import FooterFront from '@/layouts/footer-depan-layout';
 import React from 'react';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
+import { FloatingWhatsApp } from 'react-floating-whatsapp';
 
 interface GuestLayoutProps {
   title?: string;
@@ -57,6 +58,17 @@ export default function GuestLayout({ title = 'Sandemo.id', children }: GuestLay
         <div className="pt-16">
           {children}
         </div>
+
+        <FloatingWhatsApp
+          phoneNumber="6287801751656"
+          accountName="CS Sanstore"
+          chatMessage="Halo! Ada yang bisa kami bantu?"
+          statusMessage="Online"
+          placeholder="Ketik pesan..."
+          allowClickAway
+          notification
+          notificationSound
+        />
 
         {/* Footer */}
         <div className="w-full bg-gray-900">

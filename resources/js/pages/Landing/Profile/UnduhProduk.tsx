@@ -90,7 +90,7 @@ const UnduhProduk = ({ unduh }: UnduhProdukProps) => {
                                         {produk.file_url ? (
                                             <button
                                                 onClick={() => handleDownload(produk.file_url!, produk.name)}
-                                                className="text-orange-600 hover:text-orange-900 font-medium cursor-pointer"
+                                                className="text-amber-500 hover:text-amber-900 font-medium cursor-pointer"
                                             >
                                                 Unduh
                                             </button>

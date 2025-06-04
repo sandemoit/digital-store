@@ -143,7 +143,7 @@ export default function ProductDetailCard({
             </button>
             <button
               onClick={demo}
-              className="hover:bg-orange-500 hover:text-white text-black border-2 border-orange-500 px-4 py-2 rounded-sm w-full flex items-center justify-center gap-1"
+              className="hover:bg-amber-500 hover:text-white text-black border-2 border-amber-500 px-4 py-2 rounded-sm w-full flex items-center justify-center gap-1"
             >
               <Eye size={16} className='text-black hover:text-white' />
               Live Preview
@@ -162,7 +162,7 @@ export default function ProductDetailCard({
           ) : (
             <button
               onClick={handleAddToCart}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm flex items-center justify-center gap-1"
+              className="bg-amber-500 hover:bg-amber-500 text-white px-4 py-2 rounded-sm flex items-center justify-center gap-1"
               disabled={hasPurchased}
             >
               <ShoppingCart size={16} />

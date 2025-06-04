@@ -54,8 +54,8 @@ export default function KontakIndex() {
 
                         <div className="space-y-6">
                             <div className="flex items-start">
-                                <div className="bg-orange-100 p-3 rounded-full mr-4">
-                                    <MapPin className="text-orange-600 h-6 w-6" />
+                                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                                    <MapPin className="text-amber-500 h-6 w-6" />
                                 </div>
                                 <div>
                                     <h3 className="font-medium text-gray-800">Alamat</h3>
@@ -68,8 +68,8 @@ export default function KontakIndex() {
                             </div>
 
                             <div className="flex items-start">
-                                <div className="bg-orange-100 p-3 rounded-full mr-4">
-                                    <Phone className="text-orange-600 h-6 w-6" />
+                                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                                    <Phone className="text-amber-500 h-6 w-6" />
                                 </div>
                                 <div>
                                     <h3 className="font-medium text-gray-800">Telepon</h3>
@@ -79,8 +79,8 @@ export default function KontakIndex() {
                             </div>
 
                             <div className="flex items-start">
-                                <div className="bg-orange-100 p-3 rounded-full mr-4">
-                                    <Mail className="text-orange-600 h-6 w-6" />
+                                <div className="bg-amber-100 p-3 rounded-full mr-4">
+                                    <Mail className="text-amber-500 h-6 w-6" />
                                 </div>
                                 <div>
                                     <h3 className="font-medium text-gray-800">Email</h3>
@@ -122,7 +122,7 @@ export default function KontakIndex() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         required
                                     />
                                 </div>
@@ -136,7 +136,7 @@ export default function KontakIndex() {
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                                         required
                                     />
                                 </div>
@@ -152,7 +152,7 @@ export default function KontakIndex() {
                                     name="subject"
                                     value={formData.subject}
                                     onChange={handleChange}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                                     required
                                 />
                             </div>
@@ -167,14 +167,14 @@ export default function KontakIndex() {
                                     value={formData.message}
                                     onChange={handleChange}
                                     rows={5}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                                     required
                                 ></textarea>
                             </div>
 
                             <button
                                 type="submit"
-                                className="bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-md inline-flex items-center transition duration-150"
+                                className="bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-6 rounded-md inline-flex items-center transition duration-150"
                             >
                                 Kirim Pesan
                                 <Send className="ml-2 h-4 w-4" />

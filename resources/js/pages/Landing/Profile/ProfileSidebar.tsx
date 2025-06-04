@@ -11,7 +11,7 @@ interface ProfileSidebarProps {
 
 const getMenuClass = (isActive: boolean) => {
   return `flex items-center p-3 rounded-lg ${isActive
-    ? 'bg-orange-100 text-orange-700 font-medium'
+    ? 'bg-amber-100 text-amber-700 font-medium'
     : 'text-gray-700 hover:bg-gray-100'}`;
 };
 

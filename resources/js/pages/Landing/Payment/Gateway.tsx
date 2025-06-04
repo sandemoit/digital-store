@@ -326,7 +326,7 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Batal</AlertDialogCancel>
-                          <AlertDialogAction className="bg-orange-500 hover:bg-orange-600 text-white" onClick={handleCancel}>
+                          <AlertDialogAction className="bg-amber-500 hover:bg-amber-500 text-white" onClick={handleCancel}>
                             Ya, Batalkan
                           </AlertDialogAction>
                         </AlertDialogFooter>

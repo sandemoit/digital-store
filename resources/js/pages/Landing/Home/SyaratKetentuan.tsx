@@ -135,7 +135,7 @@ export default function SyaratKetentuan({ title }: SyaratKetentuanProps) {
                                     Dengan mendaftar di situs web ini, Anda memberikan persetujuan untuk menerima pesan melalui email (berlangganan buletin). Jika Anda ingin berhenti menerima pesan ini, harap beri tahu kami. Setelah menerima tanggapan Anda, kami akan menghapus alamat email Anda dari milis dalam waktu 2x24 jam.
                                 </p>
                                 <p>
-                                    Versi lengkap dari kebijakan privasi dapat ditemukan di halaman ini: <a href="#" className="underline text-blue-500">Kebijakan Privasi</a>.
+                                    Versi lengkap dari kebijakan privasi dapat ditemukan di halaman ini: <a href={route('kebijakanprivasi')} className="underline text-blue-500">Kebijakan Privasi</a>.
                                 </p>
                             </div>
                         </section>

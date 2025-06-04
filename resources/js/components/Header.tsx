@@ -24,11 +24,9 @@ export default function Header({ scrolled }: HeaderProps) {
                     {/* Logo - Shared between desktop and mobile */}
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center">
-                            <div className="h-8 w-8 bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center rounded mr-2">
-                                <div className="h-4 w-4 bg-white transform rotate-45"></div>
-                            </div>
-                            <span className="text-2xl font-bold text-gray-800">
-                                Sans<span className="text-orange-600">Store</span>
+                            <img src="/storage/logo.webp" alt="Logo Sans Store" className="h-8 w-8 mr-2" />
+                            <span className="text-2xl font-bold text-amber-600">
+                                Sans<span className="text-amber-500"> Store</span>
                             </span>
                         </Link>
                     </div>

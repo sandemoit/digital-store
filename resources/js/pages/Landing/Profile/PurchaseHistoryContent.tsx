@@ -130,7 +130,7 @@ export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <Link
                     href={route('payment.status', transaction.order_number)}
-                    className="text-orange-600 hover:text-orange-900 font-medium"
+                    className="text-amber-500 hover:text-amber-900 font-medium"
                   >
                     Detail
                   </Link>

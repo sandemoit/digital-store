@@ -156,7 +156,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
               </div>
               <h2 className="text-xl font-semibold text-gray-700 mb-2">Keranjang Belanja Kosong</h2>
               <p className="text-gray-500 mb-6">Belum ada produk di keranjang Anda.</p>
-              <a href="/products" className="inline-block bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-6 rounded-sm transition-colors">
+              <a href="/products" className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-6 rounded-sm transition-colors">
                 Mulai Belanja
               </a>
             </div>
@@ -251,7 +251,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                     </button>
                     <a
                       href="/produk"
-                      className="text-orange-600 hover:text-orange-800 text-sm font-medium"
+                      className="text-amber-500 hover:text-amber-800 text-sm font-medium"
                     >
                       Lanjut Belanja
                     </a>
@@ -263,7 +263,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                       <input
                         type="text"
                         placeholder="Masukan kupon diskon"
-                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                       />
                     </div>
                     <button
@@ -293,7 +293,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                     <div className="border-t border-gray-200 my-3 pt-3 flex justify-between">
                       <span className="font-medium text-gray-900">Total</span>
                       <RupiahFormatter
-                        className='font-bold text-orange-600 text-lg'
+                        className='font-bold text-amber-500 text-lg'
                         value={cartSubtotal}
                       />
                     </div>
@@ -302,7 +302,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                   <div className="flex items-center justify-center mt-4">
                     <Link
                       href={auth.user ? route('checkout') : '/login'}
-                      className="flex items-center w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-sm transition-colors"
+                      className="flex items-center w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-sm transition-colors"
                     >
                       <Lock size={16} className="mr-2" />
                       Lanjut Proses Pembelian

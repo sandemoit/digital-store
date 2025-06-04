@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import GuestLayout from "@/layouts/guest-layout";
 import { Filter, Search, X } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
-import ProdukAll from "@/components/produk/ProdukAll";
-import FilterProduk from "@/components/produk/FilterProduk";
+import ProdukAll from "@/components/Produk/ProdukAll";
+import FilterProduk from "@/components/Produk/FilterProduk";
 
 interface ProdukProps {
     produk?: any[];
@@ -44,10 +44,10 @@ const ProdukIndex = ({ produk = [] }: ProdukProps) => {
                             <input
                                 type="text"
                                 placeholder="Cari produk digital..."
-                                className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-orange-500 focus:shadow-lg"
+                                className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-amber-500 focus:shadow-lg"
                             />
                         </div>
-                        <button className="bg-orange-600 hover:bg-orange-700 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1 shadow-md">
+                        <button className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1 shadow-md">
                             Search
                         </button>
                     </div>

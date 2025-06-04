@@ -5,7 +5,7 @@ const HeroSection = () => {
   return (
     <section className="py-6 pb-12 md:py-33 relative overflow-hidden container mx-auto lg:max-w-[1320px] min-h-screen flex items-center justify-center">
       {/* Background Elements */}
-      <div className="absolute left-0 bottom-0 -mb-10 text-orange-500 opacity-10">
+      <div className="absolute left-0 bottom-0 -mb-10 text-amber-500 opacity-10">
         <svg
           width="200"
           height="200"
@@ -41,7 +41,7 @@ const HeroSection = () => {
               </span>
               <br />
               <span className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-900">
-                Bisnis Anda<span className="text-orange-600">.</span>
+                Bisnis Anda<span className="text-amber-500">.</span>
               </span>
             </h1>
 
@@ -58,10 +58,10 @@ const HeroSection = () => {
                 <input
                   type="text"
                   placeholder="Cari produk digital..."
-                  className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-orange-500 focus:shadow-lg"
+                  className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-amber-500 focus:shadow-lg"
                 />
               </div>
-              <button className="bg-orange-600 hover:bg-orange-700 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1">
+              <button className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1">
                 Search
               </button>
             </div>

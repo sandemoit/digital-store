@@ -150,7 +150,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="bg-white border border-gray-300 rounded-sm px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value="default">Urutan Default</option>
             <option value="price-low">Harga: Rendah ke Tinggi</option>
@@ -172,13 +172,13 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
           <div className="flex bg-gray-100 rounded-sm">
             <button
               onClick={() => setViewMode("grid")}
-              className={`px-3 py-2 rounded-l-lg ${viewMode === "grid" ? "bg-orange-500 text-white" : "text-gray-700"}`}
+              className={`px-3 py-2 rounded-l-lg ${viewMode === "grid" ? "bg-amber-500 text-white" : "text-gray-700"}`}
             >
               Grid
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`px-3 py-2 rounded-r-lg ${viewMode === "list" ? "bg-orange-500 text-white" : "text-gray-700"}`}
+              className={`px-3 py-2 rounded-r-lg ${viewMode === "list" ? "bg-amber-500 text-white" : "text-gray-700"}`}
             >
               List
             </button>
@@ -195,7 +195,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                 key={category}
                 onClick={() => setActiveFilter(category)}
                 className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${activeFilter === category
-                  ? "bg-orange-500 text-white"
+                  ? "bg-amber-500 text-white"
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
               >
@@ -217,7 +217,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
               {/* Product Image */}
               <div className="relative overflow-hidden">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
+                  <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -239,12 +239,12 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                       href={product.linkDemo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors"
+                      className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
                     >
                       <Eye size={18} />
                     </a>
                   )}
-                  <button onClick={handleAddToCartOnly} className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-colors">
+                  <button onClick={handleAddToCartOnly} className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">
                     <ShoppingCart size={18} />
                   </button>
                 </div>
@@ -253,12 +253,12 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
               {/* Product Info */}
               <div className="p-5">
                 <div className="mb-3">
-                  <span className="inline-flex items-center gap-1 text-sm text-orange-600 font-medium">
+                  <span className="inline-flex items-center gap-1 text-sm text-amber-500 font-medium">
                     <Tag size={14} />
                     {product.category}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors line-clamp-2 h-14">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors line-clamp-2 h-14">
                   <a href={`/aplikasi/${product.id}`}>{product.title}</a>
                 </h3>
                 <div className="flex items-center mb-4">
@@ -276,7 +276,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                   <span className="text-xl font-bold text-gray-900">
                     {product.price === 0 ? 'Gratis' : `Rp${product.price}k`}
                   </span>
-                  <button className="flex items-center justify-center bg-orange-50 hover:bg-orange-600 text-orange-600 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm">
+                  <button className="flex items-center justify-center bg-amber-50 hover:bg-amber-500 text-amber-500 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm">
                     <ShoppingCart size={18} />
                   </button>
                 </div>
@@ -294,7 +294,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
               {/* Product Image - Smaller in list view */}
               <div className="relative md:w-64 h-48">
                 {product.featured && (
-                  <span className="absolute top-3 left-3 bg-orange-600 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
+                  <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                     Featured
                   </span>
                 )}
@@ -308,7 +308,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
               {/* Product Info - Expanded in list view */}
               <div className="p-5 flex-grow flex flex-col">
                 <div className="flex justify-between mb-2">
-                  <span className="inline-flex items-center gap-1 text-sm text-orange-600 font-medium">
+                  <span className="inline-flex items-center gap-1 text-sm text-amber-500 font-medium">
                     <Tag size={14} />
                     {product.category}
                   </span>
@@ -323,7 +323,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                   </div>
                 </div>
 
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-orange-600 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors">
                   <a href={`/aplikasi/${product.id}`}>{product.title}</a>
                 </h3>
 
@@ -353,7 +353,7 @@ export default function ProdukTerkait({ produk }: ProductTerkaitCardProps) {
                       </a>
                     )}
 
-                    <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-sm transition-colors">
+                    <button className="flex items-center gap-2 bg-amber-500 hover:bg-amber-500 text-white px-4 py-2 rounded-sm transition-colors">
                       <ShoppingCart size={18} />
                       <span>Beli Sekarang</span>
                     </button>

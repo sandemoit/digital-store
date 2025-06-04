@@ -14,7 +14,7 @@ export default function KebijakanPrivasi() {
                     <div className="prose prose-lg max-w-none">
                         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
                             <p className="text-blue-800 font-medium">
-                                Alamat situs web kami adalah: <span className="font-bold">https://sansstore.com</span>
+                                Alamat situs web kami adalah: <span className="font-bold">https://sansstore.id</span>
                             </p>
                         </div>
 
@@ -147,7 +147,7 @@ export default function KebijakanPrivasi() {
                                     Jika Anda memiliki pertanyaan tentang kebijakan ini atau website kami, jangan ragu untuk menghubungi kami melalui:
                                 </p>
                                 <div className="space-y-2 text-green-700">
-                                    <p><strong>Email:</strong> support@sansstore.com</p>
+                                    <p><strong>Email:</strong> support@sansstore.id</p>
                                     <p><strong>Halaman Kontak:</strong> Melalui formulir kontak di website kami</p>
                                     <p><strong>Chat Support:</strong> Tersedia di pojok kanan bawah website</p>
                                 </div>

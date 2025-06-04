@@ -85,7 +85,7 @@ export default function ProductSidebar({ produk }: ProductSidebarProps) {
         </div>
       </div>
       <div className="mt-6">
-        <button className="w-full bg-orange-600 text-white font-medium py-2 px-4 rounded-sm">
+        <button className="w-full bg-amber-500 text-white font-medium py-2 px-4 rounded-sm">
           Bagikan
         </button>
         <div className="flex justify-center mt-4 space-x-2">

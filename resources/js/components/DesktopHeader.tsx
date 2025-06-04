@@ -25,19 +25,19 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
             <nav className="hidden md:flex items-center space-x-6">
                 <Link
                     href={route('home')}
-                    className='text-gray-600 hover:text-orange-600 font-medium'
+                    className='text-gray-600 hover:text-amber-500 font-medium'
                 >
                     Beranda
                 </Link>
                 <Link
                     href={route('produk.index')}
-                    className='text-gray-600 hover:text-orange-600 font-medium'
+                    className='text-gray-600 hover:text-amber-500 font-medium'
                 >
                     Produk Kami
                 </Link>
                 <Link
                     href={route('kontak')}
-                    className='text-gray-600 hover:text-orange-600 font-medium'
+                    className='text-gray-600 hover:text-amber-500 font-medium'
                 >
                     Kontak
                 </Link>
@@ -50,7 +50,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                     onMouseLeave={() => setIsOpen(false)}
                 >
                     <button
-                        className="text-gray-600 hover:text-orange-600 font-medium flex items-center py-2 px-3 focus:outline-none"
+                        className="text-gray-600 hover:text-amber-500 font-medium flex items-center py-2 px-3 focus:outline-none"
                         onClick={() => setIsOpen(!isOpen)}
                         aria-expanded={isOpen}
                         aria-haspopup="true"
@@ -68,14 +68,14 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                     >
                         <a
                             href="#"
-                            className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                            className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-500"
                             onClick={() => setIsOpen(false)}
                         >
                             Item Utama
                         </a>
                         <a
                             href="#"
-                            className="block px-4 py-2 text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                            className="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-500"
                             onClick={() => setIsOpen(false)}
                         >
                             Landing Page
@@ -88,9 +88,9 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
             <div className="hidden md:flex items-center space-x-6">
                 {/* Shopping Cart */}
                 <a href="/cart" className="relative">
-                    <ShoppingCart size={22} className="text-gray-700 hover:text-orange-600" />
+                    <ShoppingCart size={22} className="text-gray-700 hover:text-amber-500" />
                     {cartCount > 0 && (
-                        <span className="absolute -top-2 -right-4 bg-orange-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        <span className="absolute -top-2 -right-4 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                             {cartCount}
                         </span>
                     )}
@@ -101,7 +101,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                     <div className="relative group">
                         <a
                             href="#"
-                            className="text-gray-600 hover:text-orange-600 font-medium flex items-center"
+                            className="text-gray-600 hover:text-amber-500 font-medium flex items-center"
                         >
                             <User size={20} className="mr-1" />
                             <ChevronDown size={16} className="ml-1" />
@@ -110,7 +110,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                         {/* User Dropdown Menu */}
                         <div className="absolute right-0 top-full mt-2 w-64 bg-white shadow-lg rounded-sm overflow-hidden z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-linear">
                             {/* User Profile Header */}
-                            <div className="bg-orange-100 p-4 border-b border-gray-200">
+                            <div className="bg-amber-100 p-4 border-b border-gray-200">
                                 <div className="flex items-center">
                                     <div className="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center mr-3">
                                         <User size={28} className="text-gray-600" />
@@ -174,7 +174,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                     <>
                         <Link
                             href={route('login')}
-                            className="text-gray-700 hover:text-orange-600 font-medium flex items-center"
+                            className="text-gray-700 hover:text-amber-500 font-medium flex items-center"
                         >
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -194,7 +194,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                         </Link>
                         <Link
                             href={route('register')}
-                            className="text-gray-700 hover:text-orange-600 font-medium flex items-center border border-gray-300 rounded-sm px-2"
+                            className="text-gray-700 hover:text-amber-500 font-medium flex items-center border border-gray-300 rounded-sm px-2"
                         >
                             Register
                         </Link>
