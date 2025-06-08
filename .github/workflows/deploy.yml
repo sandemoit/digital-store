@@ -30,6 +30,7 @@ jobs:
           --exclude='.github' \
           --exclude='node_modules' \
           --exclude='vendor' \
+          --exclude='tests/' \
           -e "ssh -o StrictHostKeyChecking=no" \
           ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
 
