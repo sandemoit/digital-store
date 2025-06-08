@@ -37,10 +37,9 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
-          # Persiapan folder
-          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} && \
-          chmod -R 775 bootstrap/cache storage && \
-          chown -R www-data:www-data . && \
+          export PATH=\$PATH:/usr/local/bin && \
+          chown -R ${{ secrets.VPS_USERNAME }}:www-data /var/www/sans_store && \
+          chmod -R 775 storage bootstrap/cache && \
           # Install dependencies
           composer install --no-dev --optimize-autoloader && \
           # Laravel setup
