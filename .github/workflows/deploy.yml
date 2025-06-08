@@ -23,15 +23,24 @@ jobs:
         mkdir -p ~/.ssh
         ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
+    - name: Prepare VPS Directory
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
+          "sudo mkdir -p ${{ secrets.PROJECT_PATH }} && \
+           sudo chown -R ${{ secrets.VPS_USERNAME }}:www-data ${{ secrets.PROJECT_PATH }} && \
+           sudo chmod -R 775 ${{ secrets.PROJECT_PATH }}"
+
     - name: Copy files via SSH
       run: |
-        rsync -avzh --delete --info=ALL --chown=www-data:www-data \
+        rsync -avzh --delete --info=progress2 \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
           --exclude='vendor' \
           --exclude='tests/' \
           --exclude='.env' \
+          --exclude='.idea' \
+          --exclude='*.sqlite' \
           -e "ssh -o StrictHostKeyChecking=no" \
           ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
 
@@ -39,18 +48,20 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
-          # Buat folder yang diperlukan
-          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} && \
-          # Set permission
-          sudo chown -R www-data:www-data bootstrap/cache storage && \
-          sudo chmod -R 775 bootstrap/cache storage && \
+          # Create required directories
+          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} public/build && \
+          # Set permissions
+          sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
+          sudo chmod -R 775 bootstrap/cache storage public/build && \
           # Install dependencies
-          npm install --no-audit --no-fund --omit=dev && \
+          npm ci --no-audit --no-fund --omit=dev && \
           npm run build && \
           composer install --no-dev --optimize-autoloader && \
-          # Setup Laravel
+          # Laravel setup
           php artisan key:generate --force && \
           php artisan config:clear && \
           php artisan view:clear && \
+          php artisan route:clear && \
+          php artisan cache:clear && \
           php artisan optimize && \
           php artisan storage:link --force"
