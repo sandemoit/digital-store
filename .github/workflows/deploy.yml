@@ -37,7 +37,7 @@ jobs:
           "cd ${{ secrets.PROJECT_PATH }} && \
           export PATH=\$PATH:/usr/local/bin && \
           npm install --no-audit --no-fund && \
-          npm build && \
+          npm run build && \
           composer install --no-interaction --prefer-dist --optimize-autoloader && \
           php artisan migrate --force && \
           php artisan db:seed --force && \
