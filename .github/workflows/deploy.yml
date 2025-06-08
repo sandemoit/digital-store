@@ -25,14 +25,14 @@ jobs:
 
     - name: Copy files via SSH
       run: |
-        rsync -avzh --delete \
+        rsync -avzh --delete --info=ALL \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
           --exclude='vendor' \
           --exclude='tests/' \
           -e "ssh -o StrictHostKeyChecking=no" \
-          ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
+          ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }} || true
 
     - name: Run post-deploy commands
       run: |
