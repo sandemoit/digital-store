@@ -1,0 +1,44 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.VPS_SSH_KEY }}
+        known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+
+    - name: Adding Known Hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Copy files via SSH
+      run: |
+        rsync -avz --delete --exclude='node_modules' --exclude='vendor' -e "ssh -o StrictHostKeyChecking=no" \
+          ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
+
+    - name: Run post-deploy commands
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
+          "cd ${{ secrets.PROJECT_PATH }} && \
+          export PATH=\$PATH:/usr/local/bin && \
+          npm install --no-audit --no-fund && \
+          npm run production && \
+          composer install --no-interaction --prefer-dist --optimize-autoloader && \
+          php artisan migrate --force && \
+          php artisan db:seed --force && \
+          php artisan storage:link && \
+          php artisan optimize:clear && \
+          chown -R ${{ secrets.VPS_USERNAME }}:www-data /var/www/sans_store && \
+          chmod -R 775 storage bootstrap/cache"
