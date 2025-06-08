@@ -25,7 +25,8 @@ jobs:
 
     - name: Copy files via SSH
       run: |
-        rsync -avz --delete --chmod=Du=rwx,Dg=rwx,Do=rx,Fu=rw,Fg=rw,Fo=r \
+        rsync -avz --delete --chown=www-data:www-data \
+          --chmod=Du=rwx,Dg=rwx,Do=rx,Fu=rw,Fg=rw,Fo=r \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
@@ -37,13 +38,16 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
-          export PATH=\$PATH:/usr/local/bin && \
-          sudo chown -R ${{ secrets.VPS_USERNAME }}:www-data ${{ secrets.PROJECT_PATH }} && \
-          sudo chmod -R 775 ${{ secrets.PROJECT_PATH }} && \
-          npm install --no-audit --no-fund && \
-          npm run build && \
+          # Buat folder yang diperlukan
+          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} && \
+          # Set permission
+          sudo chown -R www-data:www-data bootstrap/cache storage
+          sudo chmod -R 775 bootstrap/cache storage && \
+          # Install dependencies
           composer install --no-dev --optimize-autoloader && \
+          # Setup Laravel
+          [ -f .env ] || cp .env.example .env && \
           php artisan key:generate --force && \
-          php artisan migrate --force && \
+          php artisan config:clear && \
           php artisan optimize && \
           php artisan storage:link"
