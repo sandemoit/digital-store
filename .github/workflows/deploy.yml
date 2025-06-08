@@ -54,8 +54,8 @@ jobs:
           sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
           sudo chmod -R 775 bootstrap/cache storage public/build && \
           # Install dependencies
-          npm ci --no-audit --no-fund --omit=dev && \
-          npm run build && \
+          npm ci --only=production && \
+          npm run build:ssr && \
           composer install --no-dev --optimize-autoloader && \
           # Laravel setup
           php artisan key:generate --force && \
