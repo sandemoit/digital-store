@@ -25,12 +25,11 @@ jobs:
 
     - name: Copy files via SSH
       run: |
-        rsync -avz --delete \
+        rsync -avzh --delete \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
           --exclude='vendor' \
-          --exclude='tests/' \  # Tambahkan ini untuk exclude folder tests
           -e "ssh -o StrictHostKeyChecking=no" \
           ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
 
