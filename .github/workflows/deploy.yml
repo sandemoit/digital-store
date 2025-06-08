@@ -25,8 +25,11 @@ jobs:
 
     - name: Copy files via SSH
       run: |
-        rsync -avz --delete --exclude='node_modules' --exclude='vendor' -e "ssh -o StrictHostKeyChecking=no" \
-          ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH }}
+        rsync -avz --delete \
+        --exclude='.git' \
+        --exclude='.github' \
+        -e "ssh -o StrictHostKeyChecking=no" \
+        ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH}}
 
     - name: Run post-deploy commands
       run: |
@@ -34,7 +37,7 @@ jobs:
           "cd ${{ secrets.PROJECT_PATH }} && \
           export PATH=\$PATH:/usr/local/bin && \
           npm install --no-audit --no-fund && \
-          npm run production && \
+          npm build && \
           composer install --no-interaction --prefer-dist --optimize-autoloader && \
           php artisan migrate --force && \
           php artisan db:seed --force && \
