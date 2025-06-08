@@ -37,13 +37,15 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
-          export PATH=\$PATH:/usr/local/bin && \
-          npm install --no-audit --no-fund && \
-          npm run build && \
-          composer install --no-interaction --prefer-dist --optimize-autoloader && \
+          # Persiapan folder
+          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} && \
+          chmod -R 775 bootstrap/cache storage && \
+          chown -R www-data:www-data . && \
+          # Install dependencies
+          composer install --no-dev --optimize-autoloader && \
+          # Laravel setup
+          [ -f .env ] || cp .env.example .env && \
+          php artisan key:generate && \
           php artisan migrate --force && \
-          php artisan db:seed --force && \
-          php artisan storage:link && \
-          php artisan optimize:clear && \
-          chown -R ${{ secrets.VPS_USERNAME }}:www-data /var/www/sans_store && \
-          chmod -R 775 storage bootstrap/cache"
+          php artisan optimize && \
+          php artisan storage:link"
