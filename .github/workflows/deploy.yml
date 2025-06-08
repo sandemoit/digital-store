@@ -28,6 +28,8 @@ jobs:
         rsync -avz --delete \
         --exclude='.git' \
         --exclude='.github' \
+        --exclude='node_modules' \
+        --exclude='vendor' \
         -e "ssh -o StrictHostKeyChecking=no" \
         ./ ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }}:${{ secrets.PROJECT_PATH}}
 
