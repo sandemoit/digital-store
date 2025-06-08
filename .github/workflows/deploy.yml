@@ -25,7 +25,7 @@ jobs:
 
     - name: Copy files via SSH
       run: |
-        rsync -avzh --delete --info=ALL \
+        rsync -avzh --delete --info=ALL --chown=www-data:www-data \
           --exclude='.git' \
           --exclude='.github' \
           --exclude='node_modules' \
