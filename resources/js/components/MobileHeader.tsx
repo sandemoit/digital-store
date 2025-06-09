@@ -167,7 +167,7 @@ export default function MobileHeader({
                                     </Link>
 
                                     <Link
-                                        href='#'
+                                        href={route('buyer.profile')}
                                         className='block py-3 px-2 rounded text-gray-700 hover:bg-gray-100 hover:text-amber-500 font-medium'
                                         onClick={() => setMobileMenuOpen(false)}
                                     >

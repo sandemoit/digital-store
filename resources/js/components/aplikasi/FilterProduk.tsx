@@ -1,10 +1,25 @@
 'use client';
+
+import { Search } from "lucide-react";
+
 export default function FilterProduk() {
     return (
-        <div className="p-4">
-            <h3 className="font-medium mb-4">Filter Produk</h3>
+        <div className="p-2">
+            <div className="relative w-full border border-gray-300 rounded">
+                <div className="absolute inset-y-0 left-0 flex items-center pl-4">
+                    <Search size={20} className="text-gray-700" />
+                </div>
+                <input
+                    type="text"
+                    placeholder="Cari produk digital..."
+                    className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border] focus:outline-none focus:border-2 focus:border-gray-700"
+                />
+            </div>
+
+            <hr className="my-3 border-t border-gray-300" />
 
             {/* Kategori Filter */}
+            <h3 className="font-medium mb-4">Filter Produk</h3>
             <div className="mb-4">
                 <h4 className="text-sm font-medium mb-2">Kategori</h4>
                 <div className="space-y-2">

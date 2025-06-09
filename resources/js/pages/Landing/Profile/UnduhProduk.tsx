@@ -70,7 +70,7 @@ const UnduhProduk = ({ unduh }: UnduhProdukProps) => {
                                                 <div className="flex-shrink-0 h-10 w-10">
                                                     <img
                                                         className="h-10 w-10 rounded-full"
-                                                        src={Array.isArray(produk.gambar) ? produk.gambar[0] : produk.gambar}
+                                                        src={`storage/${Array.isArray(produk.gambar) ? produk.gambar[0]?.path : produk.gambar}`}
                                                         alt={produk.name}
                                                     />
                                                 </div>

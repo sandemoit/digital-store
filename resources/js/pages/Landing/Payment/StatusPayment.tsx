@@ -10,7 +10,8 @@ import {
     Download,
     Star,
     CreditCard,
-    FileText
+    FileText,
+    Send
 } from "lucide-react";
 import GuestLayout from '@/layouts/guest-layout';
 
@@ -456,7 +457,7 @@ const getStatusConfig = (transaction: Transaction) => {
         };
     } else if (status === 'processing' && payment_status === 'paid') {
         return {
-            icon: Truck,
+            icon: Send,
             iconBg: 'bg-blue-100',
             iconColor: 'text-blue-600',
             title: 'Pesanan Sedang Diproses',

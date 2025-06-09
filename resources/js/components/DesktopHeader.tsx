@@ -141,7 +141,7 @@ export default function DesktopHeader({ auth, cartCount }: DesktopHeaderProps) {
                                 )}
 
                                 <Link
-                                    href='#'
+                                    href={route('buyer.profile', { tab: 'purchases' })}
                                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                                 >
                                     Riwayat Pembelian

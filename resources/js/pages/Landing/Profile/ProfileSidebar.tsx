@@ -6,7 +6,7 @@ import { toast } from "sonner";
 interface ProfileSidebarProps {
   user: User;
   activeTab: string;
-  setActiveTab: (tab: string) => void;
+  changeTab: (tab: string) => void;
 }
 
 const getMenuClass = (isActive: boolean) => {
@@ -15,7 +15,7 @@ const getMenuClass = (isActive: boolean) => {
     : 'text-gray-700 hover:bg-gray-100'}`;
 };
 
-export const ProfileSidebar = ({ user, activeTab, setActiveTab }: ProfileSidebarProps) => (
+export const ProfileSidebar = ({ user, activeTab, changeTab }: ProfileSidebarProps) => (
   <div className="bg-white shadow rounded-lg p-4 mb-6">
     <div className="flex flex-col items-center pb-4 border-b border-gray-200 bg-white">
       <img
@@ -29,21 +29,21 @@ export const ProfileSidebar = ({ user, activeTab, setActiveTab }: ProfileSidebar
     <nav className="mt-4 space-y-2">
       <button
         className={`${getMenuClass(activeTab === 'profile')} w-full`}
-        onClick={() => setActiveTab('profile')}
+        onClick={() => changeTab('profile')}
       >
         <UserIcon className="w-5 h-5 mr-3" />
         <span>Profil</span>
       </button>
       <button
         className={`${getMenuClass(activeTab === 'purchases')} w-full`}
-        onClick={() => setActiveTab('purchases')}
+        onClick={() => changeTab('purchases')}
       >
         <ShoppingBag className="w-5 h-5 mr-3" />
         <span>Riwayat Pembelian</span>
       </button>
       <button
         className={`${getMenuClass(activeTab === 'unduh')} w-full`}
-        onClick={() => setActiveTab('unduh')}
+        onClick={() => changeTab('unduh')}
       >
         <DownloadCloud className="w-5 h-5 mr-3" />
         <span>Unduh Produk</span>
@@ -52,7 +52,7 @@ export const ProfileSidebar = ({ user, activeTab, setActiveTab }: ProfileSidebar
         href={route('logout')}
         method="post"
         as="button"
-        className={`${getMenuClass(activeTab === 'logout')} w-full`}
+        className={`${getMenuClass(false)} w-full`} // Ganti dari activeTab === 'logout'
         onClick={() => toast.success('Berhasil logout')}
       >
         <LogOut className="w-5 h-5 mr-3" />

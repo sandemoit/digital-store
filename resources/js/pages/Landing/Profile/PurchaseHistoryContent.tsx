@@ -22,12 +22,6 @@ interface Props {
 }
 
 export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
-  const getMainCategory = (items: TransactionItem[]) => {
-    // Get the first item with a category, or default to 'Umum'
-    const itemWithCategory = items.find(item => item.product?.kategori?.nama);
-    return itemWithCategory?.product?.kategori?.nama || 'Umum';
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('id-ID', {
       day: 'numeric',
@@ -91,16 +85,13 @@ export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
                 ID Order
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Kategori
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tanggal
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Total
+                Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
+                Total
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Aksi
@@ -114,13 +105,7 @@ export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
                   {transaction.order_number}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {getMainCategory(transaction.items)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {formatDate(transaction.created_at)}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {formatCurrency(transaction.total_amount)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(transaction.status)}`}>
@@ -128,12 +113,32 @@ export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <Link
-                    href={route('payment.status', transaction.order_number)}
-                    className="text-amber-500 hover:text-amber-900 font-medium"
-                  >
-                    Detail
-                  </Link>
+                  {formatCurrency(transaction.total_amount)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {transaction.status === 'pending' ? (
+                    <div className="flex space-x-2">
+                      <Link
+                        href={route('payment.checkout', transaction.order_number)}
+                        className="text-blue-500 hover:text-blue-900 font-medium"
+                      >
+                        Bayar
+                      </Link>
+                      <Link
+                        href={route('payment.cancel', transaction.order_number)}
+                        className="text-red-500 hover:text-red-900 font-medium"
+                      >
+                        Batal
+                      </Link>
+                    </div>
+                  ) : (
+                    <Link
+                      href={route('payment.status', transaction.order_number)}
+                      className="text-amber-500 hover:text-amber-900 font-medium"
+                    >
+                      Detail
+                    </Link>
+                  )}
                 </td>
               </tr>
             ))}

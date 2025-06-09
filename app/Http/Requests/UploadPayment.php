@@ -11,12 +11,7 @@ class UploadPayment extends FormRequest
      */
     public function authorize(): bool
     {
-        // Ubah ke true jika semua user bisa upload
         return true;
-
-        // Atau tambahkan logic authorization seperti:
-        // return auth()->check(); // Hanya user yang login
-        // return $this->user()->can('upload-payment'); // Dengan permission
     }
 
     /**

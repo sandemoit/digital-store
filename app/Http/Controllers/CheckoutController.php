@@ -120,7 +120,7 @@ class CheckoutController extends Controller
 
         try {
             // Generate unique order number
-            $orderNumber = 'ORD-' . date('Ymd') . '-' . strtoupper(uniqid());
+            $orderNumber = 'ORD-' . time();
             // Create transaction record
             $transaction = Transaksi::create([
                 'user_id' => $user->id,
@@ -166,7 +166,7 @@ class CheckoutController extends Controller
 
             // Route based on payment status
             return redirect()->route(
-                $transaction->payment_status === 'paid' ? 'payment.success' : ($paymentMethod->method === 'manual' ? 'payment.detail' : 'payment.gateway'),
+                $transaction->payment_status === 'paid' ? 'payment.success' : ($paymentMethod->method === 'manual' ? 'payment.checkout' : 'payment.gateway'),
                 $transaction->order_number
             )->with('success', $transaction->payment_status === 'paid' ? 'Pembayaran berhasil diproses!' : null);
         } catch (\Exception $e) {
@@ -183,6 +183,10 @@ class CheckoutController extends Controller
             ->where('order_number', $orderNumber)
             ->where('user_id', Auth::user()->id)
             ->firstOrFail();
+
+        if (in_array($transaction->payment_status, ['paid', 'completed'])) {
+            return redirect()->route('payment.status', $transaction->order_number);
+        }
 
         return Inertia::render('Landing/Payment/Detail', [
             'transaction' => [
@@ -255,8 +259,6 @@ class CheckoutController extends Controller
 
     public function uploadPaymentProof(UploadPayment $request, $orderNumber)
     {
-        $validated = $request->validated();
-
         try {
             // Cari transaksi berdasarkan order number
             $transaction = Transaksi::where('order_number', $orderNumber)
@@ -274,8 +276,8 @@ class CheckoutController extends Controller
                 Storage::disk('public')->delete($transaction->payment_proof);
             }
 
-            // Upload file baru
-            $file = $validated->file('payment_proof');
+            // Upload file baru - gunakan $request->file() langsung tanpa validated()
+            $file = $request->file('payment_proof');
             $filename = 'payment_proof_' . $orderNumber . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('payment-proofs', $filename, 'public');
 
@@ -290,7 +292,7 @@ class CheckoutController extends Controller
             // Redirect ke halaman sukses
             return redirect()->route('payment.upload.success', $orderNumber);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
+            Log::error('Upload payment proof error: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Gagal mengupload bukti pembayaran. Silakan coba lagi.']);
         }
     }
@@ -336,13 +338,13 @@ class CheckoutController extends Controller
                 'cancelled_at' => now(),
             ]);
 
-            return redirect()->route('home')->with('success', 'Pesanan berhasil dibatalkan');
+            return redirect()->route('payment.status', $orderNumber)->with('success', 'Pesanan berhasil dibatalkan');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Gagal membatalkan pesanan. Silakan coba lagi.']);
         }
     }
 
-    public function statusPayment(Request $request, $orderNumber)
+    public function statusPayment($orderNumber)
     {
         try {
             // Ambil transaksi berdasarkan order_number atau ID

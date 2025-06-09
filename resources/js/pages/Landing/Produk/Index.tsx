@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import GuestLayout from "@/layouts/guest-layout";
 import { Filter, Search, X } from "lucide-react";
 import HeroSection from "@/components/HeroSection";
-import ProdukAll from "@/components/produk/ProdukAll";
-import FilterProduk from "@/components/produk/FilterProduk";
+import ProdukAll from "@/components/aplikasi/ProdukAll";
+import FilterProduk from "@/components/aplikasi/FilterProduk";
 
 interface ProdukProps {
     produk?: any[];
@@ -35,23 +35,6 @@ const ProdukIndex = ({ produk = [] }: ProdukProps) => {
         <GuestLayout title="Produk">
             <div className="bg-gray-100 min-h-auto relative">
                 <HeroSection title='Mau Cari Produk Apa?' description='Ayo pilih produk premium di Sans Store, untuk membantu meningkatkan bisnis dan proyek kreatif Anda.' />
-                <div className="max-w-7xl mx-auto px-4 pt-4">
-                    <div className="flex flex-col sm:flex-row w-full items-center gap-3">
-                        <div className="relative w-full shadow-md">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-4">
-                                <Search size={20} className="text-gray-700" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Cari produk digital..."
-                                className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border,box-shadow] focus:outline-none focus:border-2 focus:border-amber-500 focus:shadow-lg"
-                            />
-                        </div>
-                        <button className="bg-amber-500 hover:bg-amber-600 text-white font-medium px-6 py-4 rounded-sm whitespace-nowrap transition-[background-color,border,box-shadow] hover:shadow-lg z-1 shadow-md">
-                            Search
-                        </button>
-                    </div>
-                </div>
                 <div className="max-w-7xl mx-auto p-4">
                     {/* Mobile Filter Button */}
                     {isMobile && (

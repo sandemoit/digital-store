@@ -53,7 +53,18 @@ export default function ProfileIndex() {
     updated_at: auth.user?.updated_at || "",
   } as const;
 
-  const [activeTab, setActiveTab] = useState('profile');
+  const { url } = usePage();
+  const urlParams = new URLSearchParams(url.split('?')[1]);
+  const initialTab = urlParams.get('tab') || 'profile';
+
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  const changeTab = (tabName: string) => {
+    setActiveTab(tabName);
+    const newUrl = route('buyer.profile', { tab: tabName });
+
+    window.history.pushState({}, '', newUrl);
+  };
 
   const renderContent = () => {
     switch (activeTab) {
@@ -79,7 +90,7 @@ export default function ProfileIndex() {
               <ProfileSidebar
                 user={UserData}
                 activeTab={activeTab}
-                setActiveTab={setActiveTab}
+                changeTab={changeTab}
               />
             </div>
             <div className="lg:col-span-6 space-y-6">

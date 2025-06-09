@@ -27,8 +27,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "sudo mkdir -p ${{ secrets.PROJECT_PATH }} && \
-           sudo chown -R ${{ secrets.VPS_USERNAME }}:www-data ${{ secrets.PROJECT_PATH }} && \
-           sudo chmod -R 775 ${{ secrets.PROJECT_PATH }}"
+          sudo chown -R ${{ secrets.VPS_USERNAME }}:www-data ${{ secrets.PROJECT_PATH }} && \
+          sudo chmod -R 775 ${{ secrets.PROJECT_PATH }}"
 
     - name: Copy files via SSH
       run: |
@@ -54,7 +54,7 @@ jobs:
           sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
           sudo chmod -R 775 bootstrap/cache storage public/build && \
           # Install dependencies
-          npm ci --only=production && \
+          npm ci --no-audit --no-fund --omit=dev && \
           npm run build:ssr && \
           composer install --no-dev --optimize-autoloader && \
           # Laravel setup
@@ -64,4 +64,5 @@ jobs:
           php artisan route:clear && \
           php artisan cache:clear && \
           php artisan optimize && \
-          php artisan storage:link --force"
+          php artisan storage:link --force && \
+          php artisan migrate --force"

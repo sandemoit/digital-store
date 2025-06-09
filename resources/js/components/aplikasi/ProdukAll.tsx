@@ -42,11 +42,29 @@ interface ProductTerkaitCardProps {
 export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
     const { auth } = usePage<SharedData>().props;
 
-    // Add items to cart
+    // States
+    const [activeFilter, setActiveFilter] = useState("all");
+    const [sortOption, setSortOption] = useState("default");
+    const [showFilters, setShowFilters] = useState(false);
+    const [viewMode, setViewMode] = useState("grid");
+    const [likedProducts, setLikedProducts] = useState<Record<number, boolean>>({});
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+    const [maxPrice, setMaxPrice] = useState(1000);
+
+    // Effects
+    useEffect(() => {
+        if (produk.length > 0) {
+            const highestPrice = Math.max(...produk.map(p => p.price || p.harga || 0));
+            const finalMaxPrice = highestPrice > 0 ? highestPrice : 1000;
+            setMaxPrice(finalMaxPrice);
+            setPriceRange([0, finalMaxPrice]);
+        }
+    }, [produk]);
+
+    // Handlers
     const handleAddToCart = async (product: Product) => {
         try {
             if (auth.user) {
-                // Jika user sudah login, simpan ke database via API
                 const response = await axios.post(route('cart.add', { productId: product.id }));
 
                 if (response.data.success) {
@@ -60,10 +78,9 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                     throw new Error(response.data.message);
                 }
             } else {
-                // Jika belum login, simpan ke local storage
                 addToCart({
                     id: product.id,
-                    quantity: 1, // default beli 1
+                    quantity: 1,
                     name: product.title || product.name || '',
                     harga: product.price || product.harga || 0,
                     gambar: product.image || (product.gambar?.[0]?.path || '')
@@ -78,36 +95,6 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
         router.visit(route('cart.index'));
     };
 
-    // States
-    const [activeFilter, setActiveFilter] = useState("all");
-    const [sortOption, setSortOption] = useState("default");
-    const [showFilters, setShowFilters] = useState(false);
-    const [viewMode, setViewMode] = useState("grid");
-    const [likedProducts, setLikedProducts] = useState<Record<number, boolean>>({});
-    const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
-    const [maxPrice, setMaxPrice] = useState(1000);
-
-    useEffect(() => {
-        // Find the highest price among all products to set price range
-        if (produk.length > 0) {
-            const highestPrice = Math.max(...produk.map(p =>
-                (p.price || p.harga || 0)
-            ));
-            setMaxPrice(highestPrice > 0 ? highestPrice : 1000);
-            setPriceRange([0, highestPrice > 0 ? highestPrice : 1000]);
-        }
-    }, [produk]);
-
-    // Get unique categories from the products
-    const allCategories = produk.map(item => {
-        if (item.kategori && item.kategori.nama) {
-            return item.kategori.nama;
-        }
-        return item.category || "Uncategorized";
-    });
-    const categories = ["all", ...Array.from(new Set(allCategories))];
-
-    // Handle liking a product
     const toggleLike = (productId: number) => {
         setLikedProducts(prev => ({
             ...prev,
@@ -115,22 +102,31 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
         }));
     };
 
-    // Sort and filter products
+    // Utilities
+    const getUniqueCategories = () => {
+        const allCategories = produk.map(item => {
+            if (item.kategori?.nama) return item.kategori.nama;
+            return item.category || "Uncategorized";
+        });
+        return ["all", ...Array.from(new Set(allCategories))];
+    };
+
     const getSortedAndFilteredProducts = () => {
-        // First filter by category
+        // Filter by category
         let filtered = activeFilter === "all"
             ? produk
             : produk.filter(product => {
-                if (product.kategori && product.kategori.nama) {
-                    return product.kategori.nama === activeFilter;
-                }
-                return (product.category === activeFilter);
+                const productCategory = product.kategori?.nama || product.category;
+                return productCategory === activeFilter;
             });
 
-        // Then filter by price range
-        filtered = filtered.filter(({ price = 0 }) => price >= priceRange[0] && price <= priceRange[1]);
+        // Filter by price range
+        filtered = filtered.filter(product => {
+            const price = product.price || product.harga || 0;
+            return price >= priceRange[0] && price <= priceRange[1];
+        });
 
-        // Then sort
+        // Sort products
         return filtered.sort((a, b) => {
             const priceA = a.price || a.harga || 0;
             const priceB = b.price || b.harga || 0;
@@ -140,23 +136,15 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
             const reviewsB = b.ulasan_count || b.reviews || 0;
 
             switch (sortOption) {
-                case "price-low":
-                    return priceA - priceB;
-                case "price-high":
-                    return priceB - priceA;
-                case "rating":
-                    return ratingB - ratingA;
-                case "reviews":
-                    return reviewsB - reviewsA;
-                default:
-                    return (b.id || 0) - (a.id || 0); // default sort by newest (assuming higher id = newer)
+                case "price-low": return priceA - priceB;
+                case "price-high": return priceB - priceA;
+                case "rating": return ratingB - ratingA;
+                case "reviews": return reviewsB - reviewsA;
+                default: return (b.id || 0) - (a.id || 0);
             }
         });
     };
 
-    const displayProducts = getSortedAndFilteredProducts();
-
-    // Format currency - simplify price display
     const formatPrice = (price: number) => {
         if (price === 0) return 'Gratis';
         if (price >= 1000000) return `Rp${(price / 1000000).toFixed(1)}jt`;
@@ -164,10 +152,42 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
         return `Rp${price}`;
     };
 
+    const getProductImage = (product: Product) => {
+        return `/storage/${product.image || product.gambar?.[0]?.path || 'placeholder.jpg'}`;
+    };
+
+    const getProductName = (product: Product) => {
+        return product.title || product.name || '';
+    };
+
+    const getProductCategory = (product: Product) => {
+        return product.kategori?.nama || product.category || "Uncategorized";
+    };
+
+    const getProductRating = (product: Product) => {
+        const rating = product.ulasan_avg_rating || product.rating || 0;
+        return parseFloat(rating.toString()).toFixed(1);
+    };
+
+    const getProductReviews = (product: Product) => {
+        return product.ulasan_count || product.reviews || 0;
+    };
+
+    const getProductPrice = (product: Product) => {
+        return product.price || product.harga || 0;
+    };
+
+    // Data
+    const categories = getUniqueCategories();
+    const displayProducts = getSortedAndFilteredProducts();
+
     return (
         <div className="bg-white shadow rounded-sm p-6 mb-6">
+            {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 md:mb-0">Semua Produk</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 md:mb-0">
+                    Semua Produk
+                </h2>
 
                 <div className="flex flex-col sm:flex-row gap-4 sm:gap-x-4 sm:items-center">
                     {/* Sort Options */}
@@ -183,7 +203,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                         <option value="reviews">Ulasan Terbanyak</option>
                     </select>
 
-                    {/* Filter Toggle Button */}
+                    {/* Filter Toggle */}
                     <button
                         onClick={() => setShowFilters(!showFilters)}
                         className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-sm transition-colors w-full sm:w-auto"
@@ -196,13 +216,15 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                     <div className="w-full sm:w-auto flex bg-gray-100 rounded-sm">
                         <button
                             onClick={() => setViewMode("grid")}
-                            className={`px-3 py-2 rounded-l-lg ${viewMode === "grid" ? "bg-amber-500 text-white" : "text-gray-700"}`}
+                            className={`px-3 py-2 rounded-l-sm ${viewMode === "grid" ? "bg-amber-500 text-white" : "text-gray-700"
+                                }`}
                         >
                             Grid
                         </button>
                         <button
                             onClick={() => setViewMode("list")}
-                            className={`px-3 py-2 rounded-r-lg ${viewMode === "list" ? "bg-amber-500 text-white" : "text-gray-700"}`}
+                            className={`px-3 py-2 rounded-r-sm ${viewMode === "list" ? "bg-amber-500 text-white" : "text-gray-700"
+                                }`}
                         >
                             List
                         </button>
@@ -210,10 +232,10 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                 </div>
             </div>
 
-            {/* Mobile Filters */}
+            {/* Filters Panel */}
             {showFilters && (
                 <div className="mb-6">
-                    {/* Category Filter Pills */}
+                    {/* Category Pills */}
                     <div className="overflow-x-auto pb-4">
                         <div className="flex gap-2 min-w-max">
                             {categories.map((category) => (
@@ -231,9 +253,11 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                         </div>
                     </div>
 
-                    {/* Price Range Filter */}
+                    {/* Price Range */}
                     <div className="mb-4">
-                        <p className="text-sm font-medium text-gray-700 mb-2">Rentang Harga: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}</p>
+                        <p className="text-sm font-medium text-gray-700 mb-2">
+                            Rentang Harga: {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
+                        </p>
                         <div className="flex items-center gap-4">
                             <input
                                 type="range"
@@ -256,9 +280,10 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                 </div>
             )}
 
-            {/* Products Grid or List */}
+            {/* Products Display */}
             {viewMode === "grid" ? (
-                <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                // Grid View - FIXED: Changed from grid-cols-1 to grid-cols-2 for mobile
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
                     {displayProducts.map((product) => (
                         <div
                             key={product.id}
@@ -267,26 +292,35 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                             {/* Product Image */}
                             <div className="relative overflow-hidden">
                                 {product.featured && (
-                                    <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
+                                    <span className="absolute top-2 left-2 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                                         Featured
                                     </span>
                                 )}
                                 <LazyLoadImage
-                                    src={`/storage/${product.gambar?.[0]?.path}`}
-                                    alt={product.name}
-                                    className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                    src={getProductImage(product)}
+                                    alt={getProductName(product)}
+                                    className="w-full h-40 sm:h-56 object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
-                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center gap-3">
-                                    <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">
+
+                                {/* Hover Actions - Hidden on mobile for better UX */}
+                                <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 hidden sm:flex items-center justify-center gap-3">
+                                    <button
+                                        onClick={() => toggleLike(product.id)}
+                                        className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
+                                    >
                                         <Heart size={18} />
                                     </button>
                                     {product.link_demo && (
-                                        <a href={product.link_demo} target="_blank" className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">
+                                        <a
+                                            href={product.link_demo}
+                                            target="_blank"
+                                            className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
+                                        >
                                             <Eye size={18} />
                                         </a>
                                     )}
                                     <button
-                                        onClick={() => { handleAddToCart(product) }}
+                                        onClick={() => handleAddToCart(product)}
                                         className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
                                     >
                                         <ShoppingCart size={18} />
@@ -295,42 +329,40 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                             </div>
 
                             {/* Product Info */}
-                            <div className="p-5">
-                                <div className="mb-3">
-                                    <span className="inline-flex items-center gap-1 text-sm text-amber-500 font-medium">
-                                        <Tag size={14} />
-                                        {product.kategori?.nama || product.category || "Uncategorized"}
+                            <div className="p-3 sm:p-4">
+                                <div className="mb-2">
+                                    <span className="inline-flex items-center gap-1 text-xs sm:text-sm text-amber-500 font-medium">
+                                        <Tag size={12} className="sm:w-4 sm:h-4" />
+                                        <span className="truncate">{getProductCategory(product)}</span>
                                     </span>
                                 </div>
-                                <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors line-clamp-2 h-14">
-                                    <a href={`/produk/${product.id}`}>{product.title || product.name}</a>
+
+                                <h3 className="text-sm sm:text-base font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors line-clamp-2 h-8 sm:h-12">
+                                    <a href={`/produk/${product.id}`}>{getProductName(product)}</a>
                                 </h3>
-                                <div className="flex items-center mb-4">
+
+                                <div className="flex items-center mb-3">
                                     <div className="flex items-center text-yellow-400 mr-2">
-                                        <Star size={16} fill="currentColor" />
-                                        <span className="text-sm font-medium text-gray-700 ml-1">
-                                            {product.ulasan_avg_rating ?
-                                                parseFloat(product.ulasan_avg_rating.toString()).toFixed(1) :
-                                                product.rating ? product.rating.toFixed(1) : "0.0"}
+                                        <Star size={12} className="sm:w-4 sm:h-4" fill="currentColor" />
+                                        <span className="text-xs sm:text-sm font-medium text-gray-700 ml-1">
+                                            {getProductRating(product)}
                                         </span>
                                     </div>
                                     <span className="text-xs text-gray-500">
-                                        ({product.ulasan_count || product.reviews || "0"} ulasan)
+                                        ({getProductReviews(product)} ulasan)
                                     </span>
                                 </div>
+
                                 <div className="flex items-center justify-between">
                                     <RupiahFormatter
-                                        className="text-xl font-bold text-gray-900"
-                                        value={product.price || product.harga || 0}
+                                        className="text-sm sm:text-lg font-bold text-gray-900"
+                                        value={getProductPrice(product)}
                                     />
-                                    {/* <span className="text-xl font-bold text-gray-900">
-                                        {formatPrice(product.price || product.harga || 0)}
-                                    </span> */}
                                     <button
                                         onClick={() => handleAddToCart(product)}
-                                        className="flex items-center justify-center bg-amber-50 hover:bg-amber-500 text-amber-500 hover:text-white rounded-sm p-2 transition-colors duration-300 shadow-sm"
+                                        className="flex items-center justify-center bg-amber-50 hover:bg-amber-500 text-amber-500 hover:text-white rounded-sm p-1.5 sm:p-2 transition-colors duration-300 shadow-sm"
                                     >
-                                        <ShoppingCart size={18} />
+                                        <ShoppingCart size={14} className="sm:w-4 sm:h-4" />
                                     </button>
                                 </div>
                             </div>
@@ -338,13 +370,14 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                     ))}
                 </div>
             ) : (
+                // List View
                 <div className="flex flex-col gap-4">
                     {displayProducts.map((product) => (
                         <div
                             key={product.id}
                             className="group bg-white rounded-sm overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row"
                         >
-                            {/* Product Image - Smaller in list view */}
+                            {/* Product Image */}
                             <div className="relative md:w-64 h-48">
                                 {product.featured && (
                                     <span className="absolute top-3 left-3 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
@@ -352,34 +385,32 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                     </span>
                                 )}
                                 <LazyLoadImage
-                                    src={`/storage/${product.image || (product.gambar?.[0]?.path || 'placeholder.jpg')}`}
-                                    alt={product.title || product.name || ''}
+                                    src={getProductImage(product)}
+                                    alt={getProductName(product)}
                                     className="w-full h-full object-cover"
                                 />
                             </div>
 
-                            {/* Product Info - Expanded in list view */}
+                            {/* Product Info */}
                             <div className="p-5 flex-grow flex flex-col">
                                 <div className="flex justify-between mb-2">
                                     <span className="inline-flex items-center gap-1 text-sm text-amber-500 font-medium">
                                         <Tag size={14} />
-                                        {product.kategori?.nama || product.category || "Uncategorized"}
+                                        {getProductCategory(product)}
                                     </span>
                                     <div className="flex items-center text-yellow-400">
                                         <Star size={16} fill="currentColor" />
                                         <span className="text-sm font-medium text-gray-700 ml-1">
-                                            {product.ulasan_avg_rating ?
-                                                parseFloat(product.ulasan_avg_rating.toString()).toFixed(1) :
-                                                product.rating ? product.rating.toFixed(1) : "0.0"}
+                                            {getProductRating(product)}
                                         </span>
                                         <span className="text-xs text-gray-500 ml-1">
-                                            ({product.ulasan_count || product.reviews || "0"} ulasan)
+                                            ({getProductReviews(product)} ulasan)
                                         </span>
                                     </div>
                                 </div>
 
                                 <h3 className="text-lg font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors">
-                                    <a href={`/produk/${product.id}`}>{product.title || product.name}</a>
+                                    <a href={`/produk/${product.id}`}>{getProductName(product)}</a>
                                 </h3>
 
                                 <p className="text-sm text-gray-600 mb-auto line-clamp-2">
@@ -388,19 +419,22 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
 
                                 <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                                     <RupiahFormatter
-                                        className='text-xl font-bold text-gray-900'
-                                        value={product.price || product.harga || 0}
+                                        className="text-xl font-bold text-gray-900"
+                                        value={getProductPrice(product)}
                                     />
 
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => toggleLike(product.id)}
-                                            className={`p-2 rounded-sm ${likedProducts[product.id] ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-700'} hover:bg-red-500 hover:text-white transition-colors`}
+                                            className={`p-2 rounded-sm ${likedProducts[product.id]
+                                                ? 'bg-red-500 text-white'
+                                                : 'bg-gray-100 text-gray-700'
+                                                } hover:bg-red-500 hover:text-white transition-colors`}
                                         >
                                             <Heart size={18} fill={likedProducts[product.id] ? "currentColor" : "none"} />
                                         </button>
 
-                                        {(product.link_demo) && (
+                                        {product.link_demo && (
                                             <a
                                                 href={product.link_demo}
                                                 target="_blank"
@@ -413,7 +447,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
 
                                         <button
                                             onClick={() => handleAddToCart(product)}
-                                            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-500 text-white px-4 py-2 rounded-sm transition-colors"
+                                            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-sm transition-colors"
                                         >
                                             <ShoppingCart size={18} />
                                             <span>Beli Sekarang</span>
@@ -426,7 +460,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                 </div>
             )}
 
-            {/* No Results Message */}
+            {/* No Results */}
             {displayProducts.length === 0 && (
                 <div className="text-center py-10">
                     <p className="text-gray-500">Tidak ada produk yang ditemukan.</p>
