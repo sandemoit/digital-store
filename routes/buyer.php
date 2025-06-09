@@ -27,7 +27,7 @@ Route::middleware(['auth', 'verified', CheckRole::class])->group(function () {
 
     Route::get('/payment/checkout/{orderNumber}', [CheckoutController::class, 'paymentDetail'])->name('payment.checkout');
     Route::get('/payment/gateway/{orderNumber}', [CheckoutController::class, 'paymentGateway'])->name('payment.gateway');
-    Route::get('/payment/success/{orderNumber?}', [CheckoutController::class, 'success'])->name('payment.success');
+    // Route::get('/payment/success/{orderNumber?}', [CheckoutController::class, 'success'])->name('payment.success');
     Route::get('/payment/cancel/{orderNumber}', [CheckoutController::class, 'cancelPayment'])->name('payment.cancel');
 
     Route::post('/payment/upload/{orderNumber}', [CheckoutController::class, 'uploadPaymentProof']);

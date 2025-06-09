@@ -43,9 +43,19 @@ class CheckoutController extends Controller
             ->orderBy('name')
             ->get()
             ->map(function ($method) {
-                // Ensure fee is properly formatted as number
-                $method->fee = floatval($method->fee);
-                return $method;
+                // Ensure fee is properly formatted as number and include type_fee
+                return [
+                    'id' => $method->id,
+                    'name' => $method->name,
+                    'code' => $method->code,
+                    'type' => $method->type,
+                    'method' => $method->method,
+                    'type_fee' => $method->type_fee, // Add type_fee field
+                    'fee' => floatval($method->fee),
+                    'instructions' => $method->instructions,
+                    'account_number' => $method->account_number,
+                    'account_name' => $method->account_name,
+                ];
             })
             ->groupBy('type');
 
@@ -90,7 +100,16 @@ class CheckoutController extends Controller
         });
 
         $walletAmount = floatval($request->wallet_amount ?? 0);
-        $paymentFee = floatval($paymentMethod->fee);
+
+        // Calculate payment fee based on type_fee
+        $paymentFee = 0;
+        if ($paymentMethod->type_fee === 'percent') {
+            // Calculate percentage fee based on subtotal
+            $paymentFee = ($subtotal * floatval($paymentMethod->fee)) / 100;
+        } else {
+            // Flat fee
+            $paymentFee = floatval($paymentMethod->fee);
+        }
 
         // Calculate total: subtotal + payment fee - wallet amount
         $totalBeforeWallet = $subtotal + $paymentFee;
@@ -121,6 +140,7 @@ class CheckoutController extends Controller
         try {
             // Generate unique order number
             $orderNumber = 'ORD-' . time();
+
             // Create transaction record
             $transaction = Transaksi::create([
                 'user_id' => $user->id,
@@ -141,7 +161,7 @@ class CheckoutController extends Controller
                     'product_id' => $item->products_id,
                     'quantity' => $item->jumlah,
                     'price' => $item->product->harga,
-                    'total' => $item->product->harga * $item->jumlah,
+                    'total' => $totalAmount,
                 ]);
             }
 
@@ -166,7 +186,7 @@ class CheckoutController extends Controller
 
             // Route based on payment status
             return redirect()->route(
-                $transaction->payment_status === 'paid' ? 'payment.success' : ($paymentMethod->method === 'manual' ? 'payment.checkout' : 'payment.gateway'),
+                $transaction->payment_status === 'paid' ? 'payment.status' : ($paymentMethod->method === 'manual' ? 'payment.checkout' : 'payment.gateway'),
                 $transaction->order_number
             )->with('success', $transaction->payment_status === 'paid' ? 'Pembayaran berhasil diproses!' : null);
         } catch (\Exception $e) {
@@ -176,13 +196,19 @@ class CheckoutController extends Controller
             ]);
         }
     }
-
     public function paymentDetail($orderNumber)
     {
         $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
             ->where('order_number', $orderNumber)
             ->where('user_id', Auth::user()->id)
             ->firstOrFail();
+
+        if ($transaction->checkout_url) {
+            return view('payment.redirect', [
+                'checkout_url' => $transaction->checkout_url,
+                'transaction' => $transaction
+            ]);
+        }
 
         if (in_array($transaction->payment_status, ['paid', 'completed'])) {
             return redirect()->route('payment.status', $transaction->order_number);
@@ -228,13 +254,51 @@ class CheckoutController extends Controller
             ->where('user_id', Auth::user()->id)
             ->firstOrFail();
 
-        // For now, just render a placeholder page
-        // You can implement Midtrans integration here later
-        return Inertia::render('Landing/Payment/Gateway', [
-            'transaction' => $transaction,
-            'paymentMethod' => $transaction->paymentMethod,
-            'midtransUrl' => '#', // Placeholder for Midtrans URL
-        ]);
+        DB::beginTransaction();
+
+        $endpoint = '/transaction/create';
+
+        try {
+            $tripay = new TripayController();
+            $response = $tripay->requestTransaksi($transaction, $endpoint);
+
+            if (!isset($response['data'])) {
+                DB::rollback();
+                return redirect()->route('checkout')
+                    ->withErrors(['payment' => 'Gagal membuat transaksi pembayaran. Response tidak valid.']);
+            }
+
+            if (isset($response['success']) && $response['success'] && isset($response['data'])) {
+                $transaction->update([
+                    'pay_code' => $response['data']['pay_code'],
+                    'checkout_url' => $response['data']['checkout_url']
+                ]);
+
+                DB::commit();
+
+                // Gunakan view intermediate daripada redirect langsung untuk menghindari CORS
+                return view('payment.redirect', [
+                    'checkout_url' => $response['data']['checkout_url'],
+                    'transaction' => $transaction
+                ]);
+            } else {
+                DB::rollback();
+                return redirect()->route('checkout')
+                    ->withErrors(['payment' => 'Gagal membuat transaksi: ' . ($response['message'] ?? 'Unknown error')]);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            // Log error untuk debugging
+            Log::error('Payment Gateway Error: ' . $e->getMessage(), [
+                'order_number' => $orderNumber,
+                'user_id' => Auth::user()->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('checkout')
+                ->withErrors(['payment' => 'Terjadi kesalahan dalam memproses pembayaran. Silakan coba lagi.']);
+        }
     }
 
     public function success($orderNumber = null)

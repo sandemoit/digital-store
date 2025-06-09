@@ -17,6 +17,7 @@ interface PaymentMethod {
   code: string;
   type: string;
   method: string;
+  type_fee: string; // 'flat' or 'percent'
   fee: number;
   instructions?: string;
 }
@@ -64,7 +65,19 @@ export default function CheckoutIndex({
     // Convert all values to numbers to prevent string concatenation
     const numSubtotal = Number(subtotal) || 0;
     const numWalletAmount = Number(walletAmount) || 0;
-    const numPaymentFee = selectedMethod ? Number(selectedMethod.fee) || 0 : 0;
+
+    // Calculate payment fee based on type_fee
+    let numPaymentFee = 0;
+    if (selectedMethod) {
+      const feeValue = Number(selectedMethod.fee) || 0;
+      if (selectedMethod.type_fee === 'percent') {
+        // Calculate percentage fee based on subtotal
+        numPaymentFee = (numSubtotal * feeValue) / 100;
+      } else {
+        // Flat fee
+        numPaymentFee = feeValue;
+      }
+    }
 
     // Calculate total: subtotal + payment fee - wallet amount
     const total = numSubtotal + numPaymentFee - numWalletAmount;
@@ -120,6 +133,25 @@ export default function CheckoutIndex({
     return new Intl.NumberFormat('id-ID').format(amount);
   };
 
+  // Helper function to format fee display
+  const formatFeeDisplay = (method: PaymentMethod) => {
+    if (method.type_fee === 'percent') {
+      return `${method.fee}%`;
+    } else {
+      return `Rp${formatCurrency(method.fee)}`;
+    }
+  };
+
+  // Helper function to calculate and format fee amount for display
+  const calculateFeeAmount = (method: PaymentMethod) => {
+    if (method.type_fee === 'percent') {
+      const feeAmount = (calculations.subtotal * method.fee) / 100;
+      return feeAmount;
+    } else {
+      return method.fee;
+    }
+  };
+
   return (
     <GuestLayout title="Checkout">
       <Head title="Checkout" />
@@ -151,7 +183,12 @@ export default function CheckoutIndex({
                     </div>
                     {calculations.selectedMethod && calculations.paymentFee > 0 && (
                       <div className="flex justify-between text-sm">
-                        <span>Biaya {calculations.selectedMethod.name}</span>
+                        <span>
+                          Biaya {calculations.selectedMethod.name}
+                          {calculations.selectedMethod.type_fee === 'percent' &&
+                            ` (${calculations.selectedMethod.fee}%)`
+                          }
+                        </span>
                         <span className="text-blue-600">+Rp{formatCurrency(calculations.paymentFee)}</span>
                       </div>
                     )}
@@ -257,7 +294,12 @@ export default function CheckoutIndex({
                                     <span className="font-medium">{method.name}</span>
                                     {method.fee > 0 && (
                                       <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                                        +Rp{formatCurrency(method.fee)}
+                                        +{formatFeeDisplay(method)}
+                                        {method.type_fee === 'percent' && selectedPayment === method.id && (
+                                          <span className="ml-1 text-gray-600">
+                                            (Rp{formatCurrency(calculateFeeAmount(method))})
+                                          </span>
+                                        )}
                                       </span>
                                     )}
                                   </div>

@@ -15,6 +15,7 @@ class PaymentMethod extends Model
         'logo',
         'type',
         'method',
+        'type_fee',
         'fee',
         'instructions',
         'account_number',
