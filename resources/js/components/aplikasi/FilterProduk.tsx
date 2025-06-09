@@ -5,14 +5,14 @@ import { Search } from "lucide-react";
 export default function FilterProduk() {
     return (
         <div className="p-2">
-            <div className="relative w-full border border-gray-300 rounded">
+            <div className="relative w-full border border-gray-300 rounded transition-[border] focus:outline-none focus:border-2 focus:border-gray-700">
                 <div className="absolute inset-y-0 left-0 flex items-center pl-4">
                     <Search size={20} className="text-gray-700" />
                 </div>
                 <input
                     type="text"
                     placeholder="Cari produk digital..."
-                    className="pl-12 w-full px-5 py-4 rounded-sm bg-white transition-[border] focus:outline-none focus:border-2 focus:border-gray-700"
+                    className="pl-12 w-full px-5 py-4 bg-white "
                 />
             </div>
 

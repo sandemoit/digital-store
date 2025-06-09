@@ -33,6 +33,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(XSS::class)->group(function () {
     require __DIR__ . '/buyer.php';
     require __DIR__ . '/admin.php';
+
+    Route::get('/callback-tripay', function () {
+        return 'Masih Development Min';
+    });
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -146,7 +146,7 @@ export default function ProductDetailCard({
               className="hover:bg-amber-500 hover:text-white text-black border-2 border-amber-500 px-4 py-2 rounded-sm w-full flex items-center justify-center gap-1"
             >
               <Eye size={16} className='text-black hover:text-white' />
-              Live Preview
+              Demo
             </button>
           </div>
 

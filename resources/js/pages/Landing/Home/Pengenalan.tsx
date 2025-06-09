@@ -10,7 +10,7 @@ const stats = [
     {
         icon: <Star className="w-10 h-10 text-amber-500" />,
         title: "Kepuasan Pelanggan",
-        value: "95%",
+        value: "99%",
         description: "Tingkat kepuasan pelanggan terhadap layanan kami."
     },
     {

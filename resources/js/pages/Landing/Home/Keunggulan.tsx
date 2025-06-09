@@ -19,7 +19,7 @@ const features = [
         desc: "Setiap produk dilengkapi dokumentasi cara install & penggunaan.",
     },
     {
-        icon: <CircleFadingArrowUp className="w-10 h-10 text-yellow-500" />,
+        icon: <CircleFadingArrowUp className="w-10 h-10 text-yellow-300" />,
         title: "Dapat Update",
         desc: "Setiap produk dapat update ke versi terbaru tanpa biaya tambahan.",
     },

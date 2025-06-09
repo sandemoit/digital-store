@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Services\TurnstileService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +30,8 @@ class LoginRequest extends FormRequest
         return [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'remember' => ['boolean'],
+            'cf_turnstile_response' => ['required', 'string'],
         ];
     }
 
@@ -80,6 +83,31 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (!$this->validateTurnstile()) {
+                $validator->errors()->add(
+                    'cf_turnstile_response',
+                    'Please complete the human verification.'
+                );
+            }
+        });
+    }
+
+    private function validateTurnstile(): bool
+    {
+        $turnstileService = app(TurnstileService::class);
+        return $turnstileService->verify($this->input('cf_turnstile_response'));
+    }
+
+    public function messages(): array
+    {
+        return [
+            'cf_turnstile_response.required' => 'Please complete the human verification.',
+        ];
     }
 }

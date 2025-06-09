@@ -123,4 +123,5 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'cloudflare_turnstile_site_key' => env('CLOUDFLARE_TURNSTILE_SITE_KEY'),
 ];
