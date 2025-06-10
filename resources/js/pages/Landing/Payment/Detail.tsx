@@ -150,7 +150,7 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
   };
 
   const handleCancel = () => {
-    router.post(`/payment/cancel/${transaction.order_number}`);
+    router.get(`/payment/cancel/${transaction.order_number}`);
   };
 
   const isPaymentProofUploaded = transaction.payment_status === 'waiting_confirmation' && transaction.payment_proof;

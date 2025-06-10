@@ -104,10 +104,8 @@ class CheckoutController extends Controller
         // Calculate payment fee based on type_fee
         $paymentFee = 0;
         if ($paymentMethod->type_fee === 'percent') {
-            // Calculate percentage fee based on subtotal
             $paymentFee = ($subtotal * floatval($paymentMethod->fee)) / 100;
         } else {
-            // Flat fee
             $paymentFee = floatval($paymentMethod->fee);
         }
 
@@ -139,7 +137,7 @@ class CheckoutController extends Controller
 
         try {
             // Generate unique order number
-            $orderNumber = 'ORD-' . time();
+            $orderNumber = 'ORD-' . time() . '-' . rand(1000, 9999);
 
             // Create transaction record
             $transaction = Transaksi::create([
@@ -161,7 +159,7 @@ class CheckoutController extends Controller
                     'product_id' => $item->products_id,
                     'quantity' => $item->jumlah,
                     'price' => $item->product->harga,
-                    'total' => $totalAmount,
+                    'total' => floatval($item->product->harga) * intval($item->jumlah), // Fixed: individual item total
                 ]);
             }
 
@@ -179,24 +177,141 @@ class CheckoutController extends Controller
                 ]);
             }
 
-            // Clear cart after successful transaction creation
-            $user->carts()->delete();
-
             DB::commit();
 
-            // Route based on payment status
-            return redirect()->route(
-                $transaction->payment_status === 'paid' ? 'payment.status' : ($paymentMethod->method === 'manual' ? 'payment.checkout' : 'payment.gateway'),
-                $transaction->order_number
-            )->with('success', $transaction->payment_status === 'paid' ? 'Pembayaran berhasil diproses!' : null);
+            // Route based on payment method
+            if ($paymentMethod->method === 'automatic') {
+                // Redirect to payment gateway processing page
+                return redirect()->route('payment.gateway', $transaction->order_number);
+            }
+
+            return redirect()->route('payment.checkout', $transaction->order_number)
+                ->with('success', 'Transaksi berhasil dibuat. Silakan upload bukti pembayaran.');
         } catch (\Exception $e) {
             DB::rollback();
+            Log::error('Transaction Creation Error: ' . $e->getMessage(), [
+                'user_id' => $user->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+
             return back()->withErrors([
                 'payment' => 'Terjadi kesalahan dalam memproses pembayaran. Silakan coba lagi.'
             ]);
         }
     }
-    public function paymentDetail($orderNumber)
+
+    public function paymentGateway($orderNumber)
+    {
+        $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
+            ->where('order_number', $orderNumber)
+            ->where('user_id', Auth::user()->id)
+            ->firstOrFail();
+
+        return Inertia::render('Landing/Payment/Redirect', [
+            'transaction' => [
+                'id' => $transaction->id,
+                'order_number' => $transaction->order_number,
+                'total_amount' => $transaction->total_amount,
+                'payment_method' => $transaction->paymentMethod->method ?? 'manual'
+            ],
+            'checkout_url' => $transaction->checkout_url,
+            'skip_api_call' => !empty($transaction->checkout_url),
+            'flash' => [
+                'success' => 'Transaksi berhasil dibuat'
+            ]
+        ]);
+    }
+
+    public function processPaymentGateway($orderNumber)
+    {
+        try {
+            $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
+                ->where('order_number', $orderNumber)
+                ->where('user_id', Auth::user()->id)
+                ->firstOrFail();
+
+            // Jika sudah ada checkout_url, return langsung
+            if (!empty($transaction->checkout_url)) {
+                return response()->json([
+                    'success' => true,
+                    'checkout_url' => $transaction->checkout_url,
+                    'message' => 'Checkout URL sudah tersedia'
+                ]);
+            }
+
+            DB::beginTransaction();
+
+            $tripay = new TripayController();
+            $response = $tripay->requestTransaksi($transaction, '/transaction/create');
+
+            // Validasi response structure
+            if (!is_array($response)) {
+                throw new \Exception('Invalid response format from payment gateway');
+            }
+
+            // Check jika response sukses dan ada data
+            if (isset($response['success']) && $response['success'] === true && isset($response['data'])) {
+                $data = $response['data'];
+
+                // Validasi checkout_url exists
+                if (empty($data['checkout_url'])) {
+                    throw new \Exception('Checkout URL tidak tersedia dalam response');
+                }
+
+                // Update transaction dengan data dari Tripay
+                $updateData = [
+                    'checkout_url' => $data['checkout_url']
+                ];
+
+                if (!empty($data['reference'])) {
+                    $updateData['payment_reference'] = $data['reference'];
+                }
+
+                $transaction->update($updateData);
+
+                // Clear cart after successful transaction creation
+                $transaction->user->carts()->delete();
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'checkout_url' => $data['checkout_url'],
+                    'message' => 'Transaksi berhasil dibuat',
+                    'data' => [
+                        'order_number' => $orderNumber
+                    ]
+                ]);
+            } else {
+                // Handle error response
+                $errorMessage = 'Gagal membuat transaksi pembayaran';
+
+                if (isset($response['message'])) {
+                    $errorMessage = $response['message'];
+                } elseif (isset($response['error'])) {
+                    $errorMessage = $response['error'];
+                }
+
+                throw new \Exception($errorMessage);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            Log::error('Payment Gateway Error: ' . $e->getMessage(), [
+                'order_number' => $orderNumber,
+                'user_id' => Auth::user()->id,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'error_code' => 'PAYMENT_GATEWAY_ERROR'
+            ], 500);
+        }
+    }
+
+    public function paymentManual($orderNumber)
     {
         $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
             ->where('order_number', $orderNumber)
@@ -204,9 +319,18 @@ class CheckoutController extends Controller
             ->firstOrFail();
 
         if ($transaction->checkout_url) {
-            return view('payment.redirect', [
+            return Inertia::render('Landing/Payment/Redirect', [
+                'transaction' => [
+                    'id' => $transaction->id,
+                    'order_number' => $transaction->order_number,
+                    'total_amount' => $transaction->total_amount,
+                    'payment_method' => $transaction->paymentMethod->method ?? 'automatic'
+                ],
                 'checkout_url' => $transaction->checkout_url,
-                'transaction' => $transaction
+                'skip_api_call' => !empty($transaction->checkout_url),
+                'flash' => [
+                    'success' => 'Transaksi berhasil dibuat'
+                ]
             ]);
         }
 
@@ -247,60 +371,6 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function paymentGateway($orderNumber)
-    {
-        $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
-            ->where('order_number', $orderNumber)
-            ->where('user_id', Auth::user()->id)
-            ->firstOrFail();
-
-        DB::beginTransaction();
-
-        $endpoint = '/transaction/create';
-
-        try {
-            $tripay = new TripayController();
-            $response = $tripay->requestTransaksi($transaction, $endpoint);
-
-            if (!isset($response['data'])) {
-                DB::rollback();
-                return redirect()->route('checkout')
-                    ->withErrors(['payment' => 'Gagal membuat transaksi pembayaran. Response tidak valid.']);
-            }
-
-            if (isset($response['success']) && $response['success'] && isset($response['data'])) {
-                $transaction->update([
-                    'pay_code' => $response['data']['pay_code'],
-                    'checkout_url' => $response['data']['checkout_url']
-                ]);
-
-                DB::commit();
-
-                // Gunakan view intermediate daripada redirect langsung untuk menghindari CORS
-                return view('payment.redirect', [
-                    'checkout_url' => $response['data']['checkout_url'],
-                    'transaction' => $transaction
-                ]);
-            } else {
-                DB::rollback();
-                return redirect()->route('checkout')
-                    ->withErrors(['payment' => 'Gagal membuat transaksi: ' . ($response['message'] ?? 'Unknown error')]);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-
-            // Log error untuk debugging
-            Log::error('Payment Gateway Error: ' . $e->getMessage(), [
-                'order_number' => $orderNumber,
-                'user_id' => Auth::user()->id,
-                'trace' => $e->getTraceAsString()
-            ]);
-
-            return redirect()->route('checkout')
-                ->withErrors(['payment' => 'Terjadi kesalahan dalam memproses pembayaran. Silakan coba lagi.']);
-        }
-    }
-
     public function success($orderNumber = null)
     {
         $transaction = null;
@@ -311,14 +381,14 @@ class CheckoutController extends Controller
                 ->first();
         }
 
-        return Inertia::render('Landing/Payment/Success', [
-            'transaction' => $transaction ? [
-                'order_number' => $transaction->order_number,
-                'total_amount' => $transaction->total_amount,
-                'status' => $transaction->status,
-                'payment_status' => $transaction->payment_status,
-            ] : null
-        ]);
+        // return Inertia::render('Landing/Payment/Success', [
+        //     'transaction' => $transaction ? [
+        //         'order_number' => $transaction->order_number,
+        //         'total_amount' => $transaction->total_amount,
+        //         'status' => $transaction->status,
+        //         'payment_status' => $transaction->payment_status,
+        //     ] : null
+        // ]);
     }
 
     public function uploadPaymentProof(UploadPayment $request, $orderNumber)

@@ -131,7 +131,7 @@ export default function KebijakanPrivasi() {
                             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                                 Tautan Website Lain
                             </h2>
-                            <div className="bg-orange-50 border border-orange-200 p-4 rounded-lg">
+                            <div className="bg-amber-50 border border-orange-200 p-4 rounded-lg">
                                 <p className="text-orange-800">
                                     <strong>Penting:</strong> Saat Anda mengeklik tautan di website ini dan membawa Anda ke website lain yang dioperasikan oleh perusahaan lain, Anda akan tunduk pada kebijakan privasi website perusahaan tersebut. Kami tidak bertanggung jawab atas praktik privasi atau konten dari website pihak ketiga.
                                 </p>

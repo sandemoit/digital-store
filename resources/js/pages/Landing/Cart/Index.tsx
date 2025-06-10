@@ -156,7 +156,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
               </div>
               <h2 className="text-xl font-semibold text-gray-700 mb-2">Keranjang Belanja Kosong</h2>
               <p className="text-gray-500 mb-6">Belum ada produk di keranjang Anda.</p>
-              <a href="/products" className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-6 rounded-sm transition-colors">
+              <a href="/produk" className="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium py-2 px-6 rounded-sm transition-colors">
                 Mulai Belanja
               </a>
             </div>
@@ -257,7 +257,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                     </a>
                   </div>
                 </div>
-                <div className="bg-white shadow rounded-sm mt-4 p-4">
+                {/* <div className="bg-white shadow rounded-sm mt-4 p-4">
                   <div className="flex flex-col sm:flex-row gap-3">
                     <div className="flex-1">
                       <input
@@ -273,7 +273,7 @@ export default function Cart({ title, cart: serverCart }: Props) {
                       Terapkan Kupon
                     </button>
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Order Summary */}
