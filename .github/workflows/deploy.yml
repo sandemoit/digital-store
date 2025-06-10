@@ -58,6 +58,7 @@ jobs:
           composer install --no-dev --optimize-autoloader && \
           # Decrypt .env file
           php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
+          mv .env.staging .env && \
           # Laravel setup
           php artisan key:generate --force && \
           php artisan config:clear && \
