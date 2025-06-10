@@ -27,9 +27,8 @@ class Transaksi extends Model
         'confirmed_by',
         'cancelled_at',
         'notes',
-        'midtrans_token',
-        'midtrans_transaction_id',
-        'midtrans_response',
+        'checkout_url',
+        'pay_code',
     ];
 
     protected $casts = [
@@ -40,7 +39,6 @@ class Transaksi extends Model
         'payment_date' => 'datetime',
         'confirmed_at' => 'datetime',
         'cancelled_at' => 'datetime',
-        'midtrans_response' => 'array',
     ];
 
     public function items()

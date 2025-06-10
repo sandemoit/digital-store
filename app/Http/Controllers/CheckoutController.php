@@ -207,6 +207,10 @@ class CheckoutController extends Controller
             ->where('user_id', Auth::user()->id)
             ->firstOrFail();
 
+        if ($transaction->status !== 'pending') {
+            return redirect()->route('home')->with('error', 'Transaksi sudah dibatalkan, silakan coba lagi');
+        }
+
         return Inertia::render('Landing/Payment/Redirect', [
             'transaction' => [
                 'id' => $transaction->id,
@@ -263,9 +267,9 @@ class CheckoutController extends Controller
                     'checkout_url' => $data['checkout_url']
                 ];
 
-                if (!empty($data['reference'])) {
-                    $updateData['payment_reference'] = $data['reference'];
-                }
+                // if (!empty($data['reference'])) {
+                //     $updateData['payment_reference'] = $data['reference'];
+                // }
 
                 $transaction->update($updateData);
 
@@ -319,23 +323,13 @@ class CheckoutController extends Controller
             ->firstOrFail();
 
         if ($transaction->checkout_url) {
-            return Inertia::render('Landing/Payment/Redirect', [
-                'transaction' => [
-                    'id' => $transaction->id,
-                    'order_number' => $transaction->order_number,
-                    'total_amount' => $transaction->total_amount,
-                    'payment_method' => $transaction->paymentMethod->method ?? 'automatic'
-                ],
-                'checkout_url' => $transaction->checkout_url,
-                'skip_api_call' => !empty($transaction->checkout_url),
-                'flash' => [
-                    'success' => 'Transaksi berhasil dibuat'
-                ]
-            ]);
+            return redirect()->route('payment.gateway', $transaction->order_number);
         }
 
         if (in_array($transaction->payment_status, ['paid', 'completed'])) {
             return redirect()->route('payment.status', $transaction->order_number);
+        } elseif ($transaction->status === 'cancelled') {
+            return redirect()->back()->with('error', 'Transaksi sudah dibatalkan, silakan coba lagi');
         }
 
         return Inertia::render('Landing/Payment/Detail', [
@@ -431,9 +425,6 @@ class CheckoutController extends Controller
         }
     }
 
-    /**
-     * Halaman sukses upload bukti pembayaran
-     */
     public function uploadSuccess($orderNumber)
     {
         $transaction = Transaksi::with(['items.product', 'paymentMethod'])

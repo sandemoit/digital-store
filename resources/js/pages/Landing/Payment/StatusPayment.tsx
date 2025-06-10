@@ -14,6 +14,7 @@ import {
     Send
 } from "lucide-react";
 import GuestLayout from '@/layouts/guest-layout';
+import { router } from '@inertiajs/react';
 
 // Type definitions
 interface Product {
@@ -336,6 +337,7 @@ interface ActionButtonsProps {
 }
 
 const ActionButtons = ({ transaction, onShowInvoice }: ActionButtonsProps) => (
+
     <div className="space-y-3">
         <button
             onClick={onShowInvoice}
@@ -346,10 +348,10 @@ const ActionButtons = ({ transaction, onShowInvoice }: ActionButtonsProps) => (
         </button>
 
         {transaction.can_be_cancelled && (
-            <button className="flex items-center justify-center w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
+            <a href={route('payment.cancel', transaction.order_number)} className="flex items-center justify-center w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
                 <XCircle className="w-5 h-5 mr-2" />
                 Batalkan Pesanan
-            </button>
+            </a>
         )}
 
         {transaction.is_manual_payment && transaction.payment_status === 'pending' && (

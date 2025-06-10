@@ -98,9 +98,7 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': getCsrfToken(),
           'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        credentials: 'include' // Important for cookies/session
+        }
       });
 
       updateProgress(40);
@@ -177,10 +175,10 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
     }, 1000);
 
     // If popup blocked, show manual redirect
-    if (!newWindow) {
-      setShowManualRedirect(true);
-      updateStatus('Pop-up diblokir. Gunakan tombol manual di bawah.');
-    }
+    // if (!newWindow) {
+    //   setShowManualRedirect(true);
+    //   updateStatus('Pop-up diblokir. Gunakan tombol manual di bawah.');
+    // }
   };
 
   const retryPayment = async (): Promise<void> => {
