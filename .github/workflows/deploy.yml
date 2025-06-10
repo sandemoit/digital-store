@@ -57,7 +57,7 @@ jobs:
           npm run build:ssr && \
           composer install --no-dev --optimize-autoloader && \
           # Decrypt .env file
-          php artisan env:decrypt --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
+          php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
           # Laravel setup
           php artisan key:generate --force && \
           php artisan config:clear && \
