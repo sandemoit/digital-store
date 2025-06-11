@@ -51,10 +51,13 @@ jobs:
           # Install dependencies
           npm ci --no-audit --no-fund --omit=dev && \
           npm run build:ssr && \
-          composer install --no-dev --optimize-autoloader && \
+          composer install --prefer-dist --no-interaction --optimize-autoloader && \
           # Decrypt .env file
           php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
           mv .env.staging .env && \
+          # Set permissions
+          sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
+          sudo chmod -R 775 bootstrap/cache storage public/build && \
           # Laravel setup
           php artisan key:generate --force && \
           php artisan config:clear && \
@@ -63,8 +66,5 @@ jobs:
           php artisan cache:clear && \
           php artisan optimize && \
           php artisan storage:link --force && \
-          php artisan migrate --force && \
-          # Set permissions
-          sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
-          sudo chmod -R 775 bootstrap/cache storage public/build"
+          php artisan migrate --force"
 
