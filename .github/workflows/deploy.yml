@@ -48,7 +48,6 @@ jobs:
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
           # Create required directories
-          mkdir -p bootstrap/cache storage/framework/{cache,sessions,views} public/build && \
           # Set permissions
           sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
           sudo chmod -R 775 bootstrap/cache storage public/build && \
