@@ -51,7 +51,7 @@ jobs:
           # Install dependencies
           npm ci --no-audit --no-fund --omit=dev && \
           npm run build:ssr && \
-          composer install --prefer-dist --no-interaction --optimize-autoloader && \
+          composer install --optimize-autoloader && \
           # Decrypt .env file
           php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
           mv .env.staging .env && \
