@@ -1,16 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
 use App\Helpers\Tripay;
 use App\Models\Transaksi;
-use App\Models\User;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class TripayController extends Controller
+class TripayService
 {
     protected $apiKey;
     protected $privateKey;
@@ -28,17 +25,15 @@ class TripayController extends Controller
     public function requestTransaksi(Transaksi $transaksi, $endpoint)
     {
         try {
-            $orderItems = [];
-            foreach ($transaksi->items as $item) {
-                $orderItems[] = [
+            $orderItems = collect($transaksi->items)->map(function ($item) {
+                return [
                     'name' => $item->product->name,
                     'quantity' => (int) $item->quantity,
                     'price' => (int) $item->price,
                 ];
-            }
+            })->toArray();
 
-            // Gunakan total_amount jika ada wallet yang digunakan, atau subtotal
-            $amount = (int) ($transaksi->subtotal);
+            $amount = (int) $transaksi->subtotal;
 
             $body = [
                 'method' => $transaksi->paymentMethod->code,
@@ -49,7 +44,7 @@ class TripayController extends Controller
                 'customer_phone' => $transaksi->user->phone ?? "08538888888",
                 'order_items' => $orderItems,
                 'return_url' => route('payment.status', $transaksi->order_number),
-                'expired_time' => (time() + (24 * 60 * 60)), // 24 jam dari sekarang
+                'expired_time' => time() + (24 * 60 * 60),
                 'signature' => Tripay::createSignature($this->merchantCode . $transaksi->order_number . $amount),
             ];
 
@@ -64,16 +59,15 @@ class TripayController extends Controller
 
             $responseData = $response->json();
 
-            // Log response untuk debugging
             Log::info('Tripay Response:', [
                 'status' => $response->status(),
-                'body' => $responseData
+                'body' => $responseData,
             ]);
 
             if (!$response->successful()) {
                 Log::error('Tripay API Error:', [
                     'status' => $response->status(),
-                    'response' => $responseData
+                    'response' => $responseData,
                 ]);
             }
 
@@ -81,17 +75,16 @@ class TripayController extends Controller
         } catch (\Exception $e) {
             Log::error('Tripay Request Exception:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
                 'success' => false,
-                'message' => 'Gagal menghubungi server pembayaran: ' . $e->getMessage()
+                'message' => 'Gagal menghubungi server pembayaran: ' . $e->getMessage(),
             ];
         }
     }
 
-    // Method untuk mengecek status pembayaran
     public function checkPaymentStatus($reference)
     {
         try {

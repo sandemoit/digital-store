@@ -71,7 +71,7 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
     setIsLoading(false);
     setShowRetry(true);
     setSuccess(false);
-    toast.error(message);
+    // toast.error(message);
   };
 
   const showSuccess = (url: string): void => {
@@ -80,7 +80,7 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
     setIsLoading(false);
     setCheckoutUrl(url);
     updateProgress(100);
-    toast.success('Pembayaran berhasil dibuat!');
+    // toast.success('Pembayaran berhasil dibuat!');
   };
 
   const processPaymentGateway = async (): Promise<void> => {
@@ -244,12 +244,12 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
 
   // Show flash messages
   useEffect(() => {
-    if (flash?.success) {
-      toast.success(flash.success);
-    }
-    if (flash?.error) {
-      toast.error(flash.error);
-    }
+    // if (flash?.success) {
+    //   toast.success(flash.success);
+    // }
+    // if (flash?.error) {
+    //   toast.error(flash.error);
+    // }
   }, [flash]);
 
   const formatCurrency = (amount: number): string => {
@@ -297,9 +297,9 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
 
           {/* Error Alert */}
           {error && (
-            <Alert className="bg-red-500/20 border-red-500/50 text-white">
+            <Alert className="bg-red-500/20 border-red-500/50 dark:text-white text-white">
               <XCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className='text-white/80'>
                 {error}
               </AlertDescription>
             </Alert>
@@ -309,7 +309,7 @@ const PaymentRedirect: React.FC<PaymentRedirectProps> = ({
           {success && (
             <Alert className="bg-green-500/20 border-green-500/50 text-white">
               <CheckCircle className="h-4 w-4" />
-              <AlertDescription>
+              <AlertDescription className='text-white/80'>
                 Pembayaran berhasil dibuat!
                 {!isRedirecting && ' Klik tombol di bawah untuk melanjutkan.'}
               </AlertDescription>

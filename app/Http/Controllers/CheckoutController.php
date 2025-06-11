@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\DB;
 use App\Models\PaymentMethod;
 use App\Models\Transaksi;
 use App\Models\TransaksiItem;
+use App\Services\MidtransService;
+use App\Services\PaymentProvider;
+use App\Services\TripayService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -137,7 +140,7 @@ class CheckoutController extends Controller
 
         try {
             // Generate unique order number
-            $orderNumber = 'ORD-' . time() . '-' . rand(1000, 9999);
+            $orderNumber = 'ORD-' . time();
 
             // Create transaction record
             $transaction = Transaksi::create([
@@ -226,7 +229,7 @@ class CheckoutController extends Controller
         ]);
     }
 
-    public function processPaymentGateway($orderNumber)
+    public function processPaymentGateway(TripayService $tripayService, MidtransService $midtransService, $orderNumber)
     {
         try {
             $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
@@ -245,8 +248,11 @@ class CheckoutController extends Controller
 
             DB::beginTransaction();
 
-            $tripay = new TripayController();
-            $response = $tripay->requestTransaksi($transaction, '/transaction/create');
+            if (optional($transaction->paymentMethod->provider === PaymentProvider::TRIPAY)) {
+                $response = $tripayService->requestTransaksi($transaction, '/transaction/create');
+            } else if (optional($transaction->paymentMethod->provider === PaymentProvider::MIDTRANS)) {
+                $response = $midtransService->requestTransaksi($transaction);
+            }
 
             // Validasi response structure
             if (!is_array($response)) {
@@ -264,7 +270,7 @@ class CheckoutController extends Controller
 
                 // Update transaction dengan data dari Tripay
                 $updateData = [
-                    'checkout_url' => $data['checkout_url']
+                    'checkout_url' => $data['checkout_url'],
                 ];
 
                 // if (!empty($data['reference'])) {
@@ -529,6 +535,15 @@ class CheckoutController extends Controller
             return redirect()->back()->with('info', 'Mohon Maaf, Pembayaran belum dikonfirmasi');
         } else {
             return redirect()->route('payment.status', $orderNumber);
+        }
+    }
+
+    public function callback(MidtransService $midtransService, TripayService $tripayService, Request $request)
+    {
+        if ($request->query('callback') === 'midtrans') {
+            $midtransService->callback($request);
+        } else {
+            // $tripayService->callback($request);
         }
     }
 }
