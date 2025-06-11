@@ -47,17 +47,16 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USERNAME }}@${{ secrets.VPS_HOST }} \
           "cd ${{ secrets.PROJECT_PATH }} && \
-          # Create required directories
-          # Install dependencies
-          npm ci --no-audit --no-fund --omit=dev && \
-          npm run build:ssr && \
-          composer install --optimize-autoloader && \
-          # Decrypt .env file
-          php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
-          mv .env.staging .env && \
           # Set permissions
           sudo chown -R www-data:www-data bootstrap/cache storage public/build && \
           sudo chmod -R 775 bootstrap/cache storage public/build && \
+          # Install dependencies
+          composer install --prefer-dist --no-interaction --optimize-autoloader && \
+          npm ci --no-audit --no-fund --omit=dev && \
+          npm run build:ssr && \
+          # Decrypt .env file
+          php artisan env:decrypt --env=staging --key=3UVsEgGVK36XN82KKeyLFMhvosbZN1aF && \
+          mv .env.staging .env && \
           # Laravel setup
           php artisan key:generate --force && \
           php artisan config:clear && \

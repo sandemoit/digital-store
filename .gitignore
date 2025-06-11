@@ -23,11 +23,3 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-/vendor
-/node_modules
-/storage/*
-!/storage/.gitignore
-/bootstrap/cache/*
-!/bootstrap/cache/.gitignore
-composer.lock
-package-lock.json
