@@ -28,9 +28,8 @@ return new class extends Migration
             $table->foreignId('confirmed_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('cancelled_at')->nullable();
             $table->text('notes')->nullable();
-            $table->string('midtrans_token')->nullable();
-            $table->string('midtrans_transaction_id')->nullable();
-            $table->json('midtrans_response')->nullable();
+            $table->string('pay_code')->nullable();
+            $table->string('checkout_url')->nullable();
             $table->timestamps();
         });
 

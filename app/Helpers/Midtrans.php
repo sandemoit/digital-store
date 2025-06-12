@@ -8,6 +8,6 @@ class Midtrans
 {
     public static function createSignature($data)
     {
-        return hash('sha512', $data, config('midtrans.server_key'));
+        return hash('sha512', $data);
     }
 }

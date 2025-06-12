@@ -63,7 +63,7 @@ class MidtransService
     public function callback(Request $request)
     {
         $serverKey = config('midtrans.server_key');
-        $hashedKey = Midtrans::createSignature($request->order_id . $request->status_code . $request->gross_amount);
+        $hashedKey = Midtrans::createSignature($request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
         if ($hashedKey !== $request->signature_key) {
             return Response::json(['message' => 'Invalid signature key'], 403);
