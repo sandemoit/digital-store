@@ -2,10 +2,11 @@
 
 namespace App\Services;
 
+use App\Helpers\Midtrans;
+use App\Models\Product;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 use Midtrans\Snap;
 use Midtrans\Config;
 
@@ -32,10 +33,10 @@ class MidtransService
                     'email' => $transaksi->user->email,
                     'phone' => "08538888888", // Bisa ganti sesuai real data
                 ],
-                'enabled_payments' => [$transaksi->paymentMethod->code], // Harus array
-                // 'callbacks' => [
-                //     'finish' => route('transaksi.finish', ['order_id' => $transaksi->order_number]),
-                // ],
+                'enabled_payments' => [$transaksi->paymentMethod->code],
+                'callbacks' => [
+                    'finish' => route('payment.status', $transaksi->order_number),
+                ],
             ];
 
             // Dapetin URL buat redirect
@@ -62,21 +63,29 @@ class MidtransService
     public function callback(Request $request)
     {
         $serverKey = config('midtrans.server_key');
-        $hashedKey = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        $hashedKey = Midtrans::createSignature($request->order_id . $request->status_code . $request->gross_amount);
 
         if ($hashedKey !== $request->signature_key) {
-            return response()->json(['message' => 'Invalid signature key'], 403);
+            return Response::json(['message' => 'Invalid signature key'], 403);
         }
 
         $transactionStatus = $request->transaction_status;
 
-        $transaction = Transaksi::with(['paymentMethod', 'items.product', 'user'])
-            ->where('order_number', $request->order_number)
+        $transaction = Transaksi::with('items')
+            ->where('order_number', $request->order_id)
             ->firstOrFail();
+
+        $productIds = $transaction->items->pluck('product_id');
+        $produk = Product::whereIn('id', $productIds)->select('id', 'is_proses')->get();
+        $isProses = $produk->first()?->is_proses;
 
         switch ($transactionStatus) {
             case 'settlement':
-                $transaction->update(['status' => 'completed', 'payment_status' => 'paid']);
+                if ($isProses === true) {
+                    $transaction->update(['status' => 'processing', 'payment_status' => 'paid']);
+                } else {
+                    $transaction->update(['status' => 'completed', 'payment_status' => 'paid']);
+                }
                 // $this->saveMutationAndBalance($order);
                 // $this->sendNotifCallback($order, 'SUCCESS');
                 break;
@@ -100,6 +109,6 @@ class MidtransService
                 break;
         }
 
-        return response()->json(['status' => 'success', 'message' => 'Callback received successfully']);
+        return Response::json(['status' => 200, 'message' => 'Callback received successfully']);
     }
 }

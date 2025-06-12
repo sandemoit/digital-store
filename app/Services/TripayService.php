@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Helpers\Tripay;
+use App\Models\Product;
 use App\Models\Transaksi;
+use Google\Rpc\Context\AttributeContext\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
 
 class TripayService
 {
@@ -48,8 +51,6 @@ class TripayService
                 'signature' => Tripay::createSignature($this->merchantCode . $transaksi->order_number . $amount),
             ];
 
-            Log::info('Tripay Request Body:', $body);
-
             $response = Http::timeout(30)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
@@ -83,6 +84,78 @@ class TripayService
                 'message' => 'Gagal menghubungi server pembayaran: ' . $e->getMessage(),
             ];
         }
+    }
+
+    public function callbacl(Request $request)
+    {
+        $callbackSignature = $request->server('HTTP_X_CALLBACK_SIGNATURE');
+        $json = file_get_contents('php://input');
+        $signature = Tripay::createSignature($json);;
+
+        if ($signature !== (string) $callbackSignature) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Invalid signature',
+            ]);
+        }
+
+        if ('payment_status' !== (string) $request->server('HTTP_X_CALLBACK_EVENT')) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Unrecognized callback event, no action was taken',
+            ]);
+        }
+
+        $data = json_decode($json);
+
+        if (JSON_ERROR_NONE !== json_last_error()) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Invalid data sent by tripay',
+            ]);
+        }
+
+        $invoiceId = $data->merchant_ref;
+        $status = strtoupper((string) $data->status);
+
+        $transaction = Transaksi::with('items')
+            ->where('order_number', $request->order_id)
+            ->firstOrFail();
+
+        $productIds = $transaction->items->pluck('product_id');
+        $produk = Product::whereIn('id', $productIds)->select('id', 'is_proses')->get();
+        $isProses = $produk->first()?->is_proses;
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        switch ($status) {
+            case 'PAID':
+                if ($isProses === true) {
+                    $transaction->update(['status' => 'processing', 'payment_status' => 'paid']);
+                } else {
+                    $transaction->update(['status' => 'completed', 'payment_status' => 'paid']);
+                }
+                break;
+            case 'UNPAID':
+                $transaction->update(['status' => 'pending', 'payment_status' => 'pending']);
+                break;
+            case 'FAILED':
+                $transaction->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+                break;
+            case 'EXPIRED':
+                $transaction->update(['status' => 'cancelled', 'payment_status' => 'failed']);
+                break;
+            case 'REFUND':
+                $transaction->update(['status' => 'cancelled', 'payment_status' => 'cancelled']);
+                break;
+            default:
+                $transaction->update(['status' => 'unknown', 'payment_status' => 'unknown']);
+                break;
+        }
+
+        return Response::json(['success' => true]);
     }
 
     public function checkPaymentStatus($reference)

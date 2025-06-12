@@ -35,7 +35,8 @@
         },
         "files": [
             "app/Helpers/global.php",
-            "app/Helpers/Tripay.php"
+            "app/Helpers/Tripay.php",
+            "app/Helpers/Midtrans.php"
         ]
     },
     "autoload-dev": {

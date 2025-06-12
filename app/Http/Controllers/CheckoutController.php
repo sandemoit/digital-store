@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UploadPayment;
-use App\Models\Cart;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
@@ -248,9 +247,9 @@ class CheckoutController extends Controller
 
             DB::beginTransaction();
 
-            if (optional($transaction->paymentMethod->provider === PaymentProvider::TRIPAY)) {
+            if ($transaction->paymentMethod->provider === PaymentProvider::TRIPAY) {
                 $response = $tripayService->requestTransaksi($transaction, '/transaction/create');
-            } else if (optional($transaction->paymentMethod->provider === PaymentProvider::MIDTRANS)) {
+            } else if ($transaction->paymentMethod->provider === PaymentProvider::MIDTRANS) {
                 $response = $midtransService->requestTransaksi($transaction);
             }
 
@@ -535,15 +534,6 @@ class CheckoutController extends Controller
             return redirect()->back()->with('info', 'Mohon Maaf, Pembayaran belum dikonfirmasi');
         } else {
             return redirect()->route('payment.status', $orderNumber);
-        }
-    }
-
-    public function callback(MidtransService $midtransService, TripayService $tripayService, Request $request)
-    {
-        if ($request->query('callback') === 'midtrans') {
-            $midtransService->callback($request);
-        } else {
-            // $tripayService->callback($request);
         }
     }
 }

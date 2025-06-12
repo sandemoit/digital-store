@@ -80,7 +80,7 @@ export default function ProductDetailCard({
 
   const handleChatAdmin = () => {
     const waNumber = '6287801751656';
-    const message = `Halo, saya tertarik dengan produk ${produk.name}`;
+    const message = `Halo, saya tertarik dengan produk ini : ${produk.name}`;
     const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
   };
