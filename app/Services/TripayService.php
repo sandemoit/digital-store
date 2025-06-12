@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Helpers\Tripay;
 use App\Models\Product;
 use App\Models\Transaksi;
-use Google\Rpc\Context\AttributeContext\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -115,11 +115,11 @@ class TripayService
             ]);
         }
 
-        $invoiceId = $data->merchant_ref;
+        $orderNumbe = $data->merchant_ref;
         $status = strtoupper((string) $data->status);
 
         $transaction = Transaksi::with('items')
-            ->where('order_number', $request->order_id)
+            ->where('order_number', $orderNumbe)
             ->firstOrFail();
 
         $productIds = $transaction->items->pluck('product_id');
@@ -132,11 +132,17 @@ class TripayService
 
         switch ($status) {
             case 'PAID':
-                if ($isProses === true) {
-                    $transaction->update(['status' => 'processing', 'payment_status' => 'paid']);
-                } else {
-                    $transaction->update(['status' => 'completed', 'payment_status' => 'paid']);
-                }
+                $status = $isProses ? 'processing' : 'completed';
+
+                $transaction->update([
+                    'status' => $status,
+                    'payment_status' => 'paid',
+                    'payment_date' => $data->paid_at,
+                    'confirmed_at' => $data->paid_at,
+                    'confirmed_by' => 'Tripay',
+                    'pay_code' => $data->reference,
+                ]);
+
                 break;
             case 'UNPAID':
                 $transaction->update(['status' => 'pending', 'payment_status' => 'pending']);
