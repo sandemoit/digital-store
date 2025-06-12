@@ -9,6 +9,7 @@ use App\Http\Controllers\KomentarController;
 use App\Http\Controllers\KontakController;
 use App\Http\Middleware\XSS;
 use App\Services\MidtransService;
+use App\Services\TripayService;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -35,10 +36,7 @@ Route::middleware(XSS::class)->group(function () {
     require __DIR__ . '/buyer.php';
     require __DIR__ . '/admin.php';
 
-    Route::get('/webhook-tripay', function () {
-        return 'Masih Development Min';
-    });
-
+    Route::post('/webhook-tripay', [TripayService::class, 'callback'])->withoutMiddleware(['web', 'csrf']);
     // Callback Midtrans
     Route::post('/webhook-midtrans', [MidtransService::class, 'callback'])->withoutMiddleware(['web', 'csrf']);
 });

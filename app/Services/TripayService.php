@@ -86,7 +86,7 @@ class TripayService
         }
     }
 
-    public function callbacl(Request $request)
+    public function callback(Request $request)
     {
         $callbackSignature = $request->server('HTTP_X_CALLBACK_SIGNATURE');
         $json = file_get_contents('php://input');
