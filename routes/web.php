@@ -37,7 +37,9 @@ Route::middleware(XSS::class)->group(function () {
     Route::get('/callback-tripay', function () {
         return 'Masih Development Min';
     });
-    Route::post('/callback?=midtrans', [CheckoutController::class, 'callback'])->name('callback.midtrans');
+
+    // Callback Midtrans
+    Route::get('/webhook-midtrans', [CheckoutController::class, 'callback'])->name('webhook.midtrans');
 });
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

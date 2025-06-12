@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             '/payment/process-gateway/{orderNumber}',
+            '/callback?=midtrans'
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
