@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\TurnstileRule;
 use App\Services\TurnstileService;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
@@ -31,8 +32,11 @@ class LoginRequest extends FormRequest
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
             'remember' => ['boolean'],
-            'cf_turnstile_response' => ['required', 'string'],
         ];
+
+        if (config('services.turnstile.enabled')) {
+            $rules['cf-turnstile-response'] = ['required', new TurnstileRule()];
+        }
     }
 
     /**
@@ -91,8 +95,8 @@ class LoginRequest extends FormRequest
         $validator->after(function ($validator) {
             if (!$this->validateTurnstile()) {
                 $validator->errors()->add(
-                    'cf_turnstile_response',
-                    'Please complete the human verification.'
+                    'cf-turnstile-response',
+                    'Verifikasi keamanan diperlukan untuk login.'
                 );
             }
         });
@@ -101,13 +105,13 @@ class LoginRequest extends FormRequest
     private function validateTurnstile(): bool
     {
         $turnstileService = app(TurnstileService::class);
-        return $turnstileService->verify($this->input('cf_turnstile_response'));
+        return $turnstileService->verify($this->input('cf-turnstile-response'));
     }
 
     public function messages(): array
     {
         return [
-            'cf_turnstile_response.required' => 'Please complete the human verification.',
+            'cf-turnstile-response.required' => 'Verifikasi keamanan diperlukan untuk login.',
         ];
     }
 }

@@ -37,7 +37,7 @@ interface Produk {
   link_demo: string;
   faq: string;
   is_active: boolean;
-  gambar: GambarProduk[]; // Array of image objects
+  gambar: GambarProduk[];
 }
 
 interface ImagePreview {
@@ -54,8 +54,8 @@ interface ProductFormData {
   harga: string | number;
   stok: string | number;
   gambar: File[];
-  existing_gambar: number[]; // IDs of existing images to keep
-  gambar_to_remove: number[]; // IDs of existing images to remove
+  existing_gambar: number[];
+  gambar_to_remove: number[];
   id_kategori: string;
   framework: string;
   php_version: string;
@@ -68,7 +68,6 @@ interface ProductFormData {
   [key: string]: any;
 }
 
-// Component untuk field form
 interface FormFieldProps {
   label: string;
   error?: string;
@@ -87,7 +86,6 @@ const FormField = ({ label, error, children, optional }: FormFieldProps) => (
   </div>
 );
 
-// Component untuk Form Section
 interface FormSectionProps {
   title: string;
   description?: string;
@@ -106,7 +104,6 @@ const FormSection = ({ title, description, children }: FormSectionProps) => (
   </div>
 );
 
-// Component untuk Form
 interface ProductEditProps {
   title: string;
   kategori: Kategori[];
@@ -117,7 +114,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
   const [imagePreviews, setImagePreviews] = useState<ImagePreview[]>([]);
   const MAX_IMAGES = 10;
 
-  const { data, setData, put, processing, errors } = useForm<ProductFormData>({
+  const initialFormData: ProductFormData = {
     name: produk.name || '',
     deskripsi: produk.deskripsi || '',
     harga: produk.harga || '',
@@ -130,22 +127,22 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
     versi: produk.versi || '',
     link_demo: produk.link_demo || '',
     faq: produk.faq || '',
-    is_active: !!produk.is_active,
-    gambar: [] as File[],
-    existing_gambar: (produk.gambar?.map(img => img.id).filter(id => id !== undefined) as number[]) || [],
-    gambar_to_remove: [] as number[],
-  });
+    is_active: produk.is_active || false,
+    gambar: [],
+    existing_gambar: produk.gambar?.map(img => img.id).filter((id): id is number => id !== undefined) || [],
+    gambar_to_remove: [],
+  };
 
-  // TinyMCE Editor refs untuk akses ke editor instance jika diperlukan
+  const { data, setData, put, processing, errors } = useForm<ProductFormData>(initialFormData);
+
   const deskripsiEditorRef = useRef<any>(null);
   const faqEditorRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize image previews from existing product images
   useEffect(() => {
     if (produk.gambar && produk.gambar.length > 0) {
       const existingImagePreviews = produk.gambar.map(img => ({
-        preview: `/storage/${img.path}`, // Sesuaikan path jika gambar disimpan di server
+        preview: `/storage/${img.path}`,
         existing: true,
         id: img.id,
         nama_file: img.name
@@ -157,37 +154,60 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Create FormData for multipart/form-data submission
     const formData = new FormData();
 
-    // Add all form fields to FormData
+    // Pastikan semua field required terisi
+    const requiredFields = ['name', 'harga', 'stok', 'id_kategori'];
+    for (const field of requiredFields) {
+      if (!data[field] || data[field] === '') {
+        toast.error('Error', {
+          description: `Field ${field} wajib diisi`,
+        });
+        return;
+      }
+    }
+
+    // Append data biasa
     Object.entries(data).forEach(([key, value]) => {
-      // Skip the gambar fields as we'll handle them separately
       if (key !== 'gambar' && key !== 'existing_gambar' && key !== 'gambar_to_remove') {
-        formData.append(key, value.toString());
+        if (value !== null && value !== undefined) {
+          // Pastikan boolean is_active terkonversi dengan benar
+          if (key === 'is_active') {
+            formData.append(key, value ? '1' : '0');
+          } else {
+            formData.append(key, value.toString());
+          }
+        }
       }
     });
 
-    // Add existing image IDs to keep
-    if (data.existing_gambar.length > 0) {
-      data.existing_gambar.forEach((id, index) => {
+    // Tambahkan existing gambar yang tidak dihapus
+    // Filter existing gambar yang tidak ada di gambar_to_remove
+    const validExistingGambar = data.existing_gambar.filter(id =>
+      !data.gambar_to_remove.includes(id)
+    );
+
+    if (validExistingGambar && validExistingGambar.length > 0) {
+      validExistingGambar.forEach((id, index) => {
         formData.append(`existing_gambar[${index}]`, id.toString());
       });
     }
 
-    // Add image IDs to remove
-    if (data.gambar_to_remove.length > 0) {
+    // Tambahkan gambar yang akan dihapus
+    if (data.gambar_to_remove && data.gambar_to_remove.length > 0) {
       data.gambar_to_remove.forEach((id, index) => {
         formData.append(`gambar_to_remove[${index}]`, id.toString());
       });
     }
 
-    // Add each new image file individually
-    data.gambar.forEach((file, index) => {
-      formData.append(`gambar[${index}]`, file);
-    });
+    // Tambahkan file gambar baru
+    if (data.gambar && data.gambar.length > 0) {
+      data.gambar.forEach((file, index) => {
+        formData.append(`gambar[${index}]`, file);
+      });
+    }
 
-    put(`/produk/${produk.id}`, {
+    put(route('product.update', produk.id), {
       data: formData,
       forceFormData: true,
       onSuccess: () => {
@@ -195,21 +215,23 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
           description: "Produk berhasil diperbarui",
         });
       },
+      onError: (errors) => {
+        toast.error('Error', {
+          description: "Terjadi kesalahan saat menyimpan produk",
+        });
+      },
     });
   };
 
-  // Handle input changes
   const handleInputChange = (field: keyof ProductFormData) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setData(field, e.target.value);
   };
 
-  // Handle file input
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
-    // Check if adding new files would exceed the limit
     const totalImagesCount = imagePreviews.length + files.length;
     if (totalImagesCount > MAX_IMAGES) {
       toast.error('Error', {
@@ -218,11 +240,9 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
       return;
     }
 
-    // Update form data with new files
     const updatedFiles = [...data.gambar, ...files];
     setData('gambar', updatedFiles);
 
-    // Create preview URLs for the new files
     const newPreviews = files.map(file => ({
       file,
       preview: URL.createObjectURL(file),
@@ -234,63 +254,43 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Handle removing an existing image
   const handleRemoveExistingImage = (id: number, index: number) => {
-    // Mark this image for removal on the server
     setData('gambar_to_remove', [...data.gambar_to_remove, id]);
+    setData('existing_gambar', data.existing_gambar.filter(imgId => imgId !== id));
 
-    // Remove from existing_gambar array
-    const updatedExistingGambar = [...data.existing_gambar];
-    updatedExistingGambar.splice(updatedExistingGambar.indexOf(id), 1);
-    setData('existing_gambar', updatedExistingGambar);
-
-    // Remove from previews
     const updatedPreviews = [...imagePreviews];
     updatedPreviews.splice(index, 1);
     setImagePreviews(updatedPreviews);
   };
 
-  // Handle removing a new image
   const handleRemoveNewImage = (index: number) => {
-    // Find the actual index in the data.gambar array
     const existingImagesCount = imagePreviews.filter(img => img.existing).length;
     const newImageIndex = index - existingImagesCount;
 
-    // Create new arrays without the removed image
     const updatedFiles = [...data.gambar];
     updatedFiles.splice(newImageIndex, 1);
+    setData('gambar', updatedFiles);
 
-    // Update previews
     const updatedPreviews = [...imagePreviews];
     const removedPreview = updatedPreviews.splice(index, 1)[0];
-
-    // Update state
-    setData('gambar', updatedFiles);
     setImagePreviews(updatedPreviews);
 
-    // Clean up the object URL to prevent memory leaks
     if (removedPreview.preview && !removedPreview.existing) {
       URL.revokeObjectURL(removedPreview.preview);
     }
   };
 
-  // Handle removing an image (either existing or new)
   const handleRemoveImage = (index: number) => {
     const imageToRemove = imagePreviews[index];
-
-    if (imageToRemove.existing && imageToRemove.id) {
-      handleRemoveExistingImage(imageToRemove.id, index);
-    } else {
-      handleRemoveNewImage(index);
-    }
+    imageToRemove.existing && imageToRemove.id
+      ? handleRemoveExistingImage(imageToRemove.id, index)
+      : handleRemoveNewImage(index);
   };
 
-  // Handle select input
   const handleSelectChange = (field: keyof ProductFormData) => (value: string) => {
     setData(field, value);
   };
 
-  // Handle checkbox
   const handleCheckboxChange = (checked: boolean) => {
     setData('is_active', checked);
   };
@@ -313,12 +313,13 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     placeholder="Nama Produk"
                     value={data.name}
                     onChange={handleInputChange('name')}
+                    required
                   />
                 </FormField>
 
                 <FormField label="Deskripsi" error={errors.deskripsi}>
                   <Editor
-                    apiKey="esu5z25uowjyn5k82a5wt5d72d8cnaj99cywlqyny4km65wi" // Ganti dengan API key TinyMCE Anda
+                    apiKey="esu5z25uowjyn5k82a5wt5d72d8cnaj99cywlqyny4km65wi"
                     onInit={(evt, editor) => deskripsiEditorRef.current = editor}
                     initialValue={data.deskripsi}
                     init={{
@@ -346,6 +347,8 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                       type="number"
                       value={data.harga}
                       onChange={handleInputChange('harga')}
+                      required
+                      min="0"
                     />
                   </FormField>
 
@@ -355,12 +358,18 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                       type="number"
                       value={data.stok}
                       onChange={handleInputChange('stok')}
+                      required
+                      min="0"
                     />
                   </FormField>
                 </div>
 
                 <FormField label="Kategori" error={errors.id_kategori}>
-                  <Select value={data.id_kategori} onValueChange={handleSelectChange('id_kategori')}>
+                  <Select
+                    value={data.id_kategori}
+                    onValueChange={handleSelectChange('id_kategori')}
+                    required
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih Kategori">
                         {kategori.find((kat) => kat.id.toString() === data.id_kategori)?.nama || "Pilih kategori"}
@@ -408,7 +417,6 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     </div>
                   </FormField>
 
-                  {/* Image Previews - Both existing and new */}
                   {imagePreviews.length > 0 && (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
                       {imagePreviews.map((image, index) => (
@@ -431,17 +439,16 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                             <X size={14} className="text-gray-700" />
                           </button>
                           <div className="text-xs truncate p-1 bg-gray-50 text-gray-700 flex items-center">
-                            {image.existing ? (
+                            {image.existing && (
                               <span className="inline-block px-1.5 py-0.5 bg-blue-100 text-blue-800 rounded-full text-xs mr-1">
                                 Existing
                               </span>
-                            ) : null}
+                            )}
                             {image.nama_file || (image.file?.name || 'Image')}
                           </div>
                         </div>
                       ))}
 
-                      {/* Empty slots indicator */}
                       {Array.from({ length: Math.min(MAX_IMAGES - imagePreviews.length, 5) }).map((_, index) => (
                         <div
                           key={`empty-${index}`}
@@ -457,7 +464,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
 
               <FormSection title="Spesifikasi Teknis">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField label="Framework" error={errors.framework}>
+                  <FormField label="Framework" error={errors.framework} optional>
                     <Input
                       placeholder="Framework"
                       value={data.framework}
@@ -465,7 +472,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     />
                   </FormField>
 
-                  <FormField label="PHP Version" error={errors.php_version}>
+                  <FormField label="PHP Version" error={errors.php_version} optional>
                     <Input
                       placeholder="PHP Version"
                       value={data.php_version}
@@ -473,7 +480,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     />
                   </FormField>
 
-                  <FormField label="Database" error={errors.database}>
+                  <FormField label="Database" error={errors.database} optional>
                     <Input
                       placeholder="Database"
                       value={data.database}
@@ -481,7 +488,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     />
                   </FormField>
 
-                  <FormField label="Versi" error={errors.versi}>
+                  <FormField label="Versi" error={errors.versi} optional>
                     <Input
                       placeholder="Versi"
                       value={data.versi}
@@ -489,7 +496,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     />
                   </FormField>
 
-                  <FormField label="Author" error={errors.author}>
+                  <FormField label="Author" error={errors.author} optional>
                     <Input
                       placeholder="Author"
                       value={data.author}
@@ -497,7 +504,7 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
                     />
                   </FormField>
 
-                  <FormField label="Link Demo" error={errors.link_demo}>
+                  <FormField label="Link Demo" error={errors.link_demo} optional>
                     <Input
                       placeholder="Link Demo"
                       value={data.link_demo}
@@ -508,9 +515,9 @@ export default function Edit({ title, kategori, produk }: ProductEditProps) {
               </FormSection>
 
               <FormSection title="FAQ & Status">
-                <FormField label="FAQ" error={errors.faq}>
+                <FormField label="FAQ" error={errors.faq} optional>
                   <Editor
-                    apiKey="esu5z25uowjyn5k82a5wt5d72d8cnaj99cywlqyny4km65wi" // Ganti dengan API key TinyMCE Anda
+                    apiKey="esu5z25uowjyn5k82a5wt5d72d8cnaj99cywlqyny4km65wi"
                     onInit={(evt, editor) => faqEditorRef.current = editor}
                     initialValue={data.faq}
                     init={{

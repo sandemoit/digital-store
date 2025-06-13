@@ -35,11 +35,10 @@ return [
         ],
     ],
 
-    'cloudflare' => [
-        'turnstile' => [
-            'site_key' => env('CLOUDFLARE_TURNSTILE_SITE_KEY'),
-            'secret_key' => env('CLOUDFLARE_TURNSTILE_SECRET_KEY'),
-            'verify_url' => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
-        ],
+    'turnstile' => [
+        'site_key' => env('CLOUDFLARE_TURNSTILE_SITE_KEY'),
+        'secret_key' => env('CLOUDFLARE_TURNSTILE_SECRET_KEY'),
+        'verify_url' => 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+        'enabled' => env('CLOUDFLARE_TURNSTILE_ENABLED', true),
     ],
 ];

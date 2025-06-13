@@ -9,83 +9,71 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import Turnstile from '@/components/turnstile';
+import TurnstileLogin from '@/components/turnstile';
 
 interface LoginForm {
     email: string;
     password: string;
     remember: boolean;
-    cf_turnstile_response: string;
+    'cf-turnstile-response': string;
 }
 
-interface LoginProps {
+interface Props {
     canResetPassword: boolean;
     status?: string;
-    turnstile_site_key: string;
+    turnstile: {
+        site_key: string;
+        enabled: boolean;
+    };
 }
 
-export default function Login({
-    canResetPassword,
-    status,
-    turnstile_site_key
-}: LoginProps) {
+export default function Login({ canResetPassword, status, turnstile }: Props) {
     const [turnstileToken, setTurnstileToken] = useState<string>('');
-    const [turnstileError, setTurnstileError] = useState<boolean>(false);
-    const turnstileRef = useRef<{ reset: () => void }>(null);
+    const [turnstileError, setTurnstileError] = useState<string>('');
 
-    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<LoginForm>({
+    const { data, setData, post, processing, errors, reset } = useForm<LoginForm>({
         email: '',
         password: '',
         remember: false,
-        cf_turnstile_response: '',
+        'cf-turnstile-response': '',
     });
 
-    const handleTurnstileVerified = (token: string) => {
-        console.log('Turnstile verification successful');
+    const handleTurnstileSuccess = (token: string) => {
         setTurnstileToken(token);
-        setData('cf_turnstile_response', token);
-        setTurnstileError(false);
-        clearErrors('cf_turnstile_response');
+        setData('cf-turnstile-response', token);
+        setTurnstileError('');
     };
 
     const handleTurnstileError = () => {
-        console.error('Turnstile verification failed');
         setTurnstileToken('');
-        setData('cf_turnstile_response', '');
-        setTurnstileError(true);
+        setData('cf-turnstile-response', '');
+        setTurnstileError('Verifikasi keamanan gagal. Silakan refresh halaman.');
     };
 
     const handleTurnstileExpired = () => {
-        console.log('Turnstile token expired');
         setTurnstileToken('');
-        setData('cf_turnstile_response', '');
-        setTurnstileError(true);
+        setData('cf-turnstile-response', '');
+        setTurnstileError('Verifikasi keamanan kedaluwarsa. Silakan coba lagi.');
     };
 
     const submit = (e: FormEvent) => {
         e.preventDefault();
 
-        if (!turnstileToken) {
-            setTurnstileError(true);
+        // Check Turnstile if enabled
+        if (turnstile.enabled && !turnstileToken) {
+            setTurnstileError('Silakan selesaikan verifikasi keamanan terlebih dahulu.');
             return;
         }
-
-        // console.log('Submitting login form with turnstile token');
 
         post(route('login'), {
             onFinish: () => {
                 reset('password');
+                // Reset Turnstile on error
+                if (errors.email || errors.password) {
+                    setTurnstileToken('');
+                    setData('cf-turnstile-response', '');
+                }
             },
-            onError: (errors) => {
-                console.error('Login failed:', errors);
-                setTurnstileToken('');
-                setData('cf_turnstile_response', '');
-                setTurnstileError(true);
-
-                setTimeout(() => {
-                    turnstileRef.current?.reset();
-                }, 100);
-            }
         });
     };
 
@@ -150,25 +138,6 @@ export default function Login({
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="flex justify-center">
-                        <Turnstile
-                            ref={turnstileRef}
-                            siteKey={turnstile_site_key}
-                            onVerified={handleTurnstileVerified}
-                            onError={handleTurnstileError}
-                            onExpired={handleTurnstileExpired}
-                            theme="light"
-                            size="normal"
-                            className={turnstileError || errors.cf_turnstile_response ? 'border border-red-500 rounded p-2' : ''}
-                        />
-                    </div>
-
-                    {(turnstileError || errors.cf_turnstile_response) && (
-                        <div className="text-red-600 text-sm text-center">
-                            {errors.cf_turnstile_response || 'Please complete the human verification.'}
-                        </div>
-                    )}
-
                     <div className="flex items-center space-x-3">
                         <Checkbox
                             id="remember"
@@ -179,6 +148,27 @@ export default function Login({
                         />
                         <Label htmlFor="remember">Remember me</Label>
                     </div>
+
+                    {/* Turnstile Security Check */}
+                    {turnstile.enabled && (
+                        <div className="flex justify-center">
+                            <TurnstileLogin
+                                siteKey={turnstile.site_key}
+                                enabled={turnstile.enabled}
+                                onSuccess={handleTurnstileSuccess}
+                                onError={handleTurnstileError}
+                                onExpired={handleTurnstileExpired}
+                            />
+
+                            {/* Show Turnstile errors */}
+                            {turnstileError && (
+                                <InputError message={turnstileError} className="mt-2" />
+                            )}
+
+                            {/* Show validation errors */}
+                            <InputError message={errors['cf-turnstile-response']} className="mt-2" />
+                        </div>
+                    )}
 
                     <Button
                         type="submit"

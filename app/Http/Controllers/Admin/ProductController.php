@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Kategori;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Yajra\DataTables\Facades\DataTables;
@@ -99,8 +101,9 @@ class ProductController extends Controller
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
-    public function edit(Product $produk)
+    public function edit($id)
     {
+        $produk = Product::with('kategori')->findOrFail($id);
         $title = 'Edit Produk';
         $kategori = Kategori::select('id', 'nama')->get();
 
@@ -111,9 +114,11 @@ class ProductController extends Controller
         ]);
     }
 
-
-    public function update(Request $request, Product $produk)
+    public function update(Request $request, $id)
     {
+        // Debug: Lihat data yang dikirim
+        // dd($request->all());
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
@@ -129,59 +134,151 @@ class ProductController extends Controller
             'faq' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'file_url' => 'nullable|url',
-            'gambar.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+
+            // Perbaikan untuk handling gambar
+            'gambar' => 'nullable|array',
+            'gambar.*' => 'nullable|file|image|mimes:jpeg,png,jpg|max:2048',
+            'existing_gambar' => 'nullable|array',
+            'existing_gambar.*' => 'nullable|integer',
+            'gambar_to_remove' => 'nullable|array',
+            'gambar_to_remove.*' => 'nullable|integer',
         ]);
 
-        $gambarLama = $produk->gambar ?? [];
+        $produk = Product::findOrFail($id);
+
+        // Ambil gambar yang sudah ada dari database
+        $gambarExisting = $produk->gambar ?? [];
 
         // Jika kolom `gambar` berupa string JSON, decode dulu
-        if (is_string($gambarLama)) {
-            $gambarLama = json_decode($gambarLama, true) ?? [];
+        if (is_string($gambarExisting)) {
+            $gambarExisting = json_decode($gambarExisting, true) ?? [];
         }
 
-        $gambarBaru = [];
+        // Debug: Lihat data yang diterima
+        Log::info('Request data:', $request->all());
 
+        // Ambil existing_gambar dari request
+        $existingGambarIds = $request->input('existing_gambar', []);
+        Log::info('Existing gambar IDs from request:', $existingGambarIds);
+
+        // Proses gambar yang akan dihapus
+        $gambarToRemove = $request->input('gambar_to_remove', []);
+        Log::info('Gambar to remove:', $gambarToRemove);
+
+        // Jika ada existing_gambar yang dikirim dari frontend, filter berdasarkan itu
+        if (!empty($existingGambarIds)) {
+            $gambarExisting = array_filter($gambarExisting, function ($gambar) use ($existingGambarIds) {
+                return in_array($gambar['id'] ?? null, $existingGambarIds);
+            });
+            $gambarExisting = array_values($gambarExisting);
+        }
+
+        // Kemudian hapus yang ada di gambar_to_remove
+        if (!empty($gambarToRemove)) {
+            $gambarExisting = array_filter($gambarExisting, function ($gambar) use ($gambarToRemove) {
+                return !in_array($gambar['id'] ?? null, $gambarToRemove);
+            });
+            $gambarExisting = array_values($gambarExisting);
+        }
+
+        Log::info('Final existing gambar:', $gambarExisting);
+
+        // Proses gambar baru yang diupload
+        $gambarBaru = [];
         if ($request->hasFile('gambar')) {
             foreach ($request->file('gambar') as $index => $file) {
                 $filename = 'product-' . time() . '-' . ($index + 1) . '.' . $file->getClientOriginalExtension();
                 $path = $file->storeAs('produk', $filename, 'public');
 
                 $gambarBaru[] = [
+                    'id' => null, // ID akan di-generate oleh database jika diperlukan
                     'path' => $path,
                     'name' => $file->getClientOriginalName(),
                 ];
             }
         }
 
-        // Gabungkan gambar lama + baru
-        $validated['gambar'] = array_merge($gambarLama, $gambarBaru);
+        // Gabungkan gambar existing (yang tidak dihapus) + gambar baru
+        $allGambar = array_merge($gambarExisting, $gambarBaru);
 
-        // Atur status aktif
-        $validated['is_active'] = $request->has('is_active') ? 1 : 0;
+        // Set data yang akan diupdate
+        $dataToUpdate = [
+            'name' => $validated['name'],
+            'deskripsi' => $validated['deskripsi'],
+            'harga' => $validated['harga'],
+            'stok' => $validated['stok'],
+            'id_kategori' => $validated['id_kategori'],
+            'framework' => $validated['framework'],
+            'php_version' => $validated['php_version'],
+            'database' => $validated['database'],
+            'author' => $validated['author'],
+            'versi' => $validated['versi'],
+            'link_demo' => $validated['link_demo'],
+            'faq' => $validated['faq'],
+            'is_active' => $request->has('is_active') ? 1 : 0,
+            'gambar' => $allGambar,
+        ];
 
         // Update produk
-        $produk->update($validated);
+        $produk->update($dataToUpdate);
 
         return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');
     }
 
-    public function destroy(Product $produk)
+    public function destroy($id)
     {
-        // Get the images array from the product
-        $images = is_string($produk->gambar) ? json_decode($produk->gambar, true) : $produk->gambar;
+        try {
+            $produk = Product::findOrFail($id);
+            // Validasi apakah produk ditemukan
+            if (!$produk) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Produk tidak ditemukan'
+                ], 404);
+            }
 
-        // Delete each image from storage
-        if (!empty($images)) {
-            foreach ($images as $image) {
-                if (isset($image['path'])) {
+            // Mulai transaksi database
+            DB::beginTransaction();
+
+            // Hapus relasi terlebih dahulu jika ada
+            if (method_exists($produk, 'images')) {
+                $produk->images()->delete();
+            }
+
+            // Hapus file gambar dari storage
+            $images = is_string($produk->gambar) ? json_decode($produk->gambar, true) : $produk->gambar;
+            foreach ((array)$images as $image) {
+                if (!empty($image['path']) && Storage::disk('public')->exists($image['path'])) {
                     Storage::disk('public')->delete($image['path']);
                 }
             }
+
+            // Hapus produk
+            $deleted = $produk->delete();
+
+            if (!$deleted) {
+                throw new \Exception('Failed to delete product from database');
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil dihapus',
+                'deleted_id' => $produk->id
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Delete product failed:', [
+                'id' => $produk->id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus produk: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Delete the product
-        $produk->delete();
-
-        return redirect()->back()->with('success', 'Produk berhasil dihapus.');
     }
 }

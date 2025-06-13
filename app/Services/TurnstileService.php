@@ -9,17 +9,28 @@ class TurnstileService
 {
     private string $secretKey;
     private string $verifyUrl;
+    private bool $enabled;
 
     public function __construct()
     {
-        $this->secretKey = config('services.cloudflare.turnstile.secret_key');
-        $this->verifyUrl = config('services.cloudflare.turnstile.verify_url');
+        $this->secretKey = config('services.turnstile.secret_key');
+        $this->verifyUrl = config('services.turnstile.verify_url');
+        $this->enabled = config('services.turnstile.enabled', true);
     }
 
     public function verify(string $token, ?string $remoteIp = null): bool
     {
+        // Skip verification if disabled (untuk development)
+        if (!$this->enabled) {
+            return true;
+        }
+
+        if (empty($token)) {
+            return false;
+        }
+
         try {
-            $response = Http::asForm()->post($this->verifyUrl, [
+            $response = Http::timeout(10)->asForm()->post($this->verifyUrl, [
                 'secret' => $this->secretKey,
                 'response' => $token,
                 'remoteip' => $remoteIp ?? request()->ip(),
@@ -27,23 +38,22 @@ class TurnstileService
 
             $result = $response->json();
 
-            if (!$response->successful()) {
-                Log::error('Turnstile verification failed', [
-                    'status' => $response->status(),
-                    'response' => $result
-                ]);
-                return false;
-            }
-
             return $result['success'] ?? false;
-        } catch (\Throwable $e) {
-            Log::error('Turnstile verification error: ' . $e->getMessage());
-            return false;
+        } catch (\Exception $e) {
+            Log::error('Turnstile verification failed', [
+                'error' => $e->getMessage(),
+                'token' => substr($token, 0, 10) . '...',
+                'ip' => request()->ip()
+            ]);
+
+            // Pada production, return false
+            // Pada development, bisa return true untuk bypass
+            return app()->environment('local') && !$this->enabled;
         }
     }
 
-    public function getSiteKey(): string
+    public function isEnabled(): bool
     {
-        return config('services.cloudflare.turnstile.site_key');
+        return $this->enabled;
     }
 }

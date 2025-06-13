@@ -182,7 +182,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
     const displayProducts = getSortedAndFilteredProducts();
 
     return (
-        <div className="bg-white shadow rounded-sm p-6 mb-6">
+        <div className="bg-white shadow rounded-sm md:p-6 p-2 mb-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 md:mb-0">
@@ -290,7 +290,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                             className="group bg-white rounded-sm overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300"
                         >
                             {/* Product Image */}
-                            <div className="relative overflow-hidden">
+                            <div className="relative overflow-hidden h-25 md:h-40">
                                 {product.featured && (
                                     <span className="absolute top-2 left-2 bg-amber-500 text-white text-xs font-medium px-2 py-1 rounded-sm z-10">
                                         Featured
@@ -299,7 +299,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                 <LazyLoadImage
                                     src={getProductImage(product)}
                                     alt={getProductName(product)}
-                                    className="w-full h-40 sm:h-56 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                                 />
 
                                 {/* Hover Actions - Hidden on mobile for better UX */}
@@ -309,21 +309,6 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                         className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
                                     >
                                         <Heart size={18} />
-                                    </button>
-                                    {product.link_demo && (
-                                        <a
-                                            href={product.link_demo}
-                                            target="_blank"
-                                            className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
-                                        >
-                                            <Eye size={18} />
-                                        </a>
-                                    )}
-                                    <button
-                                        onClick={() => handleAddToCart(product)}
-                                        className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors"
-                                    >
-                                        <ShoppingCart size={18} />
                                     </button>
                                 </div>
                             </div>
@@ -337,7 +322,7 @@ export default function ProdukAll({ produk }: ProductTerkaitCardProps) {
                                     </span>
                                 </div>
 
-                                <h3 className="text-sm sm:text-base font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors line-clamp-2 h-8 sm:h-12">
+                                <h3 className="text-sm sm:text-base font-semibold text-gray-800 mb-2 hover:text-amber-500 transition-colors">
                                     <a href={`/produk/${product.id}`}>{getProductName(product)}</a>
                                 </h3>
 

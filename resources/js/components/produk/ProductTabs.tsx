@@ -255,7 +255,7 @@ export default function ProductTabs({
                 ))}
 
                 {/* Form Komentar Baru */}
-                {isLoggedIn && replyingTo !== null && (
+                {isLoggedIn && canComment && (
                   <div className="mt-6">
                     <h4 className="text-sm font-medium mb-3">Tinggalkan Komentar</h4>
                     <div className="flex items-start">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Rules\TurnstileRule;
 use App\Services\TurnstileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,7 +27,10 @@ class AuthenticatedSessionController extends Controller
         return Inertia::render('auth/login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
-            'turnstile_site_key' => $this->turnstileService->getSiteKey(),
+            'turnstile' => [
+                'site_key' => config('services.turnstile.site_key'),
+                'enabled' => config('services.turnstile.enabled', true),
+            ],
         ]);
     }
 
@@ -35,6 +39,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        $request->validate([
+            'cf-turnstile-response' => config('services.turnstile.enabled')
+                ? ['required', new TurnstileRule()]
+                : [],
+        ], [
+            'cf-turnstile-response.required' => 'Verifikasi keamanan diperlukan.',
+        ]);
+
         $request->authenticate();
 
         $request->session()->regenerate();

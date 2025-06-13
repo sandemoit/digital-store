@@ -4,12 +4,13 @@ import { PageProps } from '@/types/produk';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, Trash2 } from 'lucide-react';
 import ProdukForm from '@/components/produkAdmin/ProdukForm';
 import { DataTable } from '@/components/DataTable'; // Kita buat komponen Table Reusable
 import axios from 'axios';
 import { BreadcrumbItem } from '@/types';
 import AppLayout from '@/layouts/app-layout';
+import { toast } from 'sonner';
 
 interface Produk {
     id: number;
@@ -27,6 +28,7 @@ interface ProdukPageProps extends PageProps {
 export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
     const [open, setOpen] = useState(false);
     const [produkEdit, setProdukEdit] = useState<Produk | null>(null);
+    const [isDeleting, setIsDeleting] = useState<number | null>(null);
     const [search, setSearch] = useState('');
 
     const breadcrumbs: BreadcrumbItem[] = [
@@ -35,6 +37,53 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
             href: '/dashboard',
         },
     ];
+
+    const handleDelete = async (id: number) => {
+        if (!confirm('Yakin mau hapus produk ini?')) return;
+
+        setIsDeleting(id);
+        try {
+            const response = await axios.delete(`/admin/product/${id}`);
+
+            if (response.data.success) {
+                // Optimistic update: langsung hapus dari state tanpa refetch
+                setData(prevData => prevData.filter(item => item.id !== id));
+
+                toast.success(response.data.message);
+            } else {
+                throw new Error(response.data.message || 'Gagal menghapus produk');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            toast.error(error instanceof Error ? error.message : 'Gagal menghapus produk');
+            // Jika gagal, refetch data untuk sinkronisasi
+            await fetchProduk();
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
+    const handleEdit = (produk: Produk) => {
+        router.get(`/admin/product/${produk.id}/edit`);
+    };
+
+    const handleCreate = () => {
+        router.get('/admin/product/create');
+    };
+
+    const handleSearch = async () => {
+        const res = await axios.get('/admin/produk/data', {
+            params: {
+                search: search,
+            },
+        });
+        setData(res.data.data);
+    };
+
+    const fetchProduk = async () => {
+        const res = await axios.get('/admin/produk/data');
+        setData(res.data.data);
+    };
 
     const columns = [
         {
@@ -59,7 +108,21 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
             cell: ({ row }: any) => (
                 <div className="flex gap-2">
                     <Button size="sm" onClick={() => handleEdit(row.original)}>Edit</Button>
-                    <Button size="sm" variant="destructive" onClick={() => handleDelete(row.original.id)}>Hapus</Button>
+                    <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => handleDelete(row.original.id)}
+                        disabled={isDeleting === row.original.id}
+                    >
+                        {isDeleting === row.original.id ? (
+                            'Menghapus...'
+                        ) : (
+                            <>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Hapus
+                            </>
+                        )}
+                    </Button>
                 </div>
             ),
         }
@@ -70,35 +133,6 @@ export default function ProdukIndex({ title, kategori }: ProdukPageProps) {
     useEffect(() => {
         fetchProduk();
     }, []);
-
-    const fetchProduk = async () => {
-        const res = await axios.get('/admin/produk/data');
-        setData(res.data.data);
-    };
-
-    const handleDelete = async (id: number) => {
-        if (confirm('Yakin mau hapus produk ini?')) {
-            await router.delete(`/admin/product/${id}`);
-            fetchProduk();
-        }
-    };
-
-    const handleEdit = (produk: Produk) => {
-        router.get(`/admin/product/${produk.id}/edit`);
-    };
-
-    const handleCreate = () => {
-        router.get('/admin/product/create');
-    };
-
-    const handleSearch = async () => {
-        const res = await axios.get('/admin/produk/data', {
-            params: {
-                search: search,
-            },
-        });
-        setData(res.data.data);
-    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

@@ -88,7 +88,7 @@ class AplikasiController extends Controller
         return inertia('Landing/Produk/Show', [
             'title' => 'Detail Produk',
             'produk' => $produk,
-            'canComment' => Auth::check() && Auth::user()->role === 'admin',
+            'canComment' => Auth::check(),
             'isLoggedIn' => Auth::check(),
             'userId' => Auth::id(),
             'hasPurchased' => $hasPurchased,

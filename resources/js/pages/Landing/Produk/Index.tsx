@@ -35,7 +35,7 @@ const ProdukIndex = ({ produk = [] }: ProdukProps) => {
         <GuestLayout title="Produk">
             <div className="bg-gray-100 min-h-auto relative">
                 <HeroSection title='Mau Cari Produk Apa?' description='Ayo pilih produk premium di Sans Store, untuk membantu meningkatkan bisnis dan proyek kreatif Anda.' />
-                <div className="max-w-7xl mx-auto p-4">
+                <div className="max-w-7xl mx-auto md:p-4 p-0">
                     {/* Mobile Filter Button */}
                     {isMobile && (
                         <div className="fixed left-4 top-20 z-30">
