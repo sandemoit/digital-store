@@ -1,4 +1,16 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { AlertBatal } from '@/components/alert-batal';
 
 interface TransactionItem {
   product?: {
@@ -124,12 +136,8 @@ export const PurchaseHistoryContent = ({ transactions = [] }: Props) => {
                       >
                         Bayar
                       </Link>
-                      <Link
-                        href={route('payment.cancel', transaction.order_number)}
-                        className="text-red-500 hover:text-red-900 font-medium"
-                      >
-                        Batal
-                      </Link>
+
+                      <AlertBatal url={route('payment.cancel', transaction.order_number)} className='text-red-500 hover:text-red-900 font-medium' title='Batal' />
                     </div>
                   ) : (
                     <Link

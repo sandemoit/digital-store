@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import GuestLayout from '@/layouts/guest-layout';
 import { router } from '@inertiajs/react';
+import { AlertBatal } from '@/components/alert-batal';
 
 // Type definitions
 interface Product {
@@ -348,10 +349,7 @@ const ActionButtons = ({ transaction, onShowInvoice }: ActionButtonsProps) => (
         </button>
 
         {transaction.can_be_cancelled && (
-            <a href={route('payment.cancel', transaction.order_number)} className="flex items-center justify-center w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
-                <XCircle className="w-5 h-5 mr-2" />
-                Batalkan Pesanan
-            </a>
+            <AlertBatal url={route('payment.cancel', transaction.order_number)} className='flex items-center justify-center w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors' title='Batalkan Pesanan' />
         )}
 
         {transaction.is_manual_payment && transaction.payment_status === 'pending' && (

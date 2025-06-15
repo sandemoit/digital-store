@@ -105,7 +105,7 @@ const LatestProducts = ({ produk = [] }: LatestProdukProps) => {
                 <LazyLoadImage
                   alt={product.name}
                   src={`/storage/${product.gambar?.[0]?.path}`}
-                  className="w-full h-48 object-cover transform group-hover:scale-105 transition-transform duration-500"
+                  className="w-full object-cover transform group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-50 transition-opacity duration-300 flex items-center justify-center gap-3">
                   <button className="w-10 h-10 rounded-full bg-white text-gray-800 flex items-center justify-center hover:bg-amber-500 hover:text-white transition-colors">

@@ -187,6 +187,7 @@ class CheckoutController extends Controller
                 return redirect()->route('payment.gateway', $transaction->order_number);
             }
 
+            $user->carts()->delete();
             return redirect()->route('payment.checkout', $transaction->order_number)
                 ->with('success', 'Transaksi berhasil dibuat. Silakan upload bukti pembayaran.');
         } catch (\Exception $e) {

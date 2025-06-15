@@ -13,6 +13,7 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { AlertBatal } from "@/components/alert-batal";
 
 interface Transaction {
   id: number;
@@ -147,10 +148,6 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
         setPreviewUrl(null);
       },
     });
-  };
-
-  const handleCancel = () => {
-    router.get(`/payment/cancel/${transaction.order_number}`);
   };
 
   const isPaymentProofUploaded = transaction.payment_status === 'waiting_confirmation' && transaction.payment_proof;
@@ -394,27 +391,7 @@ export default function PaymentDetail({ transaction, paymentMethod }: PaymentDet
                     Kembali ke Beranda
                   </Link>
                   {transaction.status === 'pending' && (
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <button className="block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-md hover:bg-red-200 transition-colors">
-                          Batalkan Pesanan
-                        </button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Yakin ingin membatalkan pesanan?</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Tindakan ini tidak dapat dibatalkan. Pesanan akan dianggap batal dan tidak bisa diproses ulang.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Batal</AlertDialogCancel>
-                          <AlertDialogAction className="bg-amber-500 hover:bg-amber-500 text-white" onClick={handleCancel}>
-                            Ya, Batalkan
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <AlertBatal url={route('payment.cancel', transaction.order_number)} className='block w-full text-center bg-red-100 text-red-700 py-2 px-4 rounded-md hover:bg-red-200 transition-colors' title='Batalkan Pesanan' />
                   )}
                 </div>
               </div>

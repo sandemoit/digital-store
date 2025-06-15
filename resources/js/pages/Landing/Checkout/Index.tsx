@@ -287,21 +287,19 @@ export default function CheckoutIndex({
                                     setSelectedPayment(method.id);
                                     setData('payment_method_id', method.id.toString());
                                   }}
-                                  required
+                                // required
                                 />
                                 <label htmlFor={`payment_${method.id}`} className="ml-3 block">
                                   <div className="flex items-center gap-2">
                                     <span className="font-medium">{method.name}</span>
-                                    {method.fee > 0 && (
-                                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                                        +{formatFeeDisplay(method)}
-                                        {method.type_fee === 'percent' && selectedPayment === method.id && (
-                                          <span className="ml-1 text-gray-600">
-                                            (Rp{formatCurrency(calculateFeeAmount(method))})
-                                          </span>
-                                        )}
-                                      </span>
-                                    )}
+                                    <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                                      +{formatFeeDisplay(method)}
+                                      {method.type_fee === 'percent' && selectedPayment === method.id && (
+                                        <span className="ml-1 text-gray-600">
+                                          (Rp{formatCurrency(calculateFeeAmount(method))})
+                                        </span>
+                                      )}
+                                    </span>
                                   </div>
                                   {method.instructions && (
                                     <p className="text-sm text-gray-500 mt-1">{method.instructions}</p>
